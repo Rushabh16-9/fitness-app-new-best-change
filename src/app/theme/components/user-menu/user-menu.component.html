@@ -1,0 +1,38 @@
+<button mat-icon-button [matMenuTriggerFor]="userMenu" #userMenuTrigger="matMenuTrigger" >
+    <mat-icon>account_circle</mat-icon>
+</button>
+
+<mat-menu #userMenu="matMenu" [overlapTrigger]="false" class="toolbar-dropdown-menu user-menu">
+    <mat-toolbar *ngIf="userTypeId != 5" color="primary">
+        <div fxLayout="row" fxLayoutAlign="space-around center" class="user-info">
+            <img [src]="userImage" alt="user-image">
+            <p class="name">
+                {{fullName}} <br> 
+                <small *ngIf="email" >{{email}} <br> </small> 
+                <span *ngIf="mobileNo">( {{mobileNo}} ) <br> </span>                
+            </p>
+        </div>  
+    </mat-toolbar>
+    <a *ngIf="userTypeId != 5" mat-menu-item routerLink="/profile"> 
+        <mat-icon>person</mat-icon>
+        <span>Profile</span> 
+    </a>
+   <!--  <a mat-menu-item routerLink="/settings"> 
+        <mat-icon>settings</mat-icon>
+        <span>Layout Settings</span> 
+    </a>
+    <a mat-menu-item routerLink="help"> 
+        <mat-icon>help</mat-icon>
+        <span>Help</span> 
+    </a> -->
+    <div *ngIf="userTypeId == 5" fxLayout="row" fxLayoutAlign="space-around center" class="user-info">
+        <p>
+            {{mobileNo}}
+        </p>
+    </div>
+    <div class="divider"></div>
+    <a mat-menu-item routerLink="/logout"> 
+        <mat-icon>power_settings_new</mat-icon>
+        <span>Log out</span> 
+    </a>
+</mat-menu>

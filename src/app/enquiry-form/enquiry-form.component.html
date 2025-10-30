@@ -1,0 +1,106 @@
+<div *ngIf="showMainBlk" fxLayout="row wrap" fxLayoutAlign="center" class="auth-main">
+    <div fxFlex="100" fxFlex.gt-sm="80" fxFlex.sm="80" class="flex-p mb-padng-0">
+        <mat-card class="mainBlk">
+            <div>
+                <a href="{{DOMAIN_NAME}}">
+                    <h2>
+                        <span>
+                            <img width="100%" class="logo" alt="logo"
+                                src={{headerImage}}>
+                        </span>
+                    </h2>
+                </a>
+                <div class="reg-title" style="margin: 10px auto;">
+                    <p>
+                        <b>Enquiry Form</b>
+                    </p>
+                </div>
+            </div>
+
+            <mat-card-content style="height:auto;">
+
+                <div *ngIf="showRegisterForm" class="marg-top-20" fxLayout="column" fxLayoutGap="32px" fxFlex="100">
+                    <form [formGroup]="regFormGroup" (ngSubmit)="onRegSubmit()" autocomplete="off" fxFlex="100">
+                        <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+                            <mat-form-field fxFlex>
+                                <input matInput placeholder="First Name" formControlName="firstName" required>
+                                <mat-error
+                                    *ngIf="regFormGroup.controls.firstName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+                            <mat-form-field fxFlex>
+                                <input matInput placeholder="Middle Name" formControlName="middleName">
+                                <mat-error
+                                    *ngIf="regFormGroup.controls.middleName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+                            <mat-form-field fxFlex>
+                                <input matInput placeholder="Last Name" formControlName="lastName" required>
+                                <mat-error
+                                    *ngIf="regFormGroup.controls.lastName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+                            <mat-form-field fxFlex>
+                                <input matInput placeholder="Email" formControlName="email"
+                                    (keydown.space)="$event.preventDefault()" required>
+                                <mat-error
+                                    *ngIf="regFormGroup.controls.email.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                                <mat-error
+                                    *ngIf="regFormGroup.controls.email.hasError('invalidEmail')">{{allMsgs.WRONG_EMAIL}}</mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+                            <mat-form-field fxFlex>
+                                <input matInput placeholder="Mobile Number" formControlName="mobileNo"
+                                    (keydown.space)="$event.preventDefault()"
+                                    (keypress)="globalFunctions.onlyNumberKey($event)" maxlength="10" pattern="[0-9]+"
+                                    required>
+                                <mat-error
+                                    *ngIf="regFormGroup.controls.mobileNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                                <mat-error
+                                    *ngIf="regFormGroup.controls.mobileNo.hasError('pattern')">{{allMsgs.WRONG_MOBILE_NO}}</mat-error>
+                            </mat-form-field>
+
+                        </div>
+
+                        <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+                            <mat-radio-group fxFlex formControlName="gender"
+                                class="pad-top-10 mb-padng-btm-10 mb-padng-top-0 " style="text-align: left;" required>
+                                <label class="mat-form-field">Gender<samp class="mandatory">*</samp>: </label>
+                                <mat-radio-button class="mb-displ-block marg-left-10 mb-marg-left-0"
+                                    value="male">Male</mat-radio-button>
+                                <mat-radio-button class="mb-displ-block" value="female">Female</mat-radio-button>
+                                <mat-radio-button class="mb-displ-block" value="transgender">Other</mat-radio-button>
+                                <mat-error style="font-size: 12px;"
+                                    *ngIf="regFormGroup.controls.gender.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-radio-group>
+                        </div>
+
+                        <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+                            <mat-form-field fxFlex>
+                                <mat-select formControlName="confId" placeholder="Select Course">
+                                    <!-- <mat-select-search [allOptions]="allCoursesList" (onMatSelectSearch)="onCourseSearch($event)"> </mat-select-search>         -->
+                                    <mat-option *ngFor="let optn of coursesList" [value]="optn.confId">
+                                        {{optn.courseName}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="regFormGroup.controls.mobileNo.errors?.required">{{allMsgs.WRONG_MOBILE_NO}}</mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <button mat-raised-button color="primary" class="mb-width-100" type="submit">SUBMIT</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div *ngIf="showSubmitBlk" style="text-align: center;margin: 40px auto;">
+                    <h2>Thank You !</h2>
+                </div>
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

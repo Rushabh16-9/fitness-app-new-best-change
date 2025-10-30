@@ -1,0 +1,157 @@
+<div class="shared-course-selection">
+             
+  <form *ngIf="!fromInstituteAdmissionClosed" (ngSubmit)="onSubmit()">
+
+    <div *ngFor="let institute of instituteDisplayData; let iDspIndex = index" >
+
+      <div *ngIf="!isEmptyObject(institute)" class="comeBack_up">
+
+        <div *ngIf="!institute.admissionClosed" id="instituteId-{{institute.instituteId}}" #instituteId{{institute.instituteId}} >
+
+          <div *ngIf="!fromInstitute" class="bg-grey college-name flex-p">
+            <mat-checkbox class="p-1 wrap-chek-label" (change)="selectCollege(institute.instituteId, institute, $event.checked)" [checked]="institute.isSelected">
+              <strong matTooltip="Select/Deselect this college to apply!">{{institute.instituteName}}</strong>
+            </mat-checkbox>
+          </div>
+
+          <div class="overlay-on-card" [ngClass]="{'overlay-on-card-after': institute.isSelected == true }">
+
+            <div class="parent-div">
+              <div [innerHTML]="instructions"></div>
+              <b *ngIf="panelMode == 'course-selection'">{{institute.courseHeading}}</b>
+              <div class="course-error" *ngIf="institute.coursesError">{{allMsgs.COURSES_NOT_SELECTED}} </div>
+            </div>
+
+            <div style="margin-top: 10px;">
+              <div>
+                <div *ngFor="let instituteBunch of institute.bunch; let k = index; let isOdd=odd; let isEven=even" [class.odd]="isOdd" [class.even]="isEven" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px" class="course-bunch" >
+
+                  <div *ngFor="let instituteLevel of instituteBunch; let i = index" fxFlex class="p-1">
+
+                    <mat-radio-button *ngIf="institute.showCoursesInRadio" (change)="onSelectRadioCourse(institute, instituteLevel.admissionConfId)" [value]="instituteLevel.admissionConfId" [checked]="instituteLevel.isSelected" [matTooltip]="instituteLevel.isApplied ? 'This course is already applied' : null" class="wrap-chek-label" >
+                      {{instituteLevel.displayName}}
+                      <span *ngIf="instituteLevel.isApplied">
+                        (<mat-icon class="selected-green">done</mat-icon>)
+                      </span>
+                    </mat-radio-button>
+
+                    <mat-checkbox *ngIf="!institute.showCoursesInRadio" (change)="onSelectCourse(institute, instituteLevel.admissionConfId, $event.checked)" [checked]="instituteLevel.isSelected" [matTooltip]="instituteLevel.isApplied ? 'This course is already applied' : null" class="wrap-chek-label" >
+                      <span class="course-name">{{instituteLevel.displayName}}</span>
+                      <span *ngIf="instituteLevel.isApplied">
+                        (<mat-icon class="selected-green">done</mat-icon>)
+                      </span>
+                    </mat-checkbox>
+
+                    <div *ngIf="instituteLevel.showCourseLable" class="form-title" [innerHTML]="instituteLevel.showCourseLable"></div> 
+                    
+
+                    <mat-form-field *ngIf="institute.showMkclNo" class="course-appl-no-field flex-p" style="margin-top: 5px;">
+                      <input placeholder="{{universityApplicationFormNoText}}" [value]="instituteLevel.courseApplicationNo" [class.input-field-error]="instituteLevel.courseApplicationNoError" (keyup)="updateCourseApplicationNo($event.target.value, instituteLevel.admissionConfId, institute.instituteId)" (blur)="updateCourseApplicationNo($event.target.value, instituteLevel.admissionConfId, institute.instituteId)" (keydown.space)="$event.preventDefault()" maxlength="30" matInput >
+                      <div class="field-error-msg" *ngIf="instituteLevel.courseApplicationNoError">{{allMsgs.REQUIRED_FIELD}}</div>
+                      <div class="field-error-msg" *ngIf="instituteLevel.courseApplicationNoDuplError">Same "{{universityApplicationFormNoText}}" is cannot be used for multiple courses.</div>
+                    </mat-form-field>
+
+                    <div *ngIf="instituteLevel.showLanguageGroups" class="flex-p lang-grp-div">
+                      <mat-form-field fxFlex>
+                        <mat-select (selectionChange)="onSelectLanguage($event.value, institute, instituteLevel.admissionConfId)" placeholder="Select Compulsory Language" [(value)]="instituteLevel.selectedLangGroupId">
+                          <mat-option *ngFor="let langGroup of instituteLevel.languageGroups" [value]="langGroup.langGroupId">
+                            {{langGroup.langGroupName}}
+                          </mat-option>
+                        </mat-select>
+                        <div class="field-error-msg" *ngIf="instituteLevel.lngError">{{allMsgs.REQUIRED_LANGUAGE_GRP}}</div>             
+                      </mat-form-field>
+                    </div>
+
+                    <div *ngIf="instituteLevel.showSubjectGroups" style="position: relative;">
+                      <div>
+                        <div class="subjct-grp-txt">{{instituteLevel.subjectGroupLabel}}</div>
+                        <div *ngIf="instituteLevel.grpError" fxFlex class="p-1 field-error-msg" style="margin-top:15px; position: absolute;" >{{allMsgs.REQUIRED_COURSE_GRP}}</div>
+                      </div>
+
+                      <div *ngIf="instituteLevel.showSubjectsInRadio" class="p-1" >
+
+                        <mat-radio-group *ngFor="let subGrp of instituteLevel.subjectGroups; let sgIndex = index">
+                          <div>
+                            <mat-radio-button (change)="selectRadioGrp(institute.instituteId, instituteLevel.admissionConfId, subGrp.subjectGroupId, sgIndex)" value="{{subGrp.subjectGroupId}}" [checked]="subGrp.isSelected" class="wrap-chek-label p-1">
+                              {{ subGrp.subjectGroupName }} 
+                            </mat-radio-button>
+                            <span *ngIf="instituteLevel.showSubjectGroups && (!instituteLevel.isHideSubjectBtn)" class="subject-info" >
+                              <a class="dwn-link" (click)="onOpenSubjectInfo(subGrp)"> ( Subjects! )</a>
+                            </span>
+                            <span *ngIf="subGrp.showSubjectInfo" class="subject-info" >
+                              <a class="dwn-link" (click)="onOpenSubjectInfo(subGrp)"> ( Subjects! )</a>
+                            </span>
+                          </div>
+                        </mat-radio-group>
+                      </div>
+
+                      <div *ngIf="!instituteLevel.showSubjectsInRadio" style="margin-top:5px;" >
+
+                        <div *ngFor="let subGrp of instituteLevel.subjectGroups; let sgIndex = index" >
+                          <mat-checkbox (change)="selectGrp(institute.instituteId, instituteLevel.admissionConfId, sgIndex, $event.checked)" [checked]="subGrp.isSelected" class="chkbx-grp-course wrap-chek-label p-1" >
+                            {{ subGrp.subjectGroupName }}
+                          </mat-checkbox>
+                          <span  class="chkbx-subj-info">
+                            <a class="dwn-link" (click)="onOpenSubjectInfo(subGrp)"> ( Subjects! ) </a>
+                          </span>
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <div *ngIf="instituteLevel.showDocumentUpload && instituteLevel.hasUploadedDoc == false && instituteLevel.docBrowsed == false" class="marg-btm-10">
+                      <button (click)="docToUploadFileInput.click()" class="mat-small-button" mat-raised-button type="button">{{instituteLevel.documentUploadObj.label}}</button>
+                      <input type="file" [hidden]="true" (change)="onEduDocReadFile($event, institute.instituteId, instituteLevel.admissionConfId)" #docToUploadFileInput accept=".pdf, .png, .jpg, .jpeg">
+                      <div class="custom-hint" style="margin-top: 5px; margin-left: 5px;"> {{instituteLevel.documentUploadObj.note}} </div>
+                      <div *ngIf="instituteLevel.docError == true" class="mat-err upload-err">{{allMsgs.REQUIRED_FIELD}}</div>
+                    </div>
+                    <div *ngIf="instituteLevel.docBrowsed == true" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px" class="marg-btm-10">
+                      <div fxFlex="100">
+                        <span class="file-name">{{instituteLevel.docToUpload}}</span>
+                        <button type="button" (click)="removeEduDocFile(institute.instituteId, instituteLevel.admissionConfId)" color="warn" mat-raised-button class="mat-small-button">Remove</button>
+                      </div>
+                    </div>
+                    <div *ngIf="instituteLevel.docUploading == true" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px" class="marg-top-10 marg-btm-10">
+                      <mat-progress-bar [value]="instituteLevel.docUploadPercent"></mat-progress-bar>
+                    </div>
+                    <div *ngIf="instituteLevel.showDocumentUpload && instituteLevel.hasUploadedDoc == true &&instituteLevel.docBrowsed == false" class="marg-btm-10">
+                      <a class="dwn-link file-name" (click)="viewDoc(instituteLevel.documentUrl)">{{instituteLevel.documentUploadObj.uploadedDocLabel}}</a>
+                      <span (click)="removeUploadedEduDocFile(institute.instituteId, instituteLevel.admissionConfId)" class="actn-icons material-icons"> highlight_off </span>
+                    </div>
+                    <div *ngIf="instituteLevel.showDocumentUpload && instituteLevel.showDocResetBtn == true" class="marg-btm-10">
+                      <a (click)="onResetEduDocFile(institute.instituteId, instituteLevel.admissionConfId)" class="dwn-link doc-reset">{{instituteLevel.documentUploadObj.docResetLabel}}</a>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="panelMode == 'course-selection'" class="flex-p" >
+            <mat-divider></mat-divider>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="panelMode == 'course-selection'" class="py-1">
+      <button *ngIf="optPayment" mat-raised-button color="primary" type="submit">Submit</button>
+      <button *ngIf="!optPayment" mat-raised-button color="primary" type="submit">Generate Form</button>
+    </div>
+  
+  </form>
+
+  <div *ngIf="fromInstituteAdmissionClosed" fxLayout="column wrap" fxLayout.gt-sm="row">
+    <div fxFlex="100" class="flex-p mb-padng-0">
+      <mat-card fxFlex="100" class="flex-p mb-padng-0">
+        <div class="admission-closed">
+          <div class="admission-closed-txt">
+            <mat-icon class="info-icon">info</mat-icon>
+            <div>{{admissionClosedMessage}}</div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+</div>

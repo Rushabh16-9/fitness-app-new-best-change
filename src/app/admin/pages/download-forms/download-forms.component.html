@@ -1,0 +1,137 @@
+<div fxLayout="column wrap" fxLayout.gt-sm="row" class="download-forms">
+  <div fxFlex="100" class="flex-p mb-padng-0">
+    <mat-card class="p-0 pad-btm-10 mb-padng-btm-0 mb-marg-btm-10">
+      <mat-card-content class="p-">
+
+        <div *ngIf="!showEmptyBox" fxFlex="100" class="fees-container flex-p mb-padng-0">
+     
+          <div class="search-field-blk" fxLayout="row wrap">
+            <mat-form-field class="flex-p" fxFlex.gt-sm="50" fxFlex.sm="50">
+              <input (keyup)='onInputSearch($event)' placeholder="Search" matInput >
+            </mat-form-field>
+          </div>
+
+          <ngx-datatable
+            #pageTable
+            class='material expandable ngx-datatable-custom'
+            [columnMode]="'force'"
+            [headerHeight]="50"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [scrollbarV]="false"
+            [limit]="pagination.limit"
+            [rows]="tableData">
+            <ngx-datatable-row-detail [rowHeight]="'auto'" #myDetailRow>
+              <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div class="mb-displ" style="width: 100%; padding: 14px;">
+                    <div>
+                      SUBMITTED DATE: {{row.paymentDate}}
+                    </div>
+                  </div>
+                  <div *ngIf="formType == 'atkt' || formType == 'exam'" fxFlex="100">
+                    <div fxLayout="column" fxFlex.gt-md="50" fxFlex.md="50" class="flex-p mb-padng-0 pay-details-blk mb-flex-auto">
+                      <mat-card class="p-0 mb-padng-btm-0">
+                        <div class="flex-p">
+                          <div>
+                            <span class="details-sec">
+                              <span class="details-title">Institute:</span> {{row.instituteName}}
+                            </span>
+                          </div>
+                          <div>
+                            <span class="details-sec">
+                              <span class="details-title">Course:</span> {{row.courseName}}
+                            </span>
+                          </div>
+                          <div>
+                            <span class="details-sec">
+                              <span class="details-title">Form:</span>
+                              <a (click)="viewForm(row.formUrl)" class="dwn-link">View!</a>
+                            </span>
+                          </div>
+                        </div>
+                      </mat-card>
+                    </div>
+                  </div>
+                  <div *ngIf="formType == '' || formType == 'preReg'" fxFlex="100">
+                    <div *ngFor="let form of row.forms;" fxLayout="column" fxFlex.gt-md="33.3" fxFlex.md="50" class="mb-marg-btm-10 flex-p mb-padng-0 pay-details-blk mb-flex-auto">
+                      <mat-card class="p-0 mb-padng-btm-0">
+                        <div class="flex-p">
+                          <div>
+                            <span class="details-sec">
+                              <span class="details-title">Institute:</span> {{form.instituteName}}
+                            </span>
+                          </div>
+                          <div>
+                            <span class="details-sec">
+                              <span class="details-title">Course:</span> {{form.courseName}}
+                            </span>
+                          </div>
+                          <div *ngIf="form.showDownloadLink">
+                            <span class="details-sec">
+                              <span class="details-title">Form:</span>
+                              <a (click)="viewForm(form.formUrl)" class="dwn-link" >View!</a>
+                            </span>
+                          </div>
+                        </div>
+                      </mat-card>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ngx-datatable-row-detail>
+        
+            <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+              <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                <a (click)="toggleExpandRow(row)" href="javascript:void(0)" [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded" title="Expand/Collapse Row" ></a>
+              </ng-template>
+            </ngx-datatable-column>
+        
+            <ngx-datatable-column class="mb-width-100" [sortable]="false" [resizeable]="false" name="applicantName">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <span>Applicant Name</span>
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                <span>
+                  APPLICANT NAME: {{value}}
+                </span>
+              </ng-template>
+            </ngx-datatable-column>
+        
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="paymentDate">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <span>Submitted Date</span>
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                <span>
+                  SUBMITTED DATE: {{value}}
+                </span>
+              </ng-template>
+            </ngx-datatable-column>
+          
+            <ngx-datatable-footer>
+              <ng-template ngx-datatable-footer-template let-rowCount="rowCount" let-pageSize="pageSize" let-selectedCount="selectedCount" let-curPage="curPage" let-offset="offset">
+                <div class="ngx-rcds-per-page-div" *ngIf="rowCount > 0" >
+                  <span class="ngx-ftr-cnt-inf">
+                    Total records: {{rowCount}}
+                  </span>
+                </div>
+                <datatable-pager class="ngx-pagint-blk" [pagerLeftArrowIcon]="'datatable-icon-left'" [pagerRightArrowIcon]="'datatable-icon-right'" [pagerPreviousIcon]="'datatable-icon-prev'" [pagerNextIcon]="'datatable-icon-skip'" [page]="curPage" [size]="pageSize" [count]="rowCount" [hidden]="!((rowCount / pageSize) > 1)" (change)="pageTable.onFooterPage($event)">
+                </datatable-pager>
+              </ng-template>
+            </ngx-datatable-footer>
+
+          </ngx-datatable>
+        </div>
+
+        <div *ngIf="showEmptyBox" fxLayout="row wrap" fxFlex="100" class="flex-p mb-padng-0">
+          <div class="not-found-blk">
+            <div>
+              {{showEmptyBoxTxt}}
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

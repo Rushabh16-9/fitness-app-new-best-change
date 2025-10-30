@@ -1,0 +1,62 @@
+/**************** fixed width with no horizontal scroll Start ************************/
+.schedule-interview .datatable-row-center, .datatable-body-row {
+  width: 100% !important;
+}
+.schedule-interview .datatable-header {
+  width: 100% !important;
+}
+.schedule-interview .datatable-row-group .datatable-body-cell,
+.schedule-interview .datatable-header .datatable-header-cell {
+  width: inherit;
+}
+.schedule-interview .ngx-datatable.scroll-horz .datatable-body {
+  overflow-x: hidden !important;
+}
+.schedule-interview .datatable-scroll {
+  width: 100% !important;
+}
+.schedule-interview .datatable-header-inner, .datatable-row-center {
+  width: 100% !important;
+}
+/**************** fixed width with no horizontal scroll End ************************/
+
+.schedule-interview .note-msg {
+  padding: 10px;
+  font-style: italic;
+  color: red;
+  font-weight: 400;
+  font-size: 13px;
+  text-align: right;
+}
+
+.schedule-interview .datatable-row-group .datatable-body-cell:nth-child(1),
+.schedule-interview .datatable-header .datatable-header-cell:nth-child(1) {
+  display: none;
+}
+
+@media only screen and (max-width: 768px) {
+
+  .schedule-interview .datatable-row-group .datatable-body-cell:nth-child(1),
+  .schedule-interview .datatable-header .datatable-header-cell:nth-child(1) {
+    display: initial;
+  }
+  .schedule-interview .datatable-row-group .datatable-body-cell:nth-child(2),
+  .schedule-interview .datatable-header .datatable-header-cell:nth-child(2) {
+    width: 100% !important;
+  }
+  .schedule-interview .datatable-header .datatable-header-cell:nth-child(3),
+  .schedule-interview .datatable-header .datatable-header-cell:nth-child(4),
+  .schedule-interview .datatable-header .datatable-header-cell:nth-child(5),
+  .schedule-interview .datatable-header .datatable-header-cell:nth-child(6),
+  .schedule-interview .datatable-row-group .datatable-body-cell:nth-child(3), 
+  .schedule-interview .datatable-row-group .datatable-body-cell:nth-child(4),
+  .schedule-interview .datatable-row-group .datatable-body-cell:nth-child(5),
+  .schedule-interview .datatable-row-group .datatable-body-cell:nth-child(6) {
+    display: none;
+  }
+
+  .schedule-interview .note-msg {
+    text-align: left;
+  }
+
+}

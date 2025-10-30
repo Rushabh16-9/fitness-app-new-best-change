@@ -1,0 +1,118 @@
+.shared-course-selection .subjct-grp-txt {
+    font-weight: 550;
+    margin-top: 10px;
+    margin-left: 5px;    
+}
+.shared-course-selection .course-error {
+    font-size: 12px;
+    color: #f44336;
+}
+
+.shared-course-selection .file-name {
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-top: 8px;
+    font-size: 13px; 
+}
+.shared-course-selection .doc-reset {
+    font-size: 12px; 
+}
+.shared-course-selection .upload-err {
+    margin-top: 0px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+}
+
+.shared-course-selection .subject-info {
+    margin-left: 6px; 
+    margin-top: -2px;
+    cursor: pointer;
+}
+.shared-course-selection .chkbx-grp-course {
+    /*font-size: 12px;*/
+    /*margin-right: 10px; */
+    position: relative;
+}
+.shared-course-selection .chkbx-subj-info {
+    /*margin-left: -6px; */
+    cursor: pointer;
+    /*position: absolute;*/
+}
+.shared-course-selection .info-icon {
+    font-size: 30px;
+    margin-right: 10px;
+}
+.shared-course-selection .admission-closed {
+    text-align: center;
+    padding: 30px 0 30px 0;
+}
+.shared-course-selection .admission-closed-txt {
+    margin-top: 24px;
+    font-size: 18px;
+}
+.shared-course-selection .course-appl-no-field {
+    display: block;
+}
+.shared-course-selection .overlay-on-card {
+	position: relative;
+}
+.shared-course-selection .overlay-on-card:after {
+	content: '';
+	position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(204, 204, 204, 0.5);    
+    z-index: 3 !important;
+    transition: 0.5s;
+}
+.shared-course-selection .overlay-on-card-after:after {
+	display: none;
+}
+.shared-course-selection .on-overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 28px;
+    color: white;
+    transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    z-index: 10;
+}
+.shared-course-selection .on-overlay-text-after {
+	display: none;
+}
+.shared-course-selection .college-name {
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.shared-course-selection .selected-green {
+    font-weight: bold;
+    color: #00897b;
+    vertical-align: middle;
+}
+.shared-course-selection .apply-from {
+    padding-left: 8px; 
+    margin-bottom:10px;
+    padding-top: 10px;
+}
+.shared-course-selection .odd {
+    background-color: #eceff3;
+}
+.shared-course-selection .even {
+    background-color: #f2f9ff;
+}
+.shared-course-selection .course-name {
+    font-weight: 500;
+}
+.shared-course-selection .course-bunch {
+    margin: 10px 0px;
+}
+.shared-course-selection .lang-grp-div {
+    position: relative; 
+}
+
+@media only screen and (max-width: 768px) {
+
+}

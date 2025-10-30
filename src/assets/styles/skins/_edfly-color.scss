@@ -1,0 +1,80 @@
+// create colors from site: http://mcg.mbitson.com/#!?mcgpale=%2314bdee&themename=14bdee
+@use '@angular/material' as mat;
+
+$edfly-primary: (
+    50 : #ecfbff,
+    100 : #cff5ff,
+    200 : #afefff,
+    300 : #8ee9ff,
+    400 : #76e4ff,
+    500 : #5edfff,
+    600 : #56dbff,
+    700 : #4cd7ff,
+    800 : #42d2ff,
+    900 : #31caff,
+    A100 : #ffffff,
+    A200 : #ffffff,
+    A400 : #dcf6ff,
+    A700 : #c3efff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #000000,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$edfly-accent: (
+    50 : #e4e4e4,
+    100 : #bababa,
+    200 : #8d8d8d,
+    300 : #5f5f5f,
+    400 : #3c3c3c,
+    500 : #1a1a1a,
+    600 : #171717,
+    700 : #131313,
+    800 : #0f0f0f,
+    900 : #080808,
+    A100 : #ff5050,
+    A200 : #ff1d1d,
+    A400 : #e90000,
+    A700 : #cf0000,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$edfly-color-primary: mat.define-palette($edfly-primary, 500);
+$edfly-color-accent:  mat.define-palette($edfly-accent, 500);
+$edfly-color-warn: mat.define-palette(mat.$red-palette);
+
+$edfly-color-theme: mat.define-light-theme((
+  color: (
+    primary: $edfly-color-primary,
+    accent: $edfly-color-accent,
+    warn: $edfly-color-warn,
+  )
+));

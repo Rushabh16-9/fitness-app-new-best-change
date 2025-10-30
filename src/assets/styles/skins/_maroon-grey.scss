@@ -1,0 +1,47 @@
+// create brand colors from site: http://mcg.mbitson.com/#!?mcgpale=%2314bdee&themename=14bdee
+@use '@angular/material' as mat;
+
+$maroon-grey: (
+    50 : #f3e4e7,
+    100 : #e2bbc2,
+    200 : #cf8e99,
+    300 : #bc6070,
+    400 : #ad3e52,
+    500 : #9f1c33,
+    600 : #97192e,
+    700 : #8d1427,
+    800 : #831120,
+    900 : #720914,
+    A100 : #ffa3aa,
+    A200 : #ff707b,
+    A400 : #ff3d4b,
+    A700 : #ff2434,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$maroon-grey-primary: mat.define-palette($maroon-grey, 500);
+$maroon-grey-accent:  mat.define-palette($maroon-grey, 500);
+$maroon-grey-warn: mat.define-palette(mat.$red-palette);
+
+$maroon-grey-theme: mat.define-light-theme((
+  color: (
+    primary: $maroon-grey-primary,
+    accent: $maroon-grey-accent,
+    warn: $maroon-grey-warn,
+  )
+));

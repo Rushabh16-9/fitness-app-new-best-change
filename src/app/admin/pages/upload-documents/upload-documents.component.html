@@ -1,0 +1,55 @@
+<div fxLayout="column" class="upload-documents flex-p mb-padng-0">
+
+  <mat-card class="mb-padng-0">
+
+    <div *ngIf="headerImage" style="text-align: center;">
+      <img style="max-width: 100%;" src="{{headerImage}}">
+    </div>
+    <mat-card-header *ngIf="!fromInstitute" fxLayoutAlign="left">
+      <mat-card-subtitle><h2>Upload Documents</h2></mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    
+    <mat-card-content style="margin-top: 10px;">
+
+      <form [formGroup]="documentsForm" (ngSubmit)="onDocumentsFormSubmit(documentsForm.value)" autocomplete="off">
+        <table class="p-0 custom-table education-info">
+          <thead>
+            <tr>
+              <th>Document Type</th>
+              <th>Upload</th>
+              <th>View</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let itemrow of allDocuments; let i=index">
+              <td data-label="Document Type:">
+                {{itemrow.get('docTitle').value}} <samp *ngIf="itemrow.get('required').value" class="mandatory">*</samp>
+                <div *ngIf="itemrow.get('note').value" [innerHTML]="itemrow.get('note').value" class="info"></div>
+                <div class="error-msg" *ngIf="itemrow.get('docError').value">{{allMsgs.REQUIRED_DOC}}</div>
+              </td>
+              <td data-label="Upload:">
+                <input style="margin-top: 5px;" type="file" [hidden]="false" (change)="docBunchUrl($event, i)" accept=".png, .jpg, .jpeg, .pdf">
+              </td>
+              <td data-label="View:">
+                <div *ngIf="!itemrow.get('uploadedFile').value">
+                  -
+                </div>
+                <span *ngIf="itemrow.get('uploadedFile').value">
+                  <a class="dwn-link" (click)="viewDoc(itemrow.get('uploadedFile').value)">View!</a>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      
+        <div class="flex-p mb-padng-0" >
+          <mat-divider></mat-divider>
+        </div>
+        <div class="py-1">
+          <button mat-raised-button color="primary" type="submit">Submit</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

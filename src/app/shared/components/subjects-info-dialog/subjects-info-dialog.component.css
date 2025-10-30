@@ -1,0 +1,19 @@
+.subjects-info-dialog .mat-dialog-title {
+	/*margin: 0;*/
+}
+
+.subjects-info-dialog .close-icon{
+    float: right;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 768px) {
+	.mat-dialog-content {
+		padding: 10px !important;
+	}
+	.mat-dialog-container
+
+	.subjects-info-dialog .close-icon {
+		margin-top: -60px;
+	}
+}

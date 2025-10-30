@@ -1,0 +1,19 @@
+<div class="flex-p mb-padng-0 atkt-form">
+  <mat-card class="mb-padng-0">
+  <div *ngIf="headerImage" class="mb-padng-10" style="text-align: center;">
+    <img style="max-width: 100%;" src="{{headerImage}}">
+  </div>
+  <mat-card-header *ngIf="!fromInstitute" fxLayoutAlign="left">
+  <mat-card-subtitle><h2>ATKT Form</h2></mat-card-subtitle>
+  </mat-card-header>
+  <div class="note" *ngIf="showEnrollmentNumber">
+    University Enrollment number will be required to fill this form.
+    <a href="http://mumoa.digitaluniversity.ac" target="_blank">Click here</a>
+    to Enroll with the University.
+  </div>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+  <shared-atkt-form [panelMode]="panelMode" [formDetails]="formDetails" [sharedDialogRef]="dialogRef"></shared-atkt-form>
+  </mat-card-content>
+  </mat-card>
+</div>

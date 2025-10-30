@@ -1,0 +1,9 @@
+.warning-color {
+	background-color: #e21616 !important;
+}
+
+@media only screen and (max-width: 768px) {
+	.server-error {
+		margin-top: 80px !important;
+	}
+}

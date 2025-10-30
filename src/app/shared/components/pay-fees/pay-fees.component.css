@@ -1,0 +1,93 @@
+.pay-fees .add-remove {
+	cursor: pointer;
+	font-size: 18px;
+	margin: 5px;
+}
+.pay-fees .bg-grey {
+    background: #8c8c8c;
+    color: #fff;
+}
+.pay-fees .select-box {
+	position: sticky !important;
+	top: 0;
+	z-index: 4;
+	line-height: 26px;
+    animation: iterateRe 1s infinite;	
+}
+.pay-fees .select-all-txt {
+	color: #757575;
+	margin-right: 10px;
+	font-size:15px;
+	font-weight: 500;
+}
+.pay-fees .subtotal-txt {
+	margin-right: 10px;
+	font-size:18px;
+	vertical-align: middle;
+	line-height: 30px;	
+}
+.pay-fees .insti-name {
+    font-size: 18px;
+    font-weight: 500;	
+}
+.pay-fees .fees-name {
+    font-size: 16px;
+	font-weight: 400;
+}
+.pay-fees .fee-cards .mat-checkbox-inner-container {
+	margin-top: 3px !important;
+}
+.pay-fees .fee-cards .mat-checkbox-label {
+	white-space: normal !important;
+}
+.pay-fees .adjust-td {
+	padding: 0px 10px !important;
+}
+
+.pay-fees .pay-fee-summary .mat-form-field-infix {
+	width: 100% !important;
+}
+
+.pay-fees .pay-fee-summary thead tr:nth-child(1) th:nth-child(1) {
+	width: 42px;
+}
+.pay-fees .pay-fee-summary thead tr:nth-child(1) th:nth-child(3) {
+	width: 65px;
+}
+/*.pay-fees .pay-fee-summary th {
+    color: #3e3e3e !important;
+}
+.pay-fees .pay-fee-summary th, .pay-fee-summary td {
+	padding: 8px 10px;
+}
+.pay-fees .pay-fee-summary {
+	box-shadow:none !important;
+	-webkit-box-shadow:none !important;
+}
+.pay-fees .pay-fee-summary tr:nth-of-type(odd) {
+	background: none !important; 
+}
+.pay-fees .pay-fee-summary tr:hover td {
+	background: none !important; 
+}*/
+
+.pay-fees .selected-green {
+	font-weight: bold;
+	color: #00897b;
+}
+
+@media only screen and (max-width: 768px) {
+	/*.pay-fees .pay-fee-summary td, .pay-fee-summary th {
+		padding: 10px 10px 10px 50%;
+	}
+    */
+    .pay-fees .pay-fee-summary .mb-adjust-form-field {
+        margin: -15px 0px -4px 0px;
+    }
+    .pay-fees .pay-fee-summary td.mb-adjust-td {
+        padding: 10px 10px 10px 50% !important;
+    }
+	.pay-fees .subtotal-blk {
+		margin-top: 5px;
+	}
+}

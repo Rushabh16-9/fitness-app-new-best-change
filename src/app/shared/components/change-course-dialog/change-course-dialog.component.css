@@ -1,0 +1,7 @@
+.change-course-dialog .close-icon{
+    float: right;
+    cursor: pointer;
+}
+@media only screen and (max-width: 768px) {
+	
+}

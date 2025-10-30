@@ -1,0 +1,39 @@
+.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(1),
+.bankAccounts .datatable-header .datatable-header-cell:nth-child(1) {
+	display: none;
+}
+
+@media only screen and (max-width: 768px) {
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(1),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(1) {
+		display: initial;
+	}
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(3),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(3) {
+		width: 100% !important;
+	}
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(2),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(4),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(5),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(6),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(7),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(8),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(9),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(10),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(11),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(12),
+	.bankAccounts .datatable-header .datatable-header-cell:nth-child(13),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(2),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(4),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(5),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(6),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(7),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(8),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(9),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(10),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(11),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(12),
+	.bankAccounts .datatable-row-group .datatable-body-cell:nth-child(13) {
+		display: none;
+	}
+}

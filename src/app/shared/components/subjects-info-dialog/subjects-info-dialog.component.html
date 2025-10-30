@@ -1,0 +1,58 @@
+<div fxLayout="column" class="subjects-info-dialog">
+	<div class="flex-p mb-padng-0">
+
+		<div mat-dialog-title class="modal-header">
+			<b>{{modalTitle}}</b>
+			<mat-icon (click)="onCloseClick()" class="close-icon">close</mat-icon>
+		</div>
+
+		<mat-dialog-content>
+
+          <!-- <div class="resp-table"> -->
+
+            <!-- <div class="resp-table-heading">
+              	{{modalTitle}}
+            </div> -->
+
+	        <div class="education-info-div">
+	          <table border="1" *ngFor="let subj of subjectList;" class="p-0 custom-table education-info" style="border: 1px solid #ccc;">
+	            <thead>
+	             	<!-- 
+	              	<tr style="position: inherit;">
+	              	</tr> 
+	          		-->
+	              	<tr style="position: inherit;">
+	                	<th style="font-size: 16px; padding: 8px 10px; text-align: center;" colspan="2">{{subj.termName}}:</th>
+	              	</tr> 
+	              	<tr>
+	                	<th>Subject Code</th>
+	                	<th>Subject Name</th>
+	              	</tr> 
+	            </thead>
+	            <tbody>
+	              <tr *ngFor="let subject of subj.subjects;" >
+	              	<!-- <td data-label="Subject Code" class="mb-displ" style="border-bottom:none; padding: 5px;">
+	              		{{ subject.subjectCode }}
+	              	</td>
+	              	<td data-label="Subject Name" class="mb-displ" style="border-bottom:none; padding: 5px;">
+	              		{{ subject.subjectName }}
+	              	</td> -->
+	              	<td data-label="Subject Code:">
+	                	{{ subject.subjectCode }}
+	                </td>
+	              	<td data-label="Subject Name:">
+	                	{{ subject.subjectName }}
+	                </td>
+	              </tr>
+	            </tbody>
+	          </table>
+	        </div>
+	      <!-- </div> -->
+
+			<!-- <div style="margin: 20px 0px 10px;">
+				<button mat-raised-button [mat-dialog-close]="true" type="button">Close</button>
+			</div> -->
+
+		</mat-dialog-content>
+	</div>
+</div>

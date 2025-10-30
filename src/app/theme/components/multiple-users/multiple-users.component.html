@@ -1,0 +1,26 @@
+<button mat-icon-button [matMenuTriggerFor]="userMenu" #userMenuTrigger="matMenuTrigger">
+    <mat-icon>account_box</mat-icon>
+</button>
+
+<mat-menu #userMenu="matMenu" [overlapTrigger]="false" class="toolbar-dropdown-menu multiple-users">
+  
+  <mat-card class="content" perfectScrollbar>
+  
+    <div fxLayout="column" fxLayoutAlign="none">
+     <div *ngFor="let user of multiUsers" class="w-100">
+        <button (click)="onChangeUser(user)" [ngClass]="{'selected-user': selectedMultiUserId == user.id }" mat-button class="w-100" >
+          <img src="{{ ( user.pic || defaultImage ) }}" width="50">
+          <div fxLayout="column" fxLayoutAlign="none" class="w-100">
+            <div fxLayout="row" fxLayoutAlign="space-between start">
+              <span class="name">{{user.name}}</span>
+            </div>
+            <span class="text muted-text">{{user.text}}</span>
+          </div>
+        </button>
+     </div>
+
+    </div>
+
+  </mat-card>
+
+</mat-menu>

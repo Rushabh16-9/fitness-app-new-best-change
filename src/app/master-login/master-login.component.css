@@ -1,0 +1,23 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+mat-card {
+  text-align: center;
+}
+.master-login {
+	background-image: url(/assets/images/admit-bg-1.jpg);
+    height: 100%; 
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.login-title {
+	font-size: 18px !important;
+	color: #4256B4 !important;
+	border-bottom: 1px solid #999999;
+	padding-bottom: 5px;	
+}
+.margin-top-20 {
+	margin-top: 20px;
+}

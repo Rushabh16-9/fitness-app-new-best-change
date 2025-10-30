@@ -1,0 +1,53 @@
+<mat-sidenav-container>
+    <div fxLayout="row" fxLayoutAlign="center center" class="h-100">
+        <div fxFlex="80" fxFlex.gt-sm="60" fxFlex.sm="60" style="height: 100%;">
+            <mat-card class="p-0 mat-elevation-z24 box" style="height: 100%;">
+                <div fxLayout="column" fxLayoutAlign="center center" class="box-header">
+                    <div *ngIf="showSuccessBox" style="text-align: center;">
+                        <mat-icon class="success-icon">check_circle</mat-icon>
+                        <h1 class="success">Payment Successfull</h1>
+                    </div>
+                    <div *ngIf="showErrorBox" style="text-align: center;">
+                        <mat-icon class="error-icon">error_outline</mat-icon>
+                        <h1 class="error">Transaction Failed</h1>
+                    </div>
+                    <div *ngIf="showPendingBox" style="text-align: center;">
+                        <mat-icon class="pending-icon">error_outline</mat-icon>
+                        <h1 class="pending">Transaction Pending</h1>
+                    </div>
+                </div>
+                <mat-card-content fxLayout="column" fxLayoutAlign="center center" class="box-content-inner ">
+                    <div *ngIf="showSuccessBox" style="text-align: center;">
+                        <p class="box-text">Transaction successfull. Your transaction details are given below:</p>
+                        <p class="box-text" *ngIf="transactionRefNo">Transaction Ref No.: {{transactionRefNo}}</p>
+                        <p class="box-text" *ngIf="bankReferenceNo">Bank Ref No.: {{bankReferenceNo}}</p>
+                        <p class="box-text" *ngIf="paymentTransactionNo">Payment Transaction Id: {{paymentTransactionNo}}</p>
+                        <p class="box-text" *ngIf="transactionAmount">Transaction Amount: {{transactionAmount}}</p>
+                        <p class="box-text">Transaction Status: SUCCESS</p>
+                        <a *ngIf="showDownloadReceipt" (click)="downloadReceipt()" mat-raised-button color="primary" >Download Receipt</a>
+                        <button type="button" *ngIf="!showDownloadReceipt" mat-raised-button>
+                            <mat-spinner style="margin-top: 10px;" diameter="20"></mat-spinner>
+                            <div style="margin-left: 30px; margin-top: -20px;">Generating Receipt</div>
+                        </button>
+                        <div *ngIf="showReceiptErrorBox" style="text-align: center;">
+                            <p class="box-text">{{errorMsg}}</p>
+                        </div>
+                    </div>
+                    <div *ngIf="showErrorBox" style="text-align: center;">
+                        <p class="box-text">The transaction has failed due to one of the following reasons: </p>
+                        <p class="box-text">{{errorMsg}}</p>
+                    </div>
+                     <div *ngIf="showPendingBox" style="text-align: center;">
+                        <p class="box-text">The transaction has been in pending state. Kindly wait for 30 minutes. Do not try to initiate another payment if your money is deducted.</p>
+                    </div>
+                    <div *ngIf="showDownloadReceipt || showErrorBox || showPendingBox" style="margin-top: 20px;">
+                        <a href="javascript:void(0);" (click)="backToHome()" class="back-link">
+                            <mat-icon class="back-arrow">keyboard_backspace</mat-icon>
+                            <div class="back-text"> Click to Proceed with the application. </div>
+                        </a>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</mat-sidenav-container>

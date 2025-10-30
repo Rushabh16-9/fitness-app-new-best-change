@@ -1,0 +1,47 @@
+<div fxLayout="column" class="slots-dialog">
+	<div class="flex-p mb-padng-0">
+		<div mat-dialog-title class="modal-header">
+			<b>{{modalTitle}}</b>
+			<mat-icon (click)="onCloseClick()" class="dlg-cls-icn">close</mat-icon>
+		</div>
+		<mat-dialog-content>
+
+			<div class="marg-top-20" fxLayout="row wrap" fxFlex="100">
+				<div *ngFor="let slot of slots;" fxLayout="column" fxFlex.gt-md="33.3" fxFlex.md="50" class="flex-p mb-flex-auto">
+					<mat-card class="p-0">
+						<div class="flex-p">
+							<!-- <div>
+								<span class="details-sec">
+									<span class="details-title">Date:</span> {{slot.dateDisplay}}
+								</span>
+							</div> -->
+							<div>
+								<span class="details-sec">
+									<span class="details-title">Time:</span> {{slot.timeDisplay}}
+								</span>
+							</div>
+							<div>
+								<span class="details-sec">
+									<span class="details-title">Available Slots:</span> {{slot.availableSlots}}
+								</span>
+							</div>
+							<div *ngIf="slot.availableSlots > 0">
+								<span class="details-sec">
+									<a (click)="onBookSlot(slot)" class="dwn-link">Book!</a>
+								</span>
+							</div>
+						</div>
+					</mat-card>
+				</div>
+			</div>
+
+		</mat-dialog-content>
+
+		<!-- <mat-dialog-actions>
+			<div>
+				<button mat-raised-button [mat-dialog-close]="true" type="button">Cancel</button>
+				<button (click)="onSave($event)" mat-raised-button type="button" [disabled]="noData" color="primary">Save</button>
+			</div>
+		</mat-dialog-actions> -->
+	</div>
+</div>

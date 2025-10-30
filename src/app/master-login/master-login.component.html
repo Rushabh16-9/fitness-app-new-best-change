@@ -1,0 +1,49 @@
+<div fxLayout="row wrap" fxLayoutAlign="center" class="master-login">
+  <div fxFlex="100" fxFlex.gt-sm="30" fxFlex.sm="30" class="flex-p">
+    <mat-card>
+      <mat-card-content>
+        <div>
+          <div>
+            <div>
+              <a href="{{DOMAIN_NAME}}">
+                <h2>
+                  <span>
+                    <img src="assets/images/logo/logo.png" alt="logo">
+                  </span>
+                </h2>
+              </a>
+              <div class="login-title">
+                <b *ngIf="showLoginForm" >
+                  Master Login
+                </b>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="showLoginForm" class="margin-top-20">
+          <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit(loginForm.value)" autocomplete="off" fxLayoutWrap fxLayout="row" fxLayoutAlign="center">
+            <mat-form-field fxFlex="100">
+              <span matPrefix>+91 &nbsp;</span>
+              <input matInput placeholder="Mobile Number" formControlName="phone" (keypress)="globalFunctions.onlyNumberKey($event)" (keydown.space)="$event.preventDefault()" maxlength="10" pattern="[0-9]+" required>
+              <mat-error *ngIf="loginForm.controls.phone.errors?.required">{{allMsgs.REQUIRED_MOBILE_NO}}</mat-error>
+              <mat-error *ngIf="loginForm.controls.phone.hasError('pattern')">{{allMsgs.WRONG_MOBILE_NO}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="100">
+              <input matInput placeholder="Password" formControlName="password" [type]="hide ? 'password' : 'text'" (keydown.space)="$event.preventDefault()" required>
+              <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+              <mat-error *ngIf="loginForm.controls.password.errors?.required">{{allMsgs.REQUIRED_PASS}}</mat-error>
+              <mat-error *ngIf="loginForm.controls.password.hasError('minlength')">{{allMsgs.WRONG_PASS}}</mat-error>
+            </mat-form-field>
+
+            <div fxFlex="100" class="margin-top-20">
+              <span class="flex-p">
+                <button fxFlex="100" type="submit" mat-raised-button color="primary" class="margin-top-20" style="margin: 0 auto;" >Sign in</button>
+              </span>
+            </div>
+          </form>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

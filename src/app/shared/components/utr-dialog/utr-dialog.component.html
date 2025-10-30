@@ -1,0 +1,33 @@
+<div fxLayout="column" class="utr-dialog">
+	<div class="flex-p mb-padng-0">
+		<div mat-dialog-title class="modal-header">
+			<b>{{modalTitle}}</b>
+			<mat-icon (click)="onCloseClick()" class="dlg-cls-icn">close</mat-icon>			
+		</div>
+		<mat-dialog-content>
+			<form [formGroup]="utrForm" autocomplete="off">
+				<div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+					<mat-form-field fxFlex>
+						<input formControlName="utrNo" placeholder="UTR Number" maxlength="1024" matInput required>
+						<mat-error *ngIf="utrForm.controls.utrNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+					</mat-form-field>
+				</div>
+				<div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px" class="marg-top-10">
+					<mat-form-field fxFlex>
+						<input formControlName="transferDate" placeholder="Transfer Date" [max]="maxDate" [matDatepicker]="picker3" (focus)="_openCalendar(picker3)" (click)="_openCalendar(picker3)" #elementToFocus matInput readonly required >
+						<mat-datepicker #picker3="matDatepicker" (closed)="_closeCalendar($event)"></mat-datepicker>
+						<mat-datepicker-toggle matSuffix [for]="picker3" ></mat-datepicker-toggle>
+						<mat-datepicker #picker3 disabled="false"></mat-datepicker>
+						<mat-error *ngIf="utrForm.controls.transferDate.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+					</mat-form-field>
+				</div>
+			</form>
+		</mat-dialog-content>
+		<mat-dialog-actions class="marg-top-20">
+			<div fxLayout="row" fxFlex="100">
+				<button [mat-dialog-close]="true" mat-raised-button >Cancel</button>
+				<button (click)="onUtrFormSubmit()" color="primary" mat-raised-button >Save</button>
+			</div>
+		</mat-dialog-actions>
+	</div>
+</div>

@@ -1,0 +1,25 @@
+<div class="flex-p mb-padng-0 admission-form">
+  <mat-card class="mb-padng-0">
+    <div *ngIf="showHeaderImage" class="mb-padng-10" style="text-align: center;">
+      <img class="header-image" src="{{headerImage}}">
+    </div>
+    <mat-card-header *ngIf="!fromInstitute" fxLayoutAlign="left">
+      <mat-card-subtitle><h2>Admission Form</h2></mat-card-subtitle>
+    </mat-card-header>
+    <div class="note" *ngIf="showEnrollmentNumber">
+      University Enrollment number will be required to fill this form.
+      <a href="http://mumoa.digitaluniversity.ac" target="_blank">Click here</a>
+      to Enroll with the University.
+    </div>
+    <div class="note" *ngIf="showTopNote">
+      <div [innerHTML]="topNote"></div>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+
+      <shared-admission-form [panelMode]="panelMode" [formDetails]="formDetails" [sharedDialogRef]="dialogRef"></shared-admission-form>
+
+    </mat-card-content>
+
+  </mat-card>
+</div>

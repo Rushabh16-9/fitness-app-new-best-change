@@ -1,0 +1,16 @@
+<div fxLayout="column" class="course-selection flex-p mb-padng-0">
+  <mat-card>
+    <div *ngIf="headerImage" style="text-align: center;">
+      <img style="max-width: 100%;" src="{{headerImage}}">
+    </div>
+    <mat-card-header *ngIf="!fromInstitute" fxLayoutAlign="left">
+      <mat-card-subtitle><h2>Course Selection</h2></mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content style="margin-top: 10px;">
+
+      <shared-course-selection [panelMode]="panelMode" > </shared-course-selection>
+
+    </mat-card-content>
+  </mat-card>
+</div>

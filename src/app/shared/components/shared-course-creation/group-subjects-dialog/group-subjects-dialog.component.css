@@ -1,0 +1,27 @@
+.group-subjects-dialog .mat-dialog-content {
+    max-height: initial;
+}
+
+.group-subjects-dialog .table-container .datatable-row-group .datatable-body-cell:nth-child(1),
+.group-subjects-dialog .table-container .datatable-header .datatable-header-cell:nth-child(1) {
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+    .group-subjects-dialog .datatable-row-group .datatable-body-cell:nth-child(1),
+    .group-subjects-dialog .datatable-header .datatable-header-cell:nth-child(1) {
+        display: initial;
+    }
+    .group-subjects-dialog .datatable-row-group .datatable-body-cell:nth-child(3),
+    .group-subjects-dialog .datatable-header .datatable-header-cell:nth-child(3) {
+        width: 100% !important;
+    }
+    .group-subjects-dialog .table-container .datatable-row-group .datatable-body-cell:nth-child(1),
+    .group-subjects-dialog .table-container .datatable-header .datatable-header-cell:nth-child(1) {
+        display: initial;
+    }
+    .group-subjects-dialog .table-container .datatable-header .datatable-header-cell:nth-child(2),
+    .group-subjects-dialog .table-container .datatable-row-group .datatable-body-cell:nth-child(2) {
+        display: none;
+    }
+}

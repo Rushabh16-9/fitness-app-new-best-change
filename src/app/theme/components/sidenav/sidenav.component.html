@@ -1,0 +1,34 @@
+<mat-toolbar color="primary" [fxLayoutAlign]="(settings.menuType != 'mini') ? 'space-between center' : 'center center'" class="sidenav-header">
+    <a *ngIf="settings.menuType == 'compact' || settings.menuType == 'mini'" class="small-logo" (click)="closeSubMenus()"><img src="assets/images/logo/wt-lg-without-name.png" class="sidenav-logo" alt="logo" ></a>
+    <a *ngIf="settings.menuType == 'default'" class="logo" (click)="closeSubMenus()">
+        <img alt="logo" src="{{instLogo}}" class="sidenav-logo">
+    </a>
+</mat-toolbar>
+
+<div *ngIf="userTypeId != 5" fxLayout="column" fxLayoutAlign="center center" class="user-block transition-2" [class.show]="settings.sidenavUserBlock"> 
+    <div [fxLayout]="(settings.menuType != 'default') ? 'column' : 'row'" 
+         [fxLayoutAlign]="(settings.menuType != 'default') ? 'center center' : 'space-around center'" class="user-info-wrapper">
+        <img [src]="userImage" alt="user-image">
+        <div class="user-info">
+            <p class="name">{{fullName}}</p>
+            <p *ngIf="settings.menuType == 'default'" class="position">
+                <span *ngIf="instituteShortName">( {{instituteShortName}} ) <br> </span>
+                <span *ngIf="mobileNo">( {{mobileNo}} ) <br> </span>
+                <small class="muted-text member-since">Member since {{memberSince | date}}</small>
+            </p>
+        </div>
+    </div>
+    <div *ngIf="settings.menuType != 'mini'" fxLayout="row" fxLayoutAlign="space-around center" class="w-100 muted-text">
+        <a mat-icon-button routerLink="/profile">
+            <mat-icon>person_outline</mat-icon>
+        </a>
+        <a mat-icon-button routerLink="/logout">
+            <mat-icon>power_settings_new</mat-icon>
+        </a>
+    </div>
+</div>
+
+<perfect-scrollbar #sidenavPS class="sidenav-menu-outer" [class.user-block-show]="settings.sidenavUserBlock">   
+    <span *ngIf="!menuItems">loading....</span>
+    <app-vertical-menu [menuItems]="menuItems" [menuParentId]="0" (onClickMenuItem)="updatePS($event)"></app-vertical-menu> 
+</perfect-scrollbar>

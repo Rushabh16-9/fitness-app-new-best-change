@@ -1,0 +1,7 @@
+.info-dialog .mat-dialog-content {
+    max-height: initial;    
+}
+
+@media only screen and (max-width: 768px) {
+
+}

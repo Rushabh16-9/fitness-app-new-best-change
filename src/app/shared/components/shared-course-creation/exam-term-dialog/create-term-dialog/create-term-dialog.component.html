@@ -1,0 +1,24 @@
+<div fxLayout="column" class="create-term-dialog">
+	<div class="flex-p mb-padng-0">
+		<div mat-dialog-title class="modal-header">
+			<b>{{modalTitle}}</b>
+		</div>
+		<mat-dialog-content>
+		
+			<form [formGroup]="createTermForm" (ngSubmit)="onSave(createTermForm.value)" autocomplete="off">
+		
+				<div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+					<mat-form-field fxFlex>
+						<input matInput formControlName="termExam" placeholder="Term Exam" maxlength="100" required>
+						<mat-error *ngIf="createTermForm.controls.termExam.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div class="actions-btn-div marg-top-20 marg-btm-20">
+					<button mat-raised-button [mat-dialog-close]="true" type="button">Cancel</button>
+					<button mat-raised-button color="primary" type="submit">Save</button>
+				</div>
+			</form>
+		</mat-dialog-content>
+	</div>
+</div>

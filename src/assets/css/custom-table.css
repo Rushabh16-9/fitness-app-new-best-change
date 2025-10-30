@@ -1,0 +1,120 @@
+/* 
+Generic Styling, for Desktops/Laptops 
+*/
+table.custom-table { 
+  width: 100%; 
+  border-collapse: collapse;
+  box-shadow: none !important;
+  /*box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);*/
+  -webkit-box-shadow: none !important;
+  /*-webkit-box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);*/
+  font-size: 14px;
+  color: rgba(0,0,0,.87);
+  /*padding: 0 24px;*/
+}
+
+/* Zebra striping */
+.custom-table tr:nth-of-type(odd) { 
+	/*background: #eee; */
+	background: none; 
+}
+.custom-table th { 
+  background: #fff; 
+  color: #3e3e3e !important;
+  font-weight: bold; 
+}
+.custom-table td, .custom-table th {
+  padding: 8px 10px;
+  border-bottom: 1px solid #ccc; 
+  text-align: left; 
+}
+
+table.custom-table tr:hover td {
+	/*background: #ccc;*/
+    background: none;
+}
+
+.misc-fees .custom-fixed-header {
+	min-height: initial;
+}
+
+.custom-fixed-header {
+	max-height: 350px;
+	/*min-height: 250px;*/
+	min-height: 150px;
+	/*height: 440px;*/
+	/*overflow-y:scroll;*/
+	overflow: auto;
+}
+.custom-fixed-header thead tr:nth-child(1) th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    box-shadow: 12px 0px 16px 0px rgba(0,0,0,.3);
+}
+
+/* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 768px
+and also iPads specifically.
+*/
+@media only screen and (max-width: 768px) {
+
+	table.custom-table { 
+	  width: 99%;
+	}
+
+	/* Force table to not be like tables anymore */
+	table.custom-table, .custom-table thead, .custom-table tbody, .custom-table th, .custom-table td, .custom-table tr { 
+		display: block;
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	.custom-table thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+    .custom-table td, .custom-table th {
+        padding: 10px 10px 10px 50%;
+    }
+    .custom-table td.mb-adjust-td {
+        padding: 10px 10px 10px 50% !important;
+    }    
+	
+	.custom-table tr { border: 1px solid #ccc; }
+	.custom-table th { font-weight: bold; }
+	
+	.custom-table td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #c7c6c6; 
+		position: relative;
+		padding-left: 50%; 
+	}
+	
+	.custom-table td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		/*top: 6px;*/
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: normal;
+	}
+	
+	/*
+	Label the data
+	*/
+	.custom-table td:before { 
+		content: attr(data-label); 
+		font-weight: bold;
+	}
+
+    .custom-fixed-header {
+        max-height: none;
+        overflow-y: initial;
+    }    
+}

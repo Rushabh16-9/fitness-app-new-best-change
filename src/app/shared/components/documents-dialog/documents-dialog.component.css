@@ -1,0 +1,25 @@
+.fee-receipt th {
+    color: #3e3e3e !important;
+}
+.fee-receipt th, .fee-receipt td {
+	padding: 8px 10px;
+}
+.fee-receipt {
+	box-shadow:none !important;
+	-webkit-box-shadow:none !important;
+}
+.fee-receipt .mat-form-field-infix {
+	width: 100% !important;
+}
+.fee-receipt tr:nth-of-type(odd) {
+	background: none !important; 
+}
+.fee-receipt tr:hover td {
+	background: none !important; 
+}
+
+@media only screen and (max-width: 768px) {
+	.fee-receipt td, .fee-receipt th {
+		padding: 10px 10px 10px 50%;
+	}
+}

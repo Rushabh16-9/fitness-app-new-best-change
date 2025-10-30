@@ -1,0 +1,22 @@
+<div class="search-field-blk" fxFlex="100" fxLayout="row wrap">
+	<form #formDirective="ngForm" [formGroup]="dateRangeSearchForm" (ngSubmit)="onSearch(dateRangeSearchForm.value)" autocomplete="off" fxLayout="row wrap">
+		<mat-form-field class="flex-p" fxFlex.gt-sm="35" fxFlex.sm="50">
+			<input formControlName="fromDate" matInput [max]="maxDate" placeholder="From Date" [matDatepicker]="fromDatePicker" (focus)="_openFromDatepicker(fromDatePicker)" (click)="_openFromDatepicker(fromDatePicker)" #fromDateElementFocus readonly required >
+			<mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+			<mat-datepicker disabled="false" #fromDatePicker="matDatepicker" (closed)="_closeFromDatepicker($event)"></mat-datepicker>
+			<mat-error *ngIf="fromDate.invalid">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+		</mat-form-field>
+		<mat-form-field class="flex-p" fxFlex.gt-sm="35" fxFlex.sm="50">
+			<input formControlName="toDate" matInput [max]="maxDate" [min]="toDateMinDate" placeholder="To Date" [matDatepicker]="toDatePicker" (focus)="_openToDatepicker(toDatePicker)" (click)="_openToDatepicker(toDatePicker)" #toDateElementFocus readonly required>
+			<mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+			<mat-datepicker disabled="false" #toDatePicker="matDatepicker" (closed)="_closeToDatepicker($event)"></mat-datepicker>
+			<mat-error *ngIf="toDate.invalid">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+		</mat-form-field>
+		<div class="margin-adjust">
+			<button mat-raised-button type="submit">Search</button>
+		</div>
+		<div class="margin-adjust">
+			<a (click)="onClear(formDirective)" mat-raised-button >Clear</a>
+		</div>
+	</form>
+</div>

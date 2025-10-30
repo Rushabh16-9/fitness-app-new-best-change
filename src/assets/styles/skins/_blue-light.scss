@@ -1,0 +1,45 @@
+@use '@angular/material' as mat;
+$blue-light: (
+    50 : #e8edf6,
+    100 : #c5d2e8,
+    200 : #9eb4d9,
+    300 : #7796ca,
+    400 : #5980be,
+    500 : #3c69b3,
+    600 : #3661ac,
+    700 : #2e56a3,
+    800 : #274c9a,
+    900 : #1a3b8b,
+    A100 : #c3d2ff,
+    A200 : #90adff,
+    A400 : #5d87ff,
+    A700 : #4374ff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #ffffff,
+    )
+);
+
+$blue-light-primary: mat.define-palette($blue-light, 500);
+$blue-light-accent:  mat.define-palette($blue-light, 500);
+$blue-light-warn: mat.define-palette(mat.$red-palette);
+
+$blue-light-theme: mat.define-light-theme((
+  color: (
+    primary: $blue-light-primary,
+    accent: $blue-light-accent,
+    warn: $blue-light-warn,
+  )
+));

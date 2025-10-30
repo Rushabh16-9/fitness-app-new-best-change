@@ -1,0 +1,213 @@
+<div class="course-creation">
+    
+    <div *ngIf="page == 'admin'" class="search-field-blk" fxLayout="row wrap">
+
+        <mat-form-field fxFlex class="flex-p">
+          <mat-select (selectionChange)="onChangeInstitute()" [formControl]="instituteIds" placeholder="Select Institute" multiple >
+            <mat-option *ngFor="let inst of institutesList" [value]="inst.instituteId">
+              {{inst.instituteName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="search-field-blk" fxLayout="row wrap">
+        <mat-form-field class="flex-p" fxFlex="100" fxFlex.gt-sm="50" fxFlex.sm="50">
+            <input matInput (keyup)='onInputSearch($event)' placeholder="Search" >
+        </mat-form-field>
+        <div *ngIf="canAdd" class="flex-p text-right" fxFlex="100" fxFlex.gt-sm="50" fxFlex.sm="50">
+            <button type="button" (click)="onAddEditCourse('add')" mat-raised-button class="mb-marg-top-10 mb-marg-left-0 mb-float-left" >+ Add New Course</button>
+        </div>
+    </div>
+
+    <ngx-datatable
+        #table
+        class='material expandable ngx-datatable-custom striped'
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="'auto'"
+        [scrollbarV]="false"
+        [externalPaging]="false"
+        [limit]="pagination.limit"
+        [offset]="pagination.offset"
+        [rows]="tableData">
+        <ngx-datatable-row-detail class="mb-width-100 mb-displ" [rowHeight]="'auto'" #myDetailRow>
+            <ng-template class="mb-displ" let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                <div fxLayout="row wrap" fxFlex="100">
+                    <div class="mb-displ" style="padding: 14px;">
+                        <div>
+                            <span class="mb-datatable-header">Conf Id:</span> {{row.confId}}
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Print Name: </span> {{row.printName}}
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Short Name: </span> {{row.shortName}}
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Exam Term: </span>
+                            <span *ngIf="canEdit">
+                                <a class="dwn-link" (click)="onViewExamTerm(row)">View!</a>
+                            </span>
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Group Subjects: </span>
+                            <span *ngIf="canEdit">
+                                <a class="dwn-link" (click)="onViewGroupSubjects(row)">View!</a>
+                            </span>
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Action: </span>
+                            <span *ngIf="canEdit">
+                                <a class="dwn-link" (click)="onAddEditCourse('edit', row)">Edit!</a>
+                            </span>
+                            <span *ngIf="canDelete">
+                                <br>
+                                <a class="dwn-link" (click)="onDeleteCourse(row)">Delete!</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </ngx-datatable-row-detail>
+        <ngx-datatable-column
+            [width]="50"
+            [resizeable]="false"
+            [sortable]="false"
+            [draggable]="false"
+            [canAutoResize]="false"
+            class="mb-displ"
+            >
+            <ng-template class="mb-displ" let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                <a
+                href="javascript:void(0);"
+                [class.datatable-icon-right]="!expanded"
+                [class.datatable-icon-down]="expanded"
+                title="Expand/Collapse Row"
+                (click)="toggleExpandRow(row)"
+                class="mb-displ"></a>
+            </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="confId">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Conf Id</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            
+            <ngx-datatable-column class="mb-width-100" [sortable]="false" [resizeable]="false" name="courseTitle">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Course Title</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>            
+
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="printName">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Print Name</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="shortName">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Short Name</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="confId">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Exam Term</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span *ngIf="canEdit">
+                        <a class="dwn-link" (click)="onViewExamTerm(row)">View!</a>
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="confId">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Group Subjects</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span *ngIf="canEdit">
+                        <a class="dwn-link" (click)="onViewGroupSubjects(row)">View!</a>
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="confId">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Action</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span *ngIf="canEdit">
+                        <a class="dwn-link" (click)="onAddEditCourse('edit', row)">Edit!</a>
+                    </span>
+                    <span *ngIf="canDelete">
+                        <br>
+                        <a class="dwn-link" (click)="onDeleteCourse(row)">Delete!</a>
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-footer>
+                <ng-template
+                ngx-datatable-footer-template
+                let-rowCount="rowCount"
+                let-pageSize="pageSize"
+                let-selectedCount="selectedCount"
+                let-curPage="curPage"
+                let-offset="offset">
+                <div class="ngx-rcds-per-page-div" *ngIf="rowCount > 0" >
+                    <span class="ngx-ftr-cnt-inf">
+                        Total records: {{rowCount}}
+                    </span>
+                    <span class="rcds-per-page">
+                        <span class="rcds-per-page-txt">
+                            Records Per Page:
+                        </span>
+                        <mat-form-field class="rcds-per-page-drdwn">
+                            <mat-select (selectionChange)="changeRows($event.value)" [(value)]="pagination.limit">
+                                <mat-option *ngFor="let rowsPerPage of rowsPerPageArray" [value]="rowsPerPage">
+                                    {{ rowsPerPage }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
+                </div>
+                <datatable-pager
+                    class="ngx-pagint-blk"
+                    [pagerLeftArrowIcon]="'datatable-icon-left'"
+                    [pagerRightArrowIcon]="'datatable-icon-right'"
+                    [pagerPreviousIcon]="'datatable-icon-prev'"
+                    [pagerNextIcon]="'datatable-icon-skip'"
+                    [page]="curPage"
+                    [size]="pageSize"
+                    [count]="rowCount"
+                    [hidden]="!((rowCount / pageSize) > 1)"
+                    (change)="table.onFooterPage($event)">
+                </datatable-pager>
+            </ng-template>
+        </ngx-datatable-footer>
+    </ngx-datatable>
+</div>

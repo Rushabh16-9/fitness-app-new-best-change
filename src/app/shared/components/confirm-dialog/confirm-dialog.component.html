@@ -1,0 +1,27 @@
+<div fxLayout="column" class="confirm-dialog">
+	<div class="flex-p mb-padng-0">
+		<div *ngIf="modalTitle" mat-dialog-title class="modal-header" style="border-bottom: none;">
+			{{modalTitle}}
+		</div>
+		<div mat-dialog-content class="modal-content">
+			<div>{{boxContent}}</div>
+			<div [innerHTML]="innerHtmlMsg"></div>			
+			<div *ngIf="showCancelReason">
+				<form [formGroup]="cancelReasonForm" (ngSubmit)="onCancelReasonFormSubmit(cancelReasonForm.getRawValue())" autocomplete="off" fxLayout="row" fxFlex="100">
+					<mat-form-field fxFlex>
+						<textarea formControlName="cancelReason" (keydown.space)="$event.preventDefault()" placeholder="Cancel Reason" minlength="10" maxlength="200" matInput></textarea>
+						<mat-error *ngIf="cancelReasonForm.controls.cancelReason.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+						<mat-error *ngIf="cancelReasonForm.controls.cancelReason.hasError('minlength')">{{allMsgs.REQUIRED_MIN_10_CHAR}}</mat-error>
+						<mat-error *ngIf="cancelReasonForm.controls.cancelReason.hasError('maxlength')">{{allMsgs.MAX_200_CHAR}}</mat-error>
+					</mat-form-field>
+				</form>
+			</div>
+		</div>
+		<div mat-dialog-actions>
+			<div fxLayout="row" fxFlex="100">
+				<button fxFlex [mat-dialog-close]="true" mat-button color="primary" type="button" *ngIf="noText">{{noText}}</button>
+				<button fxFlex (click)="onYesClick()" mat-button color="primary" type="button">{{yesText}}</button>
+			</div>
+		</div>
+	</div>
+</div>

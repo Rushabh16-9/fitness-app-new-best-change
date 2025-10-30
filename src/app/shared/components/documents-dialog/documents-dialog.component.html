@@ -1,0 +1,35 @@
+<div fxLayout="column" class="documents-dialog">
+	<div class="flex-p mb-padng-0">
+		<div mat-dialog-title class="modal-header">
+			<b>{{modalTitle}}</b>
+		</div>
+		<mat-dialog-content>
+			<div>
+				<table class="p-0 custom-table fee-receipt">
+					<thead>
+						<tr>
+							<th width="10%">Sr. No.</th>
+							<th>Document Name</th>
+							<th>Document</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let document of documentsArray; let pi=index">
+							<td data-label="Sr. No.">{{pi+1}}</td>
+							<td data-label="Document Name">{{document.docTitle}}</td>
+							<td data-label="Document">
+								<a class="dwn-link" (click)="getDocumentUrl(document.uploadedFile)">View!</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<div class="row marg-top-20" style="margin-bottom: 10px;">
+				<button mat-raised-button [mat-dialog-close]="true" type="button">Close</button>
+			</div>
+
+		</mat-dialog-content>
+
+	</div>
+</div>

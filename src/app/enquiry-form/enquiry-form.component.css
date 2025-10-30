@@ -1,0 +1,49 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+mat-card {
+  text-align: center;
+}
+.mainBlk {
+    margin:auto;
+    width: 60%;
+}
+.auth-main {
+	background-image: url(/assets/images/admit-bg-1.jpg);
+    height: 100%; 
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.reg-title {
+    font-size: 16px !important;
+    font-weight: 500;
+    text-transform: uppercase;
+    border-bottom: 1px solid #999999;
+    padding-bottom: 5px;    
+}
+.auth-main button {
+    width: 100%;
+    margin: 15px auto !important;
+}
+.auth-main .mat-card {
+    padding: 24px;
+}
+
+@media only screen and (max-width: 768px) {
+    .auth-main .mat-card {
+        padding: 10px;
+    }
+    .custom-table button {
+        margin: initial !important;
+    }
+    .logo {
+        width: 100%;
+        padding: 0 !important;
+    }
+    .mainBlk {
+        margin:auto;
+        width: 90%;
+    }
+}

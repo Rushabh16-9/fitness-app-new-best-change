@@ -1,0 +1,59 @@
+<div *ngFor="let menu of parentMenu" class="menu-item" style="margin-top: 1px;">
+    <a *ngIf="menu.routerLink && !menu.hasSubMenu" mat-button 
+        fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+        [routerLink]="[menu.routerLink]" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact:true}"
+        [matTooltip]="menu.title" matTooltipPosition="after" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+        (click)="onClick(menu.menuId)" [id]="'menu-item-'+menu.menuId">
+        <mat-icon *ngIf="menu.icon" class="menu-icon">{{menu.icon}}</mat-icon>
+        <i *ngIf="menu.faIcon" [ngClass]="menu.faIcon" class="fa menu-fa-icon"></i> 
+        <span class="menu-title">{{menu.title}}</span>
+    </a>
+    <a *ngIf="menu.href && !menu.subMenu" mat-button 
+        fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+        [attr.href]="menu.href || ''" [attr.target]="menu.target || ''"
+        [matTooltip]="menu.title" matTooltipPosition="after" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+        (click)="onClick(menu.menuId)" [id]="'menu-item-'+menu.menuId">
+        <mat-icon *ngIf="menu.icon" class="menu-icon">{{menu.icon}}</mat-icon>
+        <i *ngIf="menu.faIcon" [ngClass]="menu.faIcon" class="fa menu-fa-icon"></i>
+        <span class="menu-title">{{menu.title}}</span>
+    </a>
+    <a *ngIf="menu.hasSubMenu" mat-button 
+        fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+        [matTooltip]="menu.title" matTooltipPosition="after" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+        (click)="onClick(menu.menuId)" [id]="'menu-item-'+menu.menuId">
+        <mat-icon *ngIf="menu.icon" class="menu-icon">{{menu.icon}}</mat-icon>
+        <i *ngIf="menu.faIcon" [ngClass]="menu.faIcon" class="fa menu-fa-icon"></i>
+        <span class="menu-title">{{menu.title}}</span>
+        <mat-icon class="menu-expand-icon transition-2">arrow_drop_down</mat-icon>
+    </a>
+
+    <div *ngIf="menu.hasSubMenu" class="sub-menu" [id]="'sub-menu-'+menu.menuId">
+        <app-vertical-menu [menuItems]="menuItems" [menuParentId]="menu.menuId"></app-vertical-menu>
+    </div>
+</div>
+
+
+<!-- <div *ngFor="let item of parentMenu" id="vertical_menu_div" class="menu-item">
+    <a *ngIf="item.route && !item.children" mat-button 
+        fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+        [routerLink]="[item.route]" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact:true}"
+        [matTooltip]="item.displayName" matTooltipPosition="after" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+        (click)="onClick(item.menuId)" [id]="'menu-item-'+item.menuId">
+        <mat-icon *ngIf="item.iconName" class="menu-icon">{{item.iconName}}</mat-icon>
+        <i *ngIf="item.faIcon" [ngClass]="item.faIcon" class="fa menu-fa-icon"></i> 
+        <span class="menu-title">{{item.displayName}}</span>
+    </a>
+    <a *ngIf="item.children" mat-button 
+        fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+        [matTooltip]="item.displayName" matTooltipPosition="after" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+        (click)="onClick(item.menuId)" [id]="'menu-item-'+item.menuId">
+        <mat-icon *ngIf="item.iconName" class="menu-icon">{{item.iconName}}</mat-icon>
+        <i *ngIf="item.faIcon" [ngClass]="item.faIcon" class="fa menu-fa-icon"></i>
+        <span class="menu-title">{{item.displayName}}</span>
+        <mat-icon class="menu-expand-icon transition-2">arrow_drop_down</mat-icon>
+    </a>
+
+    <div *ngIf="item.hasSubMenu" class="sub-menu" [id]="'sub-menu-'+item.menuId">
+        <app-vertical-menu [menuItems]="menuItems" [menuParentId]="item.menuId"></app-vertical-menu>
+    </div>    
+</div> -->

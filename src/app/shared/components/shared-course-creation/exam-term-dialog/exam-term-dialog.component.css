@@ -1,0 +1,29 @@
+.exam-term-dialog .mat-dialog-content {
+    max-height: initial;
+}
+
+.exam-term-dialog .table-container .datatable-row-group .datatable-body-cell:nth-child(1),
+.exam-term-dialog .table-container .datatable-header .datatable-header-cell:nth-child(1) {
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+    .exam-term-dialog .datatable-row-group .datatable-body-cell:nth-child(1),
+    .exam-term-dialog .datatable-header .datatable-header-cell:nth-child(1) {
+        display: initial;
+    }
+    .exam-term-dialog .datatable-row-group .datatable-body-cell:nth-child(3),
+    .exam-term-dialog .datatable-header .datatable-header-cell:nth-child(3) {
+        width: 100% !important;
+    }
+    .exam-term-dialog .table-container .datatable-row-group .datatable-body-cell:nth-child(1),
+    .exam-term-dialog .table-container .datatable-header .datatable-header-cell:nth-child(1) {
+        display: initial;
+    }
+    .exam-term-dialog .table-container .datatable-header .datatable-header-cell:nth-child(2),
+    .exam-term-dialog .table-container .datatable-header .datatable-header-cell:nth-child(4),
+    .exam-term-dialog .table-container .datatable-row-group .datatable-body-cell:nth-child(2),
+    .exam-term-dialog .table-container .datatable-row-group .datatable-body-cell:nth-child(4) {
+        display: none;
+    }
+}

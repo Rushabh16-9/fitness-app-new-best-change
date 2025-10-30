@@ -1,0 +1,47 @@
+.success-icon {
+	width: 60px;
+	height: 60px;
+	font-size: 60px;
+	color: #509041;
+}
+.success {
+	color: #509041;
+	text-align: center;
+}
+.box-text {
+	text-align: center;
+	margin-bottom: 10px;
+}
+.back-link {
+	font-size: 12px;
+	color: blue;
+	margin-top: 15px;
+}
+.back-arrow {
+	font-size: 17px;
+	margin-left: 4px;
+}
+.back-text {
+	margin-top: -24px;
+	margin-left: 24px;
+}
+.error {
+	color: #d25555;
+	text-align: center;	
+}
+.error-icon {
+	width: 60px;
+	height: 60px;
+	font-size: 60px;
+	color: #d25555;
+}
+.pending {
+	color: #FFA500;
+	text-align: center;	
+}
+.pending-icon {
+	width: 60px;
+	height: 60px;
+	font-size: 60px;
+	color: #FFA500;
+}

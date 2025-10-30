@@ -1,0 +1,151 @@
+.open-admission-form ol {
+    margin-left: 14px;
+}
+.sub-div-blk {
+    margin-top: 10px;
+}
+.sub-div-head {
+    margin-right: 10px;
+    font-weight: 500; 
+    text-transform: uppercase;
+}
+.guardian-block {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.remove-icon {
+    cursor: pointer;
+}
+
+.info-icon {
+    font-size: 30px;
+    margin-right: 10px;
+}
+.open-admission-closed {
+    text-align: center;
+    padding: 30px 0 30px 0;
+}
+.open-admission-closed-txt {
+    margin-top: 24px;
+    font-size: 18px;
+}
+.open-admission-form .note {
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: red;
+    text-align: left;
+    font-style: italic;
+}
+.open-admission-form .decl-head .mat-checkbox .mat-checkbox-inner-container {
+    margin-top: 3px;
+}
+.open-admission-form .decl-head {
+    margin-top: 50px;
+}
+.open-admission-form .mandatory {
+	color: #F00;
+	font-size: 11px;
+}
+.open-admission-form input:disabled {
+    border-bottom-color: rgba(12, 12, 12, 0.2);
+    cursor: not-allowed;
+}
+
+.open-admission-form .engg-info {
+    margin-top: 10px; 
+}
+.open-admission-form .engg-info th {
+    padding: 5px 5px !important;
+}
+.open-admission-form .engg-info td {
+    padding: 0px 5px !important;
+}
+
+.open-admission-form .education-info th {
+    color: #3e3e3e !important;
+}
+.open-admission-form .education-info th, .open-admission-form .education-info td {
+    padding: 12px 5px;
+}
+.open-admission-form .education-info {
+    box-shadow:none !important;
+    -webkit-box-shadow:none !important;
+}
+.open-admission-form .education-info .mat-form-field-infix {
+    width: 100% !important;
+}
+.open-admission-form .education-info tr:nth-of-type(odd) {
+    background: none !important; 
+}
+.open-admission-form .education-info tr:hover td {
+    background: none !important; 
+}
+
+.open-admission-form .txt-centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.open-admission-form .remov-btn {
+    margin-right: 10px; 
+    margin-top: 10px;
+}
+.open-admission-form .info {
+    font-size: 12px;
+}
+.open-admission-form .stepper-start {
+    margin-left: -24px; 
+    margin-right: -24px;
+}
+
+@media only screen and (max-width: 768px) {
+    .open-admission-form .engg-info td {
+        padding: 10px 10px 10px 50% !important;
+    }
+    .open-admission-form .engg-info th {
+        padding:12px 5px !important;
+    }
+    .open-admission-form .engg-info thead tr {
+        position: inherit !important;
+    }
+    .open-admission-form .education-info td, .education-info th {
+        padding: 10px 10px 10px 50%;
+    }
+    .open-admission-form .education-info td.mb-adjust-td {
+        padding: 10px 10px 10px 50% !important;
+    }
+    .open-admission-form .education-info .mb-adjust-form-field {
+        margin: -15px 0px -4px 0px;
+    }
+
+    .open-admission-form .mb-adjust-form-field {
+        margin: -15px 0px -4px 0px;
+    }
+    .open-admission-form .mat-vertical-content-container {
+        margin-left: 0px !important; 
+    }
+    .open-admission-form .mat-vertical-content {
+        padding: 0 8px 0px 8px !important;
+    }
+
+    .open-admission-form .stepper-start {
+        margin-left: -1px; 
+        margin-right: 1px;
+    }
+    .open-admission-form .education-info-div {
+        margin-left: -7px;
+        margin-right: -9px;
+    }
+
+    .open-admission-form .mat-vertical-stepper-header {
+        padding: 24px 14px;
+    }
+
+    .open-admission-form .mb-marg-top-50 {
+        margin-top: 50px;
+    }
+}

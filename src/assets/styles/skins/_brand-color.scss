@@ -1,0 +1,41 @@
+// create brand colors from site: http://mcg.mbitson.com/#!?mcgpale=%2314bdee&themename=14bdee
+@use '@angular/material' as mat;
+
+$brand-color: (
+    50 : #e5eaf2,
+    100 : #becade,
+    200 : #93a7c8,
+    300 : #6783b1,
+    400 : #4769a1,
+    500 : #264e90,
+    600 : #224788,
+    700 : #1c3d7d,
+    800 : #173573,
+    900 : #0d2561,
+    A100 : #96afff,
+    A200 : #6388ff,
+    A400 : #3061ff,
+    A700 : #164dff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$brand-color-primary: mat.define-palette($brand-color, 500);
+$brand-color-accent: mat.define-palette($brand-color, 500);
+$brand-color-warn: mat.define-palette(mat.$red-palette);
+
+$brand-color-theme: mat.define-light-theme($brand-color-primary, $brand-color-accent, $brand-color-warn);

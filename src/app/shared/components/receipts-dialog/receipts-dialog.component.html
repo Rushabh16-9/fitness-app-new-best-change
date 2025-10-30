@@ -1,0 +1,99 @@
+<div fxLayout="column">
+	<div class="flex-p mb-padng-0">
+		<div mat-dialog-title class="modal-header" style="font-size: 18px;">
+			<b>{{modalTitle}}</b>
+		</div>
+		<mat-dialog-content>
+			<div *ngIf="mode == 'collect-fees'">
+				<table class="p-0 custom-table fee-receipt">
+					<thead>
+						<tr>
+							<th>Sr No.</th>
+							<th>Course Name</th>
+							<th>Amount</th>
+							<th>Receipt</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let receipt of receiptsArray; let pi=index">
+							<td  data-label="Sr.No.">{{pi+1}}</td>
+							<td  data-label="Course Name">{{receipt.displayName}}</td>
+							<td  data-label="Amount">{{receipt.totalPaid}}</td>
+							<td  data-label="Receipt">
+								<a class="dwn-link" (click)="getReceiptUrl(receipt.receiptId)">Download!</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div *ngIf="mode == 'paymentHistory' || mode == 'payment-result'">
+				<table class="p-0 custom-table fee-receipt">
+					<thead>
+						<tr>
+							<th>Sr No.</th>
+							<th>Receipt Number</th>
+							<th>Receipt</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let receipt of receiptsArray; let pi=index">
+							<td data-label="Sr.No.">{{pi+1}}</td>
+							<td data-label="Receipt No.">{{receipt.receiptNo}}</td>
+							<td data-label="Receipt">
+								<a class="dwn-link" (click)="downloadReceipt(receipt.receiptUrl)">Download!</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div *ngIf="showForms" style="margin-top: 20px;">
+				<div class="modal-header" style="font-size: 18px;">
+					<b>Forms</b>
+				</div>
+				<table class="p-0 custom-table fee-receipt">
+					<thead>
+						<tr>
+							<th>Sr No.</th>
+							<th>Form</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let form of formUrlsArray; let pi=index">
+							<td data-label="Sr.No.">{{pi+1}}</td>
+							<td data-label="Form">
+								<a class="dwn-link" (click)="downloadForm(form.formUrl)">Download!</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div *ngIf="mode == 'paidFees'">
+				<table class="p-0 custom-table fee-receipt">
+					<thead>
+						<tr>
+							<th>Sr No.</th>
+							<th>Payment Date</th>
+							<th>Total Amount</th>
+							<th>Receipt</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let receipt of receiptsArray; let pi=index">
+							<td data-label="Sr.No.">{{pi+1}}</td>
+							<td data-label="Payment Date">{{receipt.paymentDate}}</td>
+							<td data-label="Total Amount">{{receipt.totalAmount}}</td>
+							<td data-label="Receipt">
+								<a class="dwn-link" (click)="getReceiptUrl(receipt.receiptId)">Download!</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</mat-dialog-content>
+		<mat-dialog-actions class="close-btn" >
+			<button color="primary" mat-raised-button [mat-dialog-close]="true">Close</button>
+		</mat-dialog-actions>
+	</div>
+</div>

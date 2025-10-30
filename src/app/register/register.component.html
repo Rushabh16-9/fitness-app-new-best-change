@@ -1,0 +1,240 @@
+<div fxLayout="row wrap" fxLayoutAlign="center" class="auth-main">
+  <div fxFlex="100" fxFlex.gt-sm="60" fxFlex.sm="60" class="flex-p mb-padng-0">
+    <mat-card class="box">
+      <div>
+        <a href="{{DOMAIN_NAME}}">
+          <h2>
+            <span>
+              <img src="assets/images/logo/logo.png">
+            </span>
+          </h2>
+        </a>
+        <div class="reg-title">
+          <p *ngIf="showRegisterForm">
+            Quick payment form*
+          </p>
+          <p *ngIf="showOtpForm" >
+            OTP sent to mobile number
+          </p>
+          <p *ngIf="showLevelsForm" >
+            Please fill the academic details below
+          </p>                
+        </div>        
+      </div>
+
+      <mat-card-content class="box-content1" style="height:auto;">
+
+        <div *ngIf="showRegisterForm" class="marg-top-20" fxLayout="column" fxLayoutGap="32px" fxFlex="100">
+          <div *ngIf="fromInstitute" class="inst-name">{{instituteName}}</div>
+          <form [formGroup]="regFormGroup" (ngSubmit)="onRegSubmit(regFormGroup.value)" autocomplete="off" fxFlex="100">
+            <div *ngIf="!fromInstitute" fxLayoutAlign="center wrap" fxLayout="column" fxLayout.gt-sm="row">
+              <mat-form-field fxFlex="80" class="flex-p mb-padng-0">
+                <mat-select (selectionChange)="onSelectInstitute($event.value)" formControlName="institute" placeholder="Institute" required>
+                  <mat-option *ngFor="let inst of institutesList" [value]="inst.instituteId">
+                    {{ inst.instituteName }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="regFormGroup.controls.institute.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field fxFlex>
+                <input matInput placeholder="First Name" formControlName="firstName" required>
+                <mat-error *ngIf="regFormGroup.controls.firstName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Middle Name" formControlName="middleName">
+                <mat-error *ngIf="regFormGroup.controls.middleName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Last Name" formControlName="lastName" required>
+                <mat-error *ngIf="regFormGroup.controls.lastName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Email" formControlName="email" (keydown.space)="$event.preventDefault()" required>
+                <mat-error *ngIf="regFormGroup.controls.email.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                <mat-error *ngIf="regFormGroup.controls.email.hasError('invalidEmail')">{{allMsgs.WRONG_EMAIL}}</mat-error>
+              </mat-form-field>
+              <mat-form-field fxFlex *ngIf="!addMoreUsers">
+                <input matInput placeholder="Mobile Number" formControlName="mobileNo" (keydown.space)="$event.preventDefault()" (keypress)="globalFunctions.onlyNumberKey($event)" maxlength="10" pattern="[0-9]+" required>
+                <mat-error *ngIf="regFormGroup.controls.mobileNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                <mat-error *ngIf="regFormGroup.controls.mobileNo.hasError('pattern')">{{allMsgs.WRONG_MOBILE_NO}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-radio-group fxFlex formControlName="gender" class="pad-top-10 mb-padng-btm-10 mb-padng-top-0 " style="text-align: left;" required>
+                <label class="mat-form-field">Gender<samp class="mandatory">*</samp>: </label>
+                <mat-radio-button class="mb-displ-block marg-left-10 mb-marg-left-0" value="male">Male</mat-radio-button>
+                <mat-radio-button class="mb-displ-block" value="female">Female</mat-radio-button>
+                <mat-radio-button class="mb-displ-block" value="transgender">Transgender</mat-radio-button>
+                <mat-error style="font-size: 12px;" *ngIf="regFormGroup.controls.gender.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-radio-group>
+
+              <mat-form-field fxFlex>
+                <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker3" placeholder="Date of Birth" readonly formControlName="dob" required (focus)="_openCalendar(picker3)" (click)="_openCalendar(picker3)" #elementToFocus >
+                <mat-datepicker #picker3="matDatepicker" (closed)="_closeCalendar($event)"></mat-datepicker>
+                <mat-datepicker-toggle matSuffix [for]="picker3" ></mat-datepicker-toggle>
+                <mat-datepicker #picker3 disabled="false"></mat-datepicker>
+                <mat-error *ngIf="regFormGroup.controls.dob.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="sub-div-blk" style="text-align: left;">
+              <span class="sub-div-head">Residential Address: </span>
+            </div>
+            <div formGroupName="residentialAddress" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Address" formControlName="address" maxlength="150" required>
+                <mat-error *ngIf="regFormGroup.get('residentialAddress.address').errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div formGroupName="residentialAddress" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field fxFlex>
+                <input matInput formControlName="pincode" placeholder="Pincode" (keyup)="getFromPincode($event, 'residentialAddress')" (keypress)="globalFunctions.onlyNumberKey($event)" maxlength="6" pattern="[0-9]+" required>
+                <mat-error *ngIf="regFormGroup.get('residentialAddress.address').errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                <mat-error *ngIf="regFormGroup.get('residentialAddress.pincode').hasError('pattern')">{{allMsgs.WRONG_PINCODE}}</mat-error>
+              </mat-form-field>
+              <mat-form-field fxFlex>
+                <input matInput formControlName="state" placeholder="State" maxlength="35" required>
+                <mat-hint>State would be selected basis Pincode!</mat-hint>
+              </mat-form-field>
+              <mat-form-field fxFlex>
+                <input matInput formControlName="city" placeholder="City" maxlength="35" required>
+                <mat-hint>City would be selected basis Pincode!</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div *ngIf="instituteId == '394'" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Village Name" formControlName="villageName" required>
+                <mat-error *ngIf="regFormGroup.controls.villageName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div *ngIf="!addMoreUsers" fxLayout="row" fxLayoutAlign="center" class="marg-top-20">
+                <button mat-raised-button color="primary" class="box-button mb-width-100" type="submit">SUBMIT</button>
+            </div>
+            <div *ngIf="addMoreUsers" fxLayout="row" fxLayoutAlign="center" class="marg-top-20">
+              <span class="flex-p">
+                <button mat-raised-button color="primary" class="box-button mb-width-100" type="submit">SUBMIT</button>
+              </span>
+              <span class="flex-p">
+                <button mat-raised-button (click)="onCancelAddMoreUsers()" class="box-button mb-width-100" type="button">CANCEL</button>
+              </span>
+            </div>
+          </form>
+        </div>
+
+        <form *ngIf="showOtpForm" [formGroup]="otpForm" (ngSubmit)="onOtpSubmit(otpForm.value)" fxFlex="100">
+          <mat-form-field class="marg-top-20">
+            <input matInput placeholder="Enter OTP" formControlName="otp" (keypress)="globalFunctions.onlyNumberKey($event)" (keydown.space)="$event.preventDefault()" maxlength="6" required autofocus>
+            <mat-error *ngIf="otpForm.controls.otp.errors?.required">{{allMsgs.REQUIRED_OTP_NO}}</mat-error>              
+            <mat-error *ngIf="otpForm.controls.otp.hasError('pattern')">{{allMsgs.WRONG_OTP_NO}}</mat-error>                
+          </mat-form-field>
+          <div fxLayout="row" fxLayoutAlign="center" class="marg-top-20">
+            <span class="flex-p mb-padng-0">
+              <button mat-raised-button color="primary" class="box-button mb-width-100" type="submit">SUBMIT</button>
+            </span>
+          </div>
+          <div class="info">
+            Your OTP will expire in 15 minutes. <br> 
+            <a mat-button (click)="resendOtp()">Resend OTP</a>
+          </div>
+          <div class="info">
+            <a mat-button (click)="showRegFormBox()">
+              Click here to change mobile number.
+            </a>
+          </div>
+        </form>
+
+        <div *ngIf="showLevelsForm" class="marg-top-20" fxLayout="column" fxLayoutGap="32px" fxFlex="100">
+          <div class="inst-name">{{instituteName}}</div>
+          <form [formGroup]="levelsFormGroup" (ngSubmit)="onLevelsSubmit(levelsFormGroup.value)" autocomplete="off" fxFlex="100">
+            <div formArrayName="secretNextLevels">
+              <div *ngFor="let values of nextLevelsArray; let i=index" [formGroupName]="i" >
+                <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+                  <mat-form-field fxFlex>
+                    <mat-select (selectionChange)="onChangeLevel(instituteId, level.value, i)" #level formControlName="levelId" placeholder="{{values.nextLevelName}}" required >
+                      <mat-option value="" > {{values.nextLevelName}} </mat-option>
+                      <mat-option *ngFor="let nextLvl of values.nextLevels" [value]="nextLvl.levelValueId">
+                        {{nextLvl.levelValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <br>
+              </div>
+            </div>
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="Academic Year" formControlName="academicYearId" required>
+                  <mat-option *ngFor="let academicYear of academicYearList" [value]="academicYear.academicYearId">
+                    {{ academicYear.year }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="levelsFormGroup.controls.academicYearId.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="row marg-top-20">
+              <button fxFlex="100" style="margin: 0 auto;" mat-raised-button color="primary" class="marg-top-20" type="submit">Submit</button>
+            </div>
+          </form>
+        </div>
+
+        <div *ngIf="showMatchedUsersBox" class="marg-top-20" fxFlex="100">
+          <div fxLayout="column wrap" fxLayout.gt-sm="row" fxFlex="100">
+            <mat-card class="p-0 pad-btm-10 mb-padng-btm-0" fxFlex="100">
+              <mat-card-header class="bg-grey p-1" fxLayout="row" fxLayoutAlign="space-between center">
+                <mat-card-title class="m-0">
+                  <h3 class="page-title">
+                    Your academic details
+                  </h3>
+                </mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="p-">
+                <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+                  <table fxFlex="100" class="p-0 custom-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 65px">Full Name</th>
+                        <th style="width: 65px">Institute</th>
+                        <th style="width: 65px">Course</th>
+                        <th style="width: 60px">Year</th>
+                        <th style="width: 40px">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let matchedUser of matchedUsersArray;">
+                        <td data-label="Full Name">{{matchedUser.fullName}}</td>
+                        <td data-label="Institute">{{matchedUser.instituteName}}</td>
+                        <td data-label="Course">{{matchedUser.courseName}}</td>
+                        <td data-label="Year">{{matchedUser.academicYear}}</td>
+                        <td data-label="Action">
+                          <button *ngIf="matchedUser.isRemovable" (click)="removeUser(matchedUser.studentConfId)" mat-raised-button class="mat-small-button">Remove</button>
+                          <span *ngIf="!matchedUser.isRemovable"> -- </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </mat-card-content>
+
+              <div fxLayout="row" fxLayoutAlign="center" class="actions-btn-div mb-displ-block marg-top-20 marg-btm-20">
+                <span class="flex-p mb-padng-0">
+                  <button mat-raised-button (click)="onAddMoreUsers()" class="mat-small-button" >+ ADD MORE STUDENTS/COURSES</button>
+                </span>
+                <span class="flex-p mb-padng-0">
+                  <button mat-raised-button (click)="confirmUser()" class="mat-small-button" color="accent">CONTINUE</button>
+                </span>
+              </div>
+            </mat-card>
+
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

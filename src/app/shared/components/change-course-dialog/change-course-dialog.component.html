@@ -1,0 +1,58 @@
+<div fxLayout="column" class="flex-p mb-padng-0 change-course-dialog">
+	<div mat-dialog-title class="modal-header" style="font-size: 20px;">
+		<b>{{modalTitle}}</b>
+		<mat-icon (click)="onCloseClick()" class="close-icon">close</mat-icon>
+	</div>
+	<mat-dialog-content>
+		<form [formGroup]="academicInfoForm" (ngSubmit)="onAcademicInfoSubmit(academicInfoForm.value)" autocomplete="off">
+
+			<div *ngIf="showStudentSelection">
+				<mat-form-field fxFlex>
+					<mat-select #student (selectionChange)="getStudentsCourses(student.value)" placeholder="Select Student" formControlName="studentId" required>
+						<mat-option *ngFor="let stdnt of studentsArray" [value]="stdnt.studentId">
+							{{stdnt.studentName}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+
+			<div>
+				<mat-form-field fxFlex>
+					<mat-select #course (selectionChange)="getCourseExams(course.value)" placeholder="Select Course" formControlName="confId" required>
+						<mat-option *ngFor="let cours of coursesArray" [value]="cours.confId">
+							{{cours.courseName}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+
+			<div>
+				<mat-form-field fxFlex>
+					<mat-select placeholder="Select Exam" formControlName="termExamId" required>
+						<mat-option *ngFor="let exam of examsArray" [value]="exam.termExamId">
+							{{exam.termExam}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+
+			<div>
+	            <mat-form-field *ngIf="showSubjectGroup" fxFlex>
+	              <mat-select placeholder="Select Subject Group/Exam Pattern" formControlName="subjectGroupId" required>
+	                <mat-option *ngFor="let sbgrp of subjectGroupsArray" [value]="sbgrp.subjectGroupId">
+	                  {{sbgrp.subjectGroupName}}
+	                </mat-option>
+	              </mat-select>
+	            </mat-form-field>
+			</div>
+
+			<div class="row marg-top-20">
+				<button mat-raised-button color="primary" type="submit">Submit</button>
+			</div>
+		</form>
+	</mat-dialog-content>
+	<!--  <mat-dialog-actions class="close-btn" >
+		<button (click)="onOkClick()" [mat-dialog-close]="true" color="primary" mat-raised-button >OK</button>
+		<button mat-raised-button [mat-dialog-close]="true">Close</button>
+	</mat-dialog-actions> -->
+</div>

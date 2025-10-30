@@ -1,0 +1,60 @@
+<div [fxLayout]="(menuParentId == 0) ? 'row' : 'column'" fxLayoutAlign="start center">
+    <div *ngFor="let menu of menuItems" class="horizontal-menu-item w-100">
+        <a *ngIf="menu.routerLink && !menu.hasSubMenu" mat-button 
+            fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+            [routerLink]="[menu.routerLink]" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact:true}"
+            [matTooltip]="menu.title" matTooltipPosition="above" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+            [id]="'horizontal-menu-item-'+menu.menuId">
+            <mat-icon *ngIf="menu.icon" class="horizontal-menu-icon">{{menu.icon}}</mat-icon>
+            <i *ngIf="menu.faIcon" [ngClass]="menu.faIcon" class="fa menu-fa-icon"></i>
+            <span class="horizontal-menu-title">{{menu.title}}</span>
+        </a>
+        <a *ngIf="menu.href && !menu.subMenu" mat-button 
+            fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+            [attr.href]="menu.href || ''" [attr.target]="menu.target || ''"
+            [matTooltip]="menu.title" matTooltipPosition="above" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+            [id]="'horizontal-menu-item-'+menu.menuId">
+            <mat-icon *ngIf="menu.icon" class="horizontal-menu-icon">{{menu.icon}}</mat-icon>
+            <i *ngIf="menu.faIcon" [ngClass]="menu.faIcon" class="fa menu-fa-icon"></i>
+            <span class="horizontal-menu-title">{{menu.title}}</span>
+        </a>
+        <a *ngIf="menu.hasSubMenu" mat-button 
+            fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+            [matTooltip]="menu.title" matTooltipPosition="above" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+            [id]="'horizontal-menu-item-'+menu.menuId">
+            <mat-icon *ngIf="menu.icon" class="horizontal-menu-icon">{{menu.icon}}</mat-icon>
+            <i *ngIf="menu.faIcon" [ngClass]="menu.faIcon" class="fa menu-fa-icon"></i>
+            <span class="horizontal-menu-title">{{menu.title}}</span>
+        </a>
+
+        <div *ngIf="menu.hasSubMenu" class="horizontal-sub-menu" [id]="'horizontal-sub-menu-'+menu.menuId">
+            <app-horizontal-menu [menuParentId]="menu.menuId"></app-horizontal-menu>
+        </div>
+    </div>
+</div>
+<!-- 
+<div id="horizontal_menu_div" fxLayoutAlign="start center">
+    <div *ngFor="let item of navItems" class="horizontal-menu-item w-100">
+        <a *ngIf="item.children && item.children.length > 0" mat-button 
+            fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+            [matTooltip]="item.displayName" matTooltipPosition="above" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+            [id]="'horizontal-menu-item-'+item.menuId"
+            [matMenuTriggerFor]="menu.childMenu">
+            <mat-icon *ngIf="item.iconName" class="horizontal-menu-icon">{{item.iconName}}</mat-icon>
+            <i *ngIf="item.faIcon" [ngClass]="item.faIcon" class="fa menu-fa-icon"></i>
+            <span class="horizontal-menu-title">{{item.displayName}}</span>
+            <i style="margin-left: 5px;" class="fa fa-caret-down"></i>
+            <app-menu-item #menu [items]="item.children"></app-menu-item>            
+        </a>
+
+        <a *ngIf="!item.children || item.children.length === 0" mat-button 
+            fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+            [routerLink]="[item.route]" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact:true}"
+            [matTooltip]="item.displayName" matTooltipPosition="above" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+            [id]="'horizontal-menu-item-'+item.menuId">
+            <mat-icon *ngIf="item.iconName" class="horizontal-menu-icon">{{item.iconName}}</mat-icon>
+            <i *ngIf="item.faIcon" [ngClass]="item.faIcon" class="fa menu-fa-icon"></i>
+            <span class="horizontal-menu-title">{{item.displayName}}</span>
+        </a>
+    </div>
+</div> -->

@@ -1,0 +1,323 @@
+<div class="bankAccounts">
+    
+    <div *ngIf="page == 'admin'" class="search-field-blk" fxLayout="row wrap">
+
+        <mat-form-field fxFlex class="flex-p">
+          <mat-select (selectionChange)="onChangeInstitute()" [formControl]="instituteIds" placeholder="Select Institute" multiple >
+            <mat-option *ngFor="let inst of institutesList" [value]="inst.instituteId">
+              {{inst.instituteName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex class="flex-p">
+          <mat-select (selectionChange)="onChangeStatus()" [formControl]="approvalStatus" placeholder="Select Approval Status" >
+            <mat-option value="">All</mat-option> 
+            <mat-option value="1">Approved</mat-option> 
+            <mat-option value="0">In-Process</mat-option> 
+            <mat-option value="2">Rejected</mat-option> 
+          </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="search-field-blk" fxLayout="row wrap">
+        <mat-form-field class="flex-p" fxFlex="100" fxFlex.gt-sm="50" fxFlex.sm="50">
+            <input matInput (keyup)='onInputSearchBankAccounts($event)' placeholder="Search all Bank Accounts" >
+        </mat-form-field>
+        <div *ngIf="canAdd" class="flex-p text-right" fxFlex="100" fxFlex.gt-sm="50" fxFlex.sm="50">
+            <button type="button" (click)="onAddEditBankAccounts('add')" mat-raised-button class="mb-marg-top-10 mb-marg-left-0 mb-float-left" >+ Add Bank Account</button>
+        </div>
+    </div>
+
+    <ngx-datatable
+        #bankAccountsTable
+        class='material expandable ngx-datatable-custom striped'
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="'auto'"
+        [scrollbarV]="false"
+        [externalPaging]="false"
+        [limit]="bankAccountsPage.limit"
+        [offset]="bankAccountsPage.offset"
+        [rows]="bankAccountsArray">
+        <ngx-datatable-row-detail class="mb-width-100 mb-displ" [rowHeight]="'auto'" #myDetailRow>
+            <ng-template class="mb-displ" let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                <div fxLayout="row wrap" fxFlex="100">
+                    <div class="mb-displ" style="padding: 14px;">
+                        <div>
+                            <span class="mb-datatable-header">Bank Account Id:</span> {{row.bankAccountId}}
+                        </div>
+                        <div *ngIf="page == 'admin'">
+                            <span class="mb-datatable-header">Institute Name: </span> {{row.instituteName}}
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Account Type: </span> {{row.accountType}}
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Bank Name: </span> {{row.bankName}}
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Beneficiary: </span> {{row.beneficiary}}
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Title: </span> {{row.title}}
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">IFSC: </span> {{row.ifsc}}
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">MICR: </span> {{row.micr}}
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Email: </span> <span [innerHTML]="row.emailIdsDisplay"></span>
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Status: </span>
+                            <span *ngIf="row.approvalStatus == 1" class="success-msg">
+                                {{row.approvalStatusDisplay}}
+                            </span>
+                            <span *ngIf="row.approvalStatus == 2" class="info-msg">
+                                {{row.approvalStatusDisplay}}
+                            </span>
+                            <span *ngIf="row.approvalStatus == 3" class="error-msg">
+                                {{row.approvalStatusDisplay}}
+                                <br>
+                                <span class="mb-datatable-header">Rejected Reason: </span> {{row.rejectedReason}}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="mb-datatable-header">Action: </span>
+                            <span *ngIf="canEdit">
+                                <a class="dwn-link" (click)="onAddEditBankAccounts('edit', row)">Edit!</a>
+                            </span>
+                            <span *ngIf="canDelete">
+                                <br>
+                                <a class="dwn-link" (click)="onDeleteBankAccounts(row)">Delete!</a>
+                            </span>
+                            <span *ngIf="row.isDefault" class="success-msg">
+                                <br>
+                                Default
+                            </span>
+                            <span *ngIf="!row.isDefault && canEdit">
+                                <br>
+                                <a class="dwn-link" (click)="onSelectDefault(row)">Default!</a>
+                            </span>
+                            <span *ngIf="(row.approvalStatus == 2 || row.approvalStatus == 3) && canEdit && userTypeId == '1'">
+                                <br>
+                                <a class="dwn-link" (click)="onApproveRejectBankAccount('approve', row)">Approve!</a>
+                            </span>
+                            <span *ngIf="(row.approvalStatus == 1 || row.approvalStatus == 2) && canEdit && userTypeId == '1'">
+                                <br>
+                                <a class="dwn-link" (click)="onApproveRejectBankAccount('reject', row)">Reject!</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </ngx-datatable-row-detail>
+        <ngx-datatable-column
+            [width]="50"
+            [resizeable]="false"
+            [sortable]="false"
+            [draggable]="false"
+            [canAutoResize]="false"
+            class="mb-displ"
+            >
+            <ng-template class="mb-displ" let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                <a
+                href="javascript:void(0);"
+                [class.datatable-icon-right]="!expanded"
+                [class.datatable-icon-down]="expanded"
+                title="Expand/Collapse Row"
+                (click)="bankAccountsToggleExpandRow(row)"
+                class="mb-displ"></a>
+            </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="bankAccountId">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Bank Account Id</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column *ngIf="page == 'admin'" class="mb-width-100" [sortable]="false" [resizeable]="false" name="instituteName">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Institute Name</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-width-100" [sortable]="false" [resizeable]="false" name="accountNo">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Account No.</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="accountType">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Account Type</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="bankName">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Bank Name</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="beneficiary">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Beneficiary</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="title">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Title</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="ifsc">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>IFSC</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="micr">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>MICR</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span>
+                        {{value}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="emailIdsDisplay">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Email</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span [innerHTML]="row.emailIdsDisplay"></span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="approvalStatusDisplay">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Status</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span *ngIf="row.approvalStatus == 1" class="success-msg">
+                        {{value}}
+                    </span>
+                    <span *ngIf="row.approvalStatus == 2" class="info-msg">
+                        {{value}}
+                    </span>
+                    <span *ngIf="row.approvalStatus == 3" class="error-msg">
+                        {{value}}
+                        <br>
+                        <span class="mb-datatable-header">Rejected Reason: </span> {{row.rejectedReason}}
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column class="mb-displ-none" [sortable]="false" [resizeable]="false" name="bankAccountId">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <span>Action</span>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <span *ngIf="canEdit">
+                        <a class="dwn-link" (click)="onAddEditBankAccounts('edit', row)">Edit!</a>
+                    </span>
+                    <span *ngIf="canDelete">
+                        <br>
+                        <a class="dwn-link" (click)="onDeleteBankAccounts(row)">Delete!</a>
+                    </span>
+                    <span *ngIf="row.isDefault" class="success-msg">
+                        <br>
+                        Default
+                    </span>
+                    <span *ngIf="!row.isDefault && canEdit">
+                        <br>
+                        <a class="dwn-link" (click)="onSelectDefault(row)">Default!</a>
+                    </span>
+                    <span *ngIf="(row.approvalStatus == 2 || row.approvalStatus == 3) && canEdit && userTypeId == '1'">
+                        <br>
+                        <a class="dwn-link" (click)="onApproveRejectBankAccount('approve', row)">Approve!</a>
+                    </span>
+                    <span *ngIf="(row.approvalStatus == 1 || row.approvalStatus == 2) && canEdit && userTypeId == '1'">
+                        <br>
+                        <a class="dwn-link" (click)="onApproveRejectBankAccount('reject', row)">Reject!</a>
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-footer>
+                <ng-template
+                ngx-datatable-footer-template
+                let-rowCount="rowCount"
+                let-pageSize="pageSize"
+                let-selectedCount="selectedCount"
+                let-curPage="curPage"
+                let-offset="offset">
+                <div class="ngx-rcds-per-page-div" *ngIf="rowCount > 0" >
+                    <span class="ngx-ftr-cnt-inf">
+                        Total records: {{rowCount}}
+                    </span>
+                    <span class="rcds-per-page">
+                        <span class="rcds-per-page-txt">
+                            Records Per Page:
+                        </span>
+                        <mat-form-field class="rcds-per-page-drdwn">
+                            <mat-select (selectionChange)="bankAccountsChangeRows($event.value)" [(value)]="bankAccountsPage.limit">
+                                <mat-option *ngFor="let rowsPerPage of rowsPerPageArray" [value]="rowsPerPage">
+                                    {{ rowsPerPage }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
+                </div>
+                <datatable-pager
+                    class="ngx-pagint-blk"
+                    [pagerLeftArrowIcon]="'datatable-icon-left'"
+                    [pagerRightArrowIcon]="'datatable-icon-right'"
+                    [pagerPreviousIcon]="'datatable-icon-prev'"
+                    [pagerNextIcon]="'datatable-icon-skip'"
+                    [page]="curPage"
+                    [size]="pageSize"
+                    [count]="rowCount"
+                    [hidden]="!((rowCount / pageSize) > 1)"
+                    (change)="bankAccountsTable.onFooterPage($event)">
+                </datatable-pager>
+            </ng-template>
+        </ngx-datatable-footer>
+    </ngx-datatable>
+</div>

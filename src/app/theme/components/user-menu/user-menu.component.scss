@@ -1,0 +1,31 @@
+.user-menu{
+    .mat-toolbar, .mat-toolbar-row{
+        height: 100px !important;
+    }
+    .user-info{
+        width: 230px;
+        img{
+            width: 80px; 
+            height: 80px; 
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 50%;       
+        }
+        p{
+            font-size: 16px;
+            line-height: 22px;
+            text-align: center;
+            white-space: normal;
+        }
+        .name{
+            font-size: 15px;
+            white-space: normal;
+        }
+        .position{
+            font-size: 13px;
+        }
+    }
+    .mat-menu-item{
+        height: 36px;
+        line-height: 36px;
+    }
+}

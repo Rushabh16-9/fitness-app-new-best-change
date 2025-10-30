@@ -1,0 +1,52 @@
+.slots-dialog .mat-dialog-content {
+    max-height: initial;
+}
+
+/**************** fixed width with no horizontal scroll Start ************************/
+.slots-dialog .datatable-row-center, .datatable-body-row {
+    width: 100% !important;
+}
+.slots-dialog .datatable-header {
+    width: 100% !important;
+}
+.slots-dialog .datatable-row-group .datatable-body-cell,
+.slots-dialog .datatable-header .datatable-header-cell {
+    width: inherit;
+}
+.slots-dialog .ngx-datatable.scroll-horz .datatable-body {
+    overflow-x: hidden !important;
+}
+.slots-dialog .datatable-scroll {
+    width: 100% !important;
+}
+.slots-dialog .datatable-header-inner, .datatable-row-center {
+    width: 100% !important;
+}
+/**************** fixed width with no horizontal scroll End ************************/
+
+.slots-dialog .datatable-row-group .datatable-body-cell:nth-child(1),
+.slots-dialog .datatable-header .datatable-header-cell:nth-child(1) {
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+
+    .slots-dialog .datatable-row-group .datatable-body-cell:nth-child(1),
+    .slots-dialog .datatable-header .datatable-header-cell:nth-child(1) {
+        display: initial;
+    }
+
+    .slots-dialog .datatable-row-group .datatable-body-cell:nth-child(2),
+    .slots-dialog .datatable-header .datatable-header-cell:nth-child(2) {
+        width: 100% !important;
+    }
+
+    .slots-dialog .datatable-header .datatable-header-cell:nth-child(3),
+    .slots-dialog .datatable-header .datatable-header-cell:nth-child(4),
+    .slots-dialog .datatable-header .datatable-header-cell:nth-child(5),
+    .slots-dialog .datatable-row-group .datatable-body-cell:nth-child(3), 
+    .slots-dialog .datatable-row-group .datatable-body-cell:nth-child(4), 
+    .slots-dialog .datatable-row-group .datatable-body-cell:nth-child(5) {
+        display: none;
+    }
+}

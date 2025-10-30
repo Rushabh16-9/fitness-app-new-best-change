@@ -1,0 +1,39 @@
+.course-creation .datatable-row-group .datatable-body-cell:nth-child(1),
+.course-creation .datatable-header .datatable-header-cell:nth-child(1) {
+	display: none;
+}
+
+@media only screen and (max-width: 768px) {
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(1),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(1) {
+		display: initial;
+	}
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(3),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(3) {
+		width: 100% !important;
+	}
+	.course-creation .datatable-header .datatable-header-cell:nth-child(2),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(4),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(5),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(6),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(7),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(8),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(9),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(10),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(11),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(12),
+	.course-creation .datatable-header .datatable-header-cell:nth-child(13),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(2),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(4),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(5),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(6),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(7),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(8),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(9),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(10),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(11),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(12),
+	.course-creation .datatable-row-group .datatable-body-cell:nth-child(13) {
+		display: none;
+	}
+}

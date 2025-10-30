@@ -1,0 +1,79 @@
+@use '@angular/material' as mat;
+// @include mat.core();
+
+// @import '@angular/material/theming';
+$custom-typography: mat.define-legacy-typography-config($font-family: 'Montserrat');
+// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
+//  The following line adds:
+//    1. Default typography styles for all components
+//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+//  If you specify typography styles for the components you use elsewhere, you should delete this line.
+//  If you don't need the default component typographies but still want the hierarchy styles,
+//  you can delete this line and instead use:
+//    `@include mat.legacy-typography-hierarchy($custom-typography);`
+@include mat.all-legacy-component-typographies($custom-typography);
+@include mat.legacy-core();
+
+@import 'theme-reset';
+.app{
+    &.brand-color{
+        @import "skins/brand-color";
+        @include mat.all-legacy-component-colors($brand-color-theme);
+        @include theme-reset($brand-color-theme);
+    }
+    &.onfees-color{
+        @import "skins/onfees-color";    
+        @include mat.all-legacy-component-colors($onfees-color-theme);
+        @include theme-reset($onfees-color-theme);
+    }
+    &.edfly-color{
+        @import "skins/edfly-color";    
+        @include mat.all-legacy-component-colors($edfly-color-theme);
+        @include theme-reset($edfly-color-theme);
+    }
+    &.indigo-light{
+        @import "skins/indigo-light";
+        @include mat.all-legacy-component-colors($indigo-light-theme);
+        @include theme-reset($indigo-light-theme);
+    }
+    &.teal-light{
+        @import "skins/teal-light";
+        @include mat.all-legacy-component-colors($teal-light-theme);
+        @include theme-reset($teal-light-theme);
+    }
+    &.red-light{
+        @import "skins/red-light";
+        @include mat.all-legacy-component-colors($red-light-theme);
+        @include theme-reset($red-light-theme);
+    }
+    &.blue-light{
+        @import "skins/blue-light";
+        @include mat.all-legacy-component-colors($blue-light-theme);
+        @include theme-reset($blue-light-theme);
+    }
+    &.blue-dark{
+        @import "skins/blue-dark";
+        @include mat.all-legacy-component-colors($blue-dark-theme);
+        @include theme-reset($blue-dark-theme);
+    }
+    &.green-light{
+        @import "skins/green-light";
+        @include mat.all-legacy-component-colors($green-light-theme);
+        @include theme-reset($green-light-theme);
+    }
+    &.green-dark{
+        @import "skins/green-dark";
+        @include mat.all-legacy-component-colors($green-dark-theme);
+        @include theme-reset($green-dark-theme);
+    }
+    &.pink-dark{
+        @import "skins/pink-dark";
+        @include mat.all-legacy-component-colors($pink-dark-theme);
+        @include theme-reset($pink-dark-theme);
+    }
+    &.maroon-grey{
+        @import "skins/maroon-grey";
+        @include mat.all-legacy-component-colors($maroon-grey-theme);
+        @include theme-reset($maroon-grey-theme);
+    }    
+}

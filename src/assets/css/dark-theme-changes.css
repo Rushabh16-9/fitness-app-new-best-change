@@ -1,0 +1,105 @@
+.blue-dark .ngx-datatable.material .datatable-body .datatable-row-detail,
+.green-dark .ngx-datatable.material .datatable-body .datatable-row-detail,
+.pink-dark .ngx-datatable.material .datatable-body .datatable-row-detail
+{
+	background: #8c8c8c;
+	border-bottom: 1px solid #fff;
+}
+
+.blue-dark .datatable-body-cell-label,
+.green-dark .datatable-body-cell-label, 
+.pink-dark .datatable-body-cell-label
+{
+    color: #fff !important;
+}
+
+.blue-dark .mb-datatable-header, 
+.blue-dark .ngx-wiout-head-dt-custom .details-sec .details-title,
+.green-dark .mb-datatable-header, 
+.green-dark .ngx-wiout-head-dt-custom .details-sec .details-title,
+.pink-dark .mb-datatable-header, 
+.pink-dark .ngx-wiout-head-dt-custom .details-sec .details-title
+{
+	color: inherit;
+}
+
+.blue-dark .datatable-icon-down, 
+.blue-dark .datatable-icon-right,
+.green-dark .datatable-icon-down, 
+.green-dark .datatable-icon-right,
+.pink-dark .datatable-icon-down, 
+.pink-dark .datatable-icon-right
+{
+  color: #fff !important;
+}
+
+.blue-dark table.custom-table,
+.green-dark table.custom-table,
+.pink-dark table.custom-table
+{
+	color: #fff;
+	border-color: #fff;
+}
+
+.blue-dark .ngx-datatable .datatable-body .datatable-body-row > div,
+.green-dark .ngx-datatable .datatable-body .datatable-body-row > div,
+.pink-dark .ngx-datatable .datatable-body .datatable-body-row > div
+{
+    background-color: #636363 !important; 
+}
+
+.blue-dark .dwn-link,
+.green-dark .dwn-link,
+.pink-dark .dwn-link
+{
+  color: #b4d7ff;
+}
+
+.blue-dark .pay-fees-blk,
+.green-dark .pay-fees-blk,
+.pink-dark .pay-fees-blk
+{
+	background: #fff;
+	color: #000;
+	border-color: #000;
+}
+
+.blue-dark .pay-fees-blk table.custom-table,
+.green-dark .pay-fees-blk table.custom-table,
+.pink-dark .pay-fees-blk table.custom-table
+{
+	color: #000;
+	border-color: #000;
+}
+
+.blue-dark .pay-fees-blk .mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-outline,
+.green-dark .pay-fees-blk .mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-outline,
+.pink-dark .pay-fees-blk .mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-outline
+{
+  color: #ccc !important;
+}
+
+.blue-dark .pay-fees-blk .mat-input-element:disabled, 
+.green-dark .pay-fees-blk .mat-input-element:disabled, 
+.pink-dark .pay-fees-blk .mat-input-element:disabled, 
+.blue-dark .pay-fees-blk .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after,
+.green-dark .pay-fees-blk .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after,
+.pink-dark .pay-fees-blk .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after
+{
+  color: #ccc !important;
+}
+
+.blue-dark .pay-fees .select-all-txt,
+.green-dark .pay-fees .select-all-txt,
+.pink-dark .pay-fees .select-all-txt
+{
+  color: #fff;
+}
+
+/*.blue-dark .pay-fees .bg-grey,
+.green-dark .pay-fees .bg-grey,
+.pink-dark .pay-fees .bg-grey
+{
+    background: #8c8c8c;
+    color: #fff;
+}*/

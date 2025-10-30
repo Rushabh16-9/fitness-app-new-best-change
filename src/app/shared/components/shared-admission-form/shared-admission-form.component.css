@@ -1,0 +1,284 @@
+.shared-admission-form .stepper-start {
+    margin-left: -24px; 
+    margin-right: -24px;
+}
+/*.cdk-overlay-pane {
+    width: initial !important;
+}*/
+
+.shared-admission-form .img-box, 
+.shared-admission-form .image-container, 
+.shared-admission-form .image-container a {
+    max-width: 150px;
+    max-height: 150px;
+}
+
+.shared-admission-form .file-name {
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-top: 8px;
+    font-size: 13px; 
+}
+.shared-admission-form .sub-cat-optn {
+    font-size: 12px; 
+}
+.shared-admission-form .doc-reset {
+    font-size: 12px; 
+}
+.shared-admission-form .upload-err {
+    margin-top: 0px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+}
+.shared-admission-form .bord-page {
+    border: 1px solid black;
+    padding: 8px;
+}
+.shared-admission-form .subj-selectn-blk {
+    border: 1px solid black;
+    margin-bottom: 20px;
+    margin-top: 10px;    
+}
+.shared-admission-form .subj-selectn-blk .heading {
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 10px;
+    border-bottom: 1px solid #c2c2c2;
+    padding-bottom: 5px;
+    padding-top: 10px;
+}
+.shared-admission-form .subj-blk {
+    padding-bottom: 10px;
+}
+.shared-admission-form .subj-name {
+    padding-top: 10px;
+    padding-left: 10px;
+}
+.shared-admission-form .form-title {
+    padding: 10px;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 500;
+}
+.shared-admission-form .in-house-note {
+    font-size: 12px; 
+    width: 100%; 
+    font-weight: 500; 
+    color: red; 
+    font-style: italic;
+    margin-left: 8px;
+    margin-top: -10px;
+}
+.shared-admission-form .mat-radio-label-content {
+    white-space: normal;
+}
+.shared-admission-form ol {
+    margin-left: 14px;
+}
+.shared-admission-form .sub-div-blk {
+    margin-top: 10px;
+}
+.shared-admission-form .sub-div-head {
+    margin-right: 10px;
+    font-weight: 500; 
+    text-transform: uppercase;
+}
+.shared-admission-form .guardian-block {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.shared-admission-form .remove-icon {
+    cursor: pointer;
+}
+.shared-admission-form .info-icon {
+    font-size: 30px;
+    margin-right: 10px;
+}
+.shared-admission-form .admission-closed {
+    text-align: center;
+    padding: 30px 0 30px 0;
+}
+.shared-admission-form .admission-closed-txt {
+    margin-top: 24px;
+    font-size: 18px;
+}
+.shared-admission-form .note {
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: red;
+    text-align: left;
+    font-style: italic;
+}
+.shared-admission-form .conf-name {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 1px solid #975155;
+    border-top: 1px solid #975155;
+    padding: 10px;
+}
+.shared-admission-form .decl-head .mat-checkbox .mat-checkbox-inner-container {
+    margin-top: 3px;
+}
+.shared-admission-form .mandatory {
+	color: #F00;
+	font-size: 11px;
+}
+.shared-admission-form input:disabled {
+    border-bottom-color: rgba(12, 12, 12, 0.2);
+    cursor: not-allowed;
+}
+.shared-admission-form .engg-info {
+    margin-top: 10px; 
+}
+.shared-admission-form .engg-info th {
+    padding: 5px 5px !important;
+}
+.shared-admission-form .engg-info td {
+    padding: 0px 5px !important;
+}
+.shared-admission-form .education-info th {
+    color: #3e3e3e !important;
+}
+.shared-admission-form .education-info th, .shared-admission-form .education-info td {
+    padding: 12px 5px;
+}
+.shared-admission-form .education-info {
+    box-shadow:none !important;
+    -webkit-box-shadow:none !important;
+}
+.shared-admission-form .education-info .mat-form-field-infix {
+    width: 100% !important;
+}
+.shared-admission-form .education-info tr:nth-of-type(odd) {
+    background: none !important; 
+}
+.shared-admission-form .education-info tr:hover td {
+    background: none !important; 
+}
+.shared-admission-form .txt-centered {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.shared-admission-form .remov-btn {
+    margin-right: 10px; 
+    margin-top: 0px !important;
+}
+.shared-admission-form .info {
+    font-size: 12px;
+}
+.shared-admission-form .eduInfo-info-div {
+    border-bottom: 2px solid #6b0707;
+    margin-bottom: 25px;
+    padding-bottom: 20px;    
+}
+.shared-admission-form .subjects-info td {
+    padding: 0px 5px;
+}
+.shared-admission-form .mb-subjects-info-total {
+    padding: 10px 0px;
+}
+.shared-admission-form .hsc-subject-optnl {
+    width: 300px;
+}
+.shared-admission-form .in-hos-blk {
+    padding: 0px 5px; 
+    margin-bottom: 30px;
+}
+.shared-admission-form .cat-blk {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+.shared-admission-form .cat-blk-titl {
+    padding: 10px 5px;
+}
+.shared-admission-form .cat-blk-lbl {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 10px 5px;
+}
+.shared-admission-form .cat-optn {
+    padding: 10px;
+}
+.shared-admission-form .catgr-err {
+    padding-left: 5px;
+    margin-top: 10px; 
+}
+.shared-admission-form .questionnaire-subj-comb-img {
+    max-width: 500px;
+}
+.shared-admission-form .qrPayment-img {
+    max-width: 875px;
+}
+
+.shared-admission-form .nirmala_niketan_refund_structure {
+    font-size: 14px !important;border-collapse: collapse;
+}
+  
+.shared-admission-form  .blank_tr_height {
+height: 25px;
+}
+
+@media only screen and (max-width: 768px) {
+
+    .shared-admission-form .questionnaire-subj-comb-img {
+        width: 100%;
+    }
+    .shared-admission-form .qrPayment-img {
+        max-width: 100%;
+    }
+    .shared-admission-form .mb-subjects-info-total {
+        padding: 0px;
+    }
+    .shared-admission-form .hsc-subject-optnl {
+        width: initial;
+    }    
+    .shared-admission-form .subjects-info td {
+        padding: 10px 10px 10px 50% !important;
+    }
+    .shared-admission-form .engg-info td {
+        padding: 10px 10px 10px 50% !important;
+    }
+    .shared-admission-form .engg-info th {
+        padding:12px 5px !important;
+    }
+    .shared-admission-form .engg-info thead tr {
+        position: inherit !important;
+    }
+    .shared-admission-form .education-info td, .education-info th {
+        padding: 10px 10px 10px 50%;
+    }
+    .shared-admission-form .education-info td.mb-adjust-td {
+        padding: 10px 10px 10px 50% !important;
+    }
+    .shared-admission-form .education-info .mb-adjust-form-field {
+        margin: -15px 0px -4px 0px;
+    }
+    .shared-admission-form .mb-adjust-form-field {
+        margin: -15px 0px -4px 0px;
+    }
+    .shared-admission-form .mat-vertical-content-container {
+        margin-left: 0px !important; 
+    }
+    .shared-admission-form .mat-vertical-content {
+        padding: 0 8px 0px 8px !important;
+    }
+    .shared-admission-form .stepper-start {
+        margin-left: -1px; 
+        margin-right: 1px;
+    }
+    .shared-admission-form .mat-vertical-stepper-header {
+        padding: 24px 14px;
+    }
+    .shared-admission-form .mb-marg-top-50 {
+        margin-top: 50px;
+    }
+}

@@ -1,0 +1,335 @@
+.preview-dialog .stepper-start {
+    margin-left: -24px; 
+    margin-right: -24px;
+}
+.idPreviewDiv span {
+    margin-bottom: 10px;
+}
+.id-card-container {
+    text-align: center;
+    margin: 30px auto;
+    font-size: 15px;
+    font-family: Helvetica;
+  }
+  
+  .id-card-details {
+    text-align: center;
+    width: 40%;
+    margin: auto;
+    border: 1px solid grey;
+    border-radius: 10px;
+    box-shadow: 0 0 3px #ccc;
+    padding: 20px;
+  }
+  
+  .image-cont {
+    margin-top: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .card-image {
+    margin-right: 20px;
+    border: 1px solid grey;
+    width: 130px;
+  }
+  
+  .id-preview-details {
+    margin-top: 20px;
+  }
+  
+  .detail-row {
+    margin-bottom: 10px;
+  }
+/*.cdk-overlay-pane {
+    width: initial !important;
+}*/
+
+.preview-dialog .img-box, 
+.preview-dialog .image-container, 
+.preview-dialog .image-container a {
+    max-width: 150px;
+    max-height: 150px;
+}
+
+.preview-dialog .file-name {
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-top: 8px;
+    font-size: 13px; 
+}
+.preview-dialog .sub-cat-optn {
+    font-size: 12px; 
+}
+.preview-dialog .doc-reset {
+    font-size: 12px; 
+}
+.preview-dialog .upload-err {
+    margin-top: 0px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+}
+.preview-dialog .bord-page {
+    border: 1px solid black;
+    padding: 8px;
+}
+.preview-dialog .subj-selectn-blk {
+    border: 1px solid black;
+    margin-bottom: 20px;
+    margin-top: 10px;    
+}
+.preview-dialog .subj-selectn-blk .heading {
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 10px;
+    border-bottom: 1px solid #c2c2c2;
+    padding-bottom: 5px;
+    padding-top: 10px;
+}
+.preview-dialog .subj-blk {
+    padding-bottom: 10px;
+}
+.preview-dialog .subj-name {
+    padding-top: 10px;
+    padding-left: 10px;
+}
+.preview-dialog .form-title {
+    padding: 10px;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 500;
+}
+.preview-dialog .in-house-note {
+    font-size: 12px; 
+    width: 100%; 
+    font-weight: 500; 
+    color: red; 
+    font-style: italic;
+    margin-left: 8px;
+    margin-top: -10px;
+}
+.preview-dialog .mat-radio-label-content {
+    white-space: normal;
+}
+.preview-dialog ol {
+    margin-left: 14px;
+}
+.preview-dialog .sub-div-blk {
+    margin-top: 10px;
+}
+.preview-dialog .sub-div-head {
+    margin-right: 10px;
+    font-weight: 500; 
+    text-transform: uppercase;
+}
+.preview-dialog .guardian-block {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.preview-dialog .remove-icon {
+    cursor: pointer;
+}
+.preview-dialog .info-icon {
+    font-size: 30px;
+    margin-right: 10px;
+}
+.preview-dialog .admission-closed {
+    text-align: center;
+    padding: 30px 0 30px 0;
+}
+.preview-dialog .admission-closed-txt {
+    margin-top: 24px;
+    font-size: 18px;
+}
+.preview-dialog .note {
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: red;
+    text-align: left;
+    font-style: italic;
+}
+.preview-dialog .conf-name {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 1px solid #975155;
+    border-top: 1px solid #975155;
+    padding: 10px;
+}
+.preview-dialog .decl-head .mat-checkbox .mat-checkbox-inner-container {
+    margin-top: 3px;
+}
+.preview-dialog .mandatory {
+	color: #F00;
+	font-size: 11px;
+}
+.preview-dialog input:disabled {
+    border-bottom-color: rgba(12, 12, 12, 0.2);
+    cursor: not-allowed;
+}
+.preview-dialog .engg-info {
+    margin-top: 10px; 
+}
+.preview-dialog .engg-info th {
+    padding: 5px 5px !important;
+}
+.preview-dialog .engg-info td {
+    padding: 0px 5px !important;
+}
+.preview-dialog .education-info th {
+    color: #3e3e3e !important;
+}
+.preview-dialog .education-info th, .preview-dialog .education-info td {
+    padding: 12px 5px;
+}
+.preview-dialog .education-info {
+    box-shadow:none !important;
+    -webkit-box-shadow:none !important;
+}
+.preview-dialog .education-info .mat-form-field-infix {
+    width: 100% !important;
+}
+.preview-dialog .education-info tr:nth-of-type(odd) {
+    background: none !important; 
+}
+.preview-dialog .education-info tr:hover td {
+    background: none !important; 
+}
+.preview-dialog .txt-centered {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.preview-dialog .remov-btn {
+    margin-right: 10px; 
+    margin-top: 0px !important;
+}
+.preview-dialog .info {
+    font-size: 12px;
+}
+.preview-dialog .eduInfo-info-div {
+    border-bottom: 2px solid #6b0707;
+    margin-bottom: 25px;
+    padding-bottom: 20px;    
+}
+.preview-dialog .subjects-info td {
+    padding: 0px 5px;
+}
+.preview-dialog .mb-subjects-info-total {
+    padding: 10px 0px;
+}
+.preview-dialog .hsc-subject-optnl {
+    width: 300px;
+}
+.preview-dialog .in-hos-blk {
+    padding: 0px 5px; 
+    margin-bottom: 30px;
+}
+.preview-dialog .cat-blk {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+.preview-dialog .cat-blk-titl {
+    padding: 10px 5px;
+}
+.preview-dialog .cat-blk-lbl {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 10px 5px;
+}
+.preview-dialog .cat-optn {
+    padding: 10px;
+}
+.preview-dialog .catgr-err {
+    padding-left: 5px;
+    margin-top: 10px; 
+}
+.preview-dialog .questionnaire-subj-comb-img {
+    max-width: 500px;
+}
+.preview-dialog .qrPayment-img {
+    max-width: 875px;
+}
+
+.preview-dialog .mat-vertical-stepper-content 
+{
+    visibility: visible !important;
+    height: 100% !important;
+}
+
+.preview-dialog .nirmala_niketan_refund_structure {
+    font-size: 14px !important;border-collapse: collapse;
+}
+  
+.preview-dialog  .blank_tr_height {
+height: 25px;
+}
+
+@media (max-width: 480px) { 
+    .id-card-details {
+        width: 80%;
+    }
+}
+@media only screen and (max-width: 768px) {
+
+    .preview-dialog .questionnaire-subj-comb-img {
+        width: 100%;
+    }
+    .preview-dialog .qrPayment-img {
+        width: 100%;
+    }
+    .preview-dialog .mb-subjects-info-total {
+        padding: 0px;
+    }
+    .preview-dialog .hsc-subject-optnl {
+        width: initial;
+    }    
+    .preview-dialog .subjects-info td {
+        padding: 10px 10px 10px 50% !important;
+    }
+    .preview-dialog .engg-info td {
+        padding: 10px 10px 10px 50% !important;
+    }
+    .preview-dialog .engg-info th {
+        padding:12px 5px !important;
+    }
+    .preview-dialog .engg-info thead tr {
+        position: inherit !important;
+    }
+    .preview-dialog .education-info td, .education-info th {
+        padding: 10px 10px 10px 50%;
+    }
+    .preview-dialog .education-info td.mb-adjust-td {
+        padding: 10px 10px 10px 50% !important;
+    }
+    .preview-dialog .education-info .mb-adjust-form-field {
+        margin: -15px 0px -4px 0px;
+    }
+    .preview-dialog .mb-adjust-form-field {
+        margin: -15px 0px -4px 0px;
+    }
+    .preview-dialog .mat-vertical-content-container {
+        margin-left: 0px !important; 
+    }
+    .preview-dialog .mat-vertical-content {
+        padding: 0 8px 0px 8px !important;
+    }
+    .preview-dialog .stepper-start {
+        margin-left: -1px; 
+        margin-right: 1px;
+    }
+    .preview-dialog .mat-vertical-stepper-header {
+        padding: 24px 14px;
+    }
+    .preview-dialog .mb-marg-top-50 {
+        margin-top: 50px;
+    }
+}

@@ -1,0 +1,183 @@
+.shared-atkt-form .info-icon {
+    font-size: 30px;
+    margin-right: 10px;
+}
+.shared-atkt-form .atkt-closed {
+    text-align: center;
+    padding: 30px 0 30px 0;
+}
+.shared-atkt-form .atkt-closed-txt {
+    margin-top: 24px;
+    font-size: 18px;
+}
+.shared-atkt-form .subj-grp-div {
+    margin-bottom: 40px;
+    border: 1px solid #363636;
+}
+.shared-atkt-form  .subj-grp-div .head {
+    padding: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #363636;
+}
+.shared-atkt-form  .mat-radio-button {
+    margin-bottom:10px;
+}
+.mat-radio-label-content, .mat-checkbox-layout .mat-checkbox-label {
+    white-space: normal !important;
+}
+
+.shared-atkt-form  .note {
+    font-size: 13px;
+    font-weight: 500;
+    color: red;
+    text-align: center;
+    font-style: italic;
+}
+.shared-atkt-form  .decl-head .mat-checkbox .mat-checkbox-inner-container {
+    margin-top: 3px;
+}
+.shared-atkt-form  .tr-head {
+    position: absolute;
+    left: 2%;
+    margin-top: -24px;
+    font-weight: 500;
+    font-size: 14px;
+}
+.shared-atkt-form  .sign-head {
+    margin-top: 20px; 
+    margin-left: 40px;
+}
+.shared-atkt-form  .mandatory {
+    color: #F00;
+    font-size: 11px;
+}
+.shared-atkt-form  input:disabled {
+    border-bottom-color: rgba(12, 12, 12, 0.2);
+    cursor: not-allowed;
+}
+.shared-atkt-form  .engg-info {
+    margin-top: 10px; 
+}
+.shared-atkt-form  .engg-info th {
+    padding: 5px 5px !important;
+}
+.shared-atkt-form  .engg-info td {
+    padding: 0px 5px !important;
+}
+.shared-atkt-form  .education-info th {
+    color: #3e3e3e !important;
+}
+.shared-atkt-form  .education-info th, .shared-atkt-form  .education-info td {
+    padding: 12px 5px;
+}
+.shared-atkt-form  .education-info {
+    box-shadow:none !important;
+    -webkit-box-shadow:none !important;
+}
+.shared-atkt-form  .education-info .mat-form-field-infix {
+    width: 100% !important;
+}
+.shared-atkt-form  .education-info tr:nth-of-type(odd) {
+    background: none !important; 
+}
+.shared-atkt-form  .education-info tr:hover td {
+    background: none !important; 
+}
+.shared-atkt-form  .image-container {
+    position: relative;
+    text-align: center;
+    color: black;
+    display: block;
+    width: 200px;
+    height: 200px;
+    margin-top: 10px;
+}
+.shared-atkt-form  .image-container a {
+    max-width: 200px;
+    max-height: 200px;
+    color: #000;
+}
+.shared-atkt-form  .txt-centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.shared-atkt-form  .img-box {
+    max-width: 200px;
+    max-height: 200px;
+    cursor: pointer;
+}
+.shared-atkt-form  .remov-btn {
+    margin-right: 10px; 
+    margin-top: 0px !important;
+}
+.shared-atkt-form  .info {
+    font-size: 12px;
+}
+.shared-atkt-form  .stepper-start {
+    margin-left: -24px; 
+    margin-right: -24px;
+}
+.shared-atkt-form .cat-blk {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+.shared-atkt-form .cat-blk-titl {
+    padding: 10px 5px;
+}
+.shared-atkt-form .cat-blk-lbl {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 10px 5px;
+}
+.shared-atkt-form .cat-optn {
+    padding: 10px;
+}
+.shared-atkt-form .catgr-err {
+    padding-left: 5px;
+    margin-top: 10px; 
+}
+
+@media only screen and (max-width: 768px) {
+
+    .shared-atkt-form  .engg-info td {
+        padding: 10px 10px 10px 50% !important;
+    }
+    .shared-atkt-form  .engg-info th {
+        padding:12px 5px !important;
+    }
+    .shared-atkt-form  .engg-info thead tr {
+        position: inherit !important;
+    }
+    .shared-atkt-form  .education-info td, .education-info th {
+        padding: 10px 10px 10px 50%;
+    }
+    .shared-atkt-form  .education-info td.mb-adjust-td {
+        padding: 10px 10px 10px 50% !important;
+    }
+    .shared-atkt-form  .education-info .mb-adjust-form-field {
+        margin: -15px 0px -4px 0px;
+    }
+    .shared-atkt-form  .mb-adjust-form-field {
+        margin: -15px 0px -4px 0px;
+    }
+    .shared-atkt-form  .mat-vertical-content-container {
+        margin-left: 0px !important; 
+    }
+    .shared-atkt-form  .mat-vertical-content {
+        padding: 0 8px 0px 8px !important;
+    }
+    .shared-atkt-form  .stepper-start {
+        margin-left: -1px; 
+        margin-right: 1px;
+    }
+    .shared-atkt-form  .mat-vertical-stepper-header {
+        padding: 24px 14px;
+    }
+    .shared-atkt-form  .mb-marg-top-50 {
+        margin-top: 50px;
+    }
+}

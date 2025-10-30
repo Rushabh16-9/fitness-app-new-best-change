@@ -1,0 +1,69 @@
+<mat-sidenav-container #sideNavContainer>
+    <mat-sidenav *ngIf="settings.menu == 'vertical'" [opened]="settings.sidenavIsOpened" [mode]="(settings.sidenavIsPinned) ? 'side' : 'over'" #sidenav class="sidenav mat-elevation-z6">
+        <app-sidenav></app-sidenav>
+    </mat-sidenav>
+    <mat-sidenav-content style="height: 100%; overflow: auto;">
+        <mat-toolbar color="primary" class="flex-p-x horizontal-menu transition-2" [ngClass]="{'mat-elevation-z6 fixed-top': settings.fixedHeader == true }" >
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100">            
+                <div fxLayout="row" fxLayoutAlign="center center">                    
+                    <button *ngIf="settings.menu == 'vertical'" mat-icon-button (click)="toggleSidenav()">
+                        <mat-icon>menu</mat-icon>
+                    </button> 
+                    <button fxShow="false" fxShow.gt-xs *ngIf="settings.menu == 'vertical' && userTypeId != 5" (click)="settings.sidenavUserBlock = !settings.sidenavUserBlock" mat-icon-button >
+                        <mat-icon>person</mat-icon>
+                    </button>
+                    <a *ngIf="settings.menu == 'horizontal'" class="logo" routerLink="/dashboard" (click)="closeSubMenus()"><img src="assets/images/logo/white-logo.png" class="sidenav-logo"></a>
+                </div>
+
+                <div *ngIf="settings.menu == 'horizontal'" fxLayout="row" fxLayoutAlign="center center" class="w-100">
+                    <app-horizontal-menu [menuParentId]="0"></app-horizontal-menu>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="end center">
+
+                    <div *ngIf="showAtktChange" class="atkt-change-div">
+                        <a (click)="openChangecourse()" href="javascript:void(0)">Change Course</a>
+                    </div>
+
+                    <div *ngIf="helpline" class="helpline-div" fxLayout="row" fxLayoutAlign="start center" fxShow="false" fxShow.gt-xs>
+                        {{helpline}}
+                    </div>
+
+                    <div *ngIf="showAcademicYear" fxLayout="column" class="academic-year-div" fxLayoutAlign="none">
+                        <mat-form-field fxFlex class="flex-p">
+                            <mat-select (selectionChange)="changeAcademicYear($event.value)" placeholder="Academic Year" [formControl]="academicYear">
+                                <mat-option value="0">All</mat-option>
+                                <mat-option *ngFor="let academicYear of academicYearList" [value]="academicYear.academicYearId">
+                                    {{ academicYear.year }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <multiple-users *ngIf="showMultiUser"></multiple-users>
+                    <app-user-menu></app-user-menu> 
+                </div>
+            </div>
+        </mat-toolbar>
+
+        <!-- <mat-toolbar *ngIf="settings.menu == 'horizontal'" 
+            class="horizontal-menu flex-p-x transition-2" 
+            [ngClass]="{'mat-elevation-z6 fixed-top': settings.fixedHeader == true }"
+            [class.sticky]="isStickyMenu" >
+            <div fxLayout="row" fxLayoutAlign="center center" class="w-100">
+                <app-horizontal-menu [menuParentId]="0"></app-horizontal-menu>
+            </div>
+        </mat-toolbar> -->
+
+        <div id="main-content" class="inner-sidenav-content transition-2" [class.horizontal-menu-hidden]="isStickyMenu"> 
+            <!-- <app-breadcrumb></app-breadcrumb> -->
+            <router-outlet (activate)="changeOfRoutes()"></router-outlet>    
+        </div>
+
+        <div *ngIf="showBackToTop" fxLayout="row" fxLayoutAlign="center center" class="back-to-top transition-2" (click)="scrollToTop();">
+            <mat-icon>arrow_upward</mat-icon>
+        </div>
+
+    </mat-sidenav-content>
+
+</mat-sidenav-container>

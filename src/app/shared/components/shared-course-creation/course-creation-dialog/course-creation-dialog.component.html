@@ -1,0 +1,82 @@
+<div fxLayout="column" class="course-creation-dialog">
+	<div class="flex-p mb-padng-0">
+		<div mat-dialog-title class="modal-header">
+			<b>{{modalTitle}}</b>
+		</div>
+		<mat-dialog-content>
+			<form [formGroup]="courseCreationForm" (ngSubmit)="onSave(courseCreationForm.value)" autocomplete="off">
+				<div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+					<mat-form-field fxFlex>
+						<mat-select formControlName="parentConfIds" placeholder="Parent Course" multiple >
+							<mat-option *ngFor="let course of coursesList" [value]="course.confId">
+								{{course.courseName}}
+							</mat-option>
+						</mat-select>
+                    	<mat-hint>Note : Select parent courses from which student can be promoted in this course.</mat-hint>
+						<mat-error *ngIf="courseCreationForm.controls.parentConfIds.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div formArrayName="levels">
+					<div *ngFor="let itemrow of courseCreationForm.get('levels')['controls']; let i=index" [formGroupName]="i" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+						<mat-form-field fxFlex>
+							<input (keyup)="onLevelKeyup($event, i)" formControlName="selectedLevel" placeholder="{{ itemrow.get('levelName').value }}" [matAutocomplete]="auto" matInput required >
+							<mat-error *ngIf="itemrow.controls.selectedLevel.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+							<mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectLevel($event, i)">
+								<mat-option *ngFor="let levelVal of itemrow.get('levelValues').value" [value]="levelVal">
+									{{ levelVal }}
+								</mat-option>
+							</mat-autocomplete>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+					<mat-form-field fxFlex>
+						<input matInput formControlName="courseTitle" placeholder="Course Title" maxlength="100" required>
+						<mat-error *ngIf="courseCreationForm.controls.courseTitle.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+					</mat-form-field>
+				</div>
+				<div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+					<mat-form-field fxFlex>
+						<input matInput formControlName="printName" placeholder="Print Name" maxlength="100" required>
+						<mat-error *ngIf="courseCreationForm.controls.printName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+					</mat-form-field>
+				</div>
+				<div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+					<mat-form-field fxFlex>
+						<input matInput formControlName="shortName" placeholder="Short Name" maxlength="100">
+						<mat-error *ngIf="courseCreationForm.controls.shortName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+					</mat-form-field>
+				</div>
+				<div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+					<mat-form-field fxFlex>
+						<input matInput placeholder="Admission Form Fees" formControlName="admissionFormFees" (keypress)="globalFunctions.onlyNumberKey($event)" (keydown.space)="$event.preventDefault()" maxlength="100" required>
+						<mat-error *ngIf="courseCreationForm.controls.admissionFormFees.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+					</mat-form-field>
+				</div>
+				<div *ngIf="page == 'admin'" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+					<mat-form-field fxFlex>
+						<input matInput placeholder="Convinience Amount" formControlName="convinienceAmount" (keypress)="globalFunctions.onlyNumberKey($event)" (keydown.space)="$event.preventDefault()" maxlength="100" required>
+						<mat-error *ngIf="courseCreationForm.controls.convinienceAmount.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+					</mat-form-field>
+				</div>
+				<div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">				
+					<mat-form-field fxFlex>
+						<mat-select formControlName="bankAccountId" placeholder="Bank Account" required>
+							<mat-option *ngFor="let bankAcc of bankAccountsArray" [value]="bankAcc.bankAccountId">
+								{{ bankAcc.title }} - {{ bankAcc.accountNo }}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="courseCreationForm.controls.bankAccountId.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div class="actions-btn-div marg-top-20 marg-btm-20">
+					<button mat-raised-button [mat-dialog-close]="true" type="button">Cancel</button>
+					<button mat-raised-button color="primary" type="submit">Save</button>
+				</div>
+			</form>
+		</mat-dialog-content>
+	</div>
+</div>

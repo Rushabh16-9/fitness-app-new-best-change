@@ -1,0 +1,738 @@
+<div class="shared-atkt-form">
+
+  <mat-vertical-stepper *ngIf="!admissionClosed" class="stepper-start" [linear]="isLinear" #stepper="matVerticalStepper">
+
+    <span *ngFor="let tab of formSetup; let k = index">
+
+      <mat-step *ngIf="tab.display" [stepControl]="tab.stepName" [id]="tab.stepName">
+
+        <span *ngIf="tab.stepName == 'category'">
+
+          <form [formGroup]="categoryForm" (ngSubmit)="onCategorySubmit(categoryForm.value, stepper, tab)" autocomplete="false" >
+        
+            <ng-template matStepLabel>Category</ng-template>
+          
+            <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px" style="margin-top:20px;" >
+              <mat-form-field *ngIf="showAdmissionType" fxFlex class="width-100">
+                <mat-select formControlName="admissionTypeValue" placeholder="Admission Type">
+                  <mat-option *ngFor="let optn of admissionTypesArray" [value]="optn">
+                    {{optn}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="categoryForm.controls.admissionTypeValue.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+
+              <mat-form-field *ngIf="showExamSession" fxFlex class="width-100">
+                <mat-select formControlName="examSessionValue" placeholder="Exam Session">
+                  <mat-option *ngFor="let optn of examSessionsArray" [value]="optn">
+                    {{optn}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="categoryForm.controls.examSessionValue.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+
+              <mat-form-field *ngIf="showExamPattern" fxFlex class="width-100">
+                <mat-select formControlName="examPatternValue" placeholder="Exam Pattern">
+                  <mat-option *ngFor="let optn of examPatternsArray" [value]="optn">
+                    {{optn}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="categoryForm.controls.examPatternValue.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div *ngIf="formData.categoryInfo.showStudentType" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px" style="margin-top: 20px;">
+              <mat-radio-group formControlName="studentType" fxFlex required>
+                <label class="mat-form-field"><b>Student Type</b><samp class="mandatory">*</samp>: </label>
+                <mat-radio-button class="mb-displ-block marg-left-10 mb-marg-left-0" value="Student">Student</mat-radio-button>
+                <mat-radio-button class="mb-displ-block" value="Ex-Student">Ex-Student</mat-radio-button>
+                <mat-error class="field-error-msg" style="position: inherit; margin-top: -8px;" *ngIf="categoryForm.controls.studentType.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-radio-group>
+            </div>
+
+            <div>
+              <div *ngIf="categoryError" class="error-msg catgr-err">{{allMsgs.CATEGORY_NOT_SELECTED}}</div>
+
+              <div *ngIf="categoriesObj.title" class="cat-blk-titl">
+                <b>{{ categoriesObj.title }}</b>
+              </div>
+
+              <div class="cat-blk">
+
+                <div *ngFor="let grp of categoryGrps; let i = index">
+
+                  <div *ngIf="grp.groupName" class="cat-blk-lbl">
+                    <b>{{ grp.groupName }}</b>
+                  </div>
+
+                  <div class="cat-optn">
+
+                    <mat-radio-group class="width-100 mb-adjust-form-field" style="width:100%;">
+
+                      <div *ngFor="let optn of grp.list; let k = index">
+
+                        <mat-radio-button (change)="onSelectCategory(optn.admissionCategoryId)" value="{{optn.admissionCategoryId}}" [checked]="optn.isSelected" style="display: block; margin-bottom:10px;" flex fxLayoutGap="10px" >
+                          {{ optn.admissionCategoryName }}
+                        </mat-radio-button>
+
+                        <div *ngIf="optn.otherCategory && optn.isSelected" style="margin-bottom: 10px;">
+                          <mat-form-field fxFlex>
+                            <input formControlName="otherCategory" placeholder="{{optn.otherCategoryLabel}}" maxlength="225" matInput >
+                            <mat-error *ngIf="categoryForm.controls.otherCategory.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </mat-radio-group>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="showSubCategories" style="margin-top:20px;" >
+
+              <div *ngIf="subCategoryError" class="error-msg catgr-err">{{allMsgs.SUB_CATEGORY_NOT_SELECTED}}</div>
+
+              <div *ngIf="formData.categories.admissionSubCategories.title" class="cat-blk-titl">
+                <b>{{ formData.categories.admissionSubCategories.title }}</b>
+              </div>
+
+              <div *ngIf="!categoryForm.get('showSubCatInRadio').value" style="padding: 0px 5px;">
+                <div *ngFor="let catBunch of subCategoryBunch; let k = index" flex fxLayout="row" fxLayout.lt-sm="column">
+                  <div *ngFor="let optn of catBunch; let i = index" fxFlex>
+                    <mat-checkbox (change)="onSelectSubCategory(optn, $event.checked)" [checked]="optn.isSelected" class="sub-cat-optn" > {{optn.admissionSubCategoryName}} </mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="categoryForm.get('showSubCatInRadio').value" style="padding: 0px 5px;">
+
+                <div *ngFor="let catBunch of subCategoryBunch; let k = index" flex fxLayout="row" fxLayout.lt-sm="column">
+                  <div *ngFor="let optn of catBunch; let i = index" fxFlex>
+                    <mat-radio-button (change)="onSelectRadioSubCategory(optn)" [checked]="optn.isSelected" value="{{optn.admissionSubCategoryId}}" style="font-size: 12px; margin-bottom:10px;"  >
+                      {{optn.admissionSubCategoryName}}
+                    </mat-radio-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+            <!-- <div>
+              <div class="resp-table" style="border: none; margin-top: 0px;">
+
+                <div class="resp-table-heading" style="padding-left: 0px; border-bottom: none;">
+                  <b *ngIf="showSubCategories">I belong to:</b>
+                  <b *ngIf="!showSubCategories">Apply from following categories:</b>
+                  <div *ngIf="categoryError" class="field-error-msg" style="font-weight: 400; position: inherit; margin-top:0px;" >{{allMsgs.CATEGORY_NOT_SELECTED}}</div>
+                </div>
+
+                <div class="education-info-div">
+
+                  <table border="1" class="p-0 custom-table education-info" style="border: 1px solid black;">
+                    <thead>
+                      <tr>
+                        <th *ngFor="let category of categoryCheckboxes; let i = index" style="border-bottom: 1px solid black;" >{{ category.groupName }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td *ngFor="let category of categoryCheckboxes; let i = index" attr.data-label="{{ category.groupName }}" style="vertical-align: text-top; border-bottom: 1px solid black;">
+                          <mat-radio-group class="width-100 mb-adjust-form-field" style="width:100%">
+                            <mat-radio-button *ngFor="let cat of category.list; let k = index" (change)="onSelectCategory(cat.admissionCategoryId)" value="{{cat.admissionCategoryId}}" [checked]="cat.isSelected" style="display: block; margin-right: 10px; margin-bottom:10px;" flex fxLayoutGap="10px" >
+                              {{ cat.admissionCategoryName }}
+                              <div *ngIf="cat.enterText && cat.isSelected">
+                                <mat-form-field fxFlex >
+                                  <input formControlName="otherCategory" placeholder="Other Category" maxlength="225" matInput required >
+                                  <mat-error *ngIf="categoryForm.controls.otherCategory.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                                </mat-form-field>
+                              </div>
+                            </mat-radio-button>
+                          </mat-radio-group>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div> -->
+
+            <!-- <div *ngIf="showSubCategories" style="margin-top:20px;" >
+              <div class="row parent-div apply-from">
+                <b>Admission Through Quota:</b>
+                <div class="field-error-msg" style="margin-top:16px;" *ngIf="subCategoryError">{{allMsgs.SUB_CATEGORY_NOT_SELECTED}}</div>
+              </div>
+
+              <div *ngIf="!categoryForm.get('showSubCatInRadio').value" style="margin-top:10px;">
+                <div *ngFor="let categoryBunch of subCategoryBunch; let k = index" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px">
+                  <mat-checkbox style="font-size: 12px;" fxFlex class="p-1 wrap-chek-label" *ngFor="let subCategory of categoryBunch; let i = index" (change)="onSelectSubCategory(subCategory, $event.checked)" [checked]="subCategory.isSelected">
+                    {{subCategory.admissionSubCategoryName}}
+                  </mat-checkbox>
+                </div>
+              </div>
+
+              <div *ngIf="categoryForm.get('showSubCatInRadio').value" style="margin-top:10px;">
+                <div *ngFor="let categoryBunch of subCategoryBunch; let k = index" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px">
+                  <mat-radio-button style="font-size: 12px;" fxFlex class="p-1 wrap-chek-label" *ngFor="let subCategory of categoryBunch; let i = index" (change)="onSelectRadioSubCategory(subCategory)" [checked]="subCategory.isSelected" value="{{subCategory.admissionSubCategoryId}}" >
+                    {{subCategory.admissionSubCategoryName}}
+                  </mat-radio-button>
+                </div>
+              </div>
+            </div> -->
+
+            <div class="py-1">
+              <button style="left: 7px;" mat-raised-button color="primary"> Next </button>
+            </div>
+            <div class="flex-p">
+              <mat-divider></mat-divider>
+            </div>
+          </form>
+        </span>
+
+        <span *ngIf="tab.stepName == 'personalInfo'">
+       
+          <form [formGroup]="personalInfoForm" (ngSubmit)="onPersonalInfoSubmit(personalInfoForm.getRawValue(), stepper, tab)" autocomplete="off">
+           
+            <ng-template matStepLabel>Personal Information</ng-template>
+           
+            <div *ngIf="formData.personalInfo.fullNameMarksheet.display" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field fxFlex>
+                <input formControlName="fullNameMarksheet" placeholder="Name as per Marksheet" maxlength="255" matInput>
+                <mat-hint>{{formData.personalInfo.fullNameMarksheet.fullNameMarksheetTitle}}</mat-hint>
+                <mat-error *ngIf="personalInfoForm.controls.fullNameMarksheet.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field *ngIf="formData.personalInfo.lastName.display" fxFlex>
+                <input matInput placeholder="Last Name" formControlName="lastName" maxlength="35">
+                <mat-error *ngIf="personalInfoForm.controls.lastName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="formData.personalInfo.firstName.display" fxFlex>
+                <input matInput placeholder="First Name" formControlName="firstName" maxlength="35">
+                <mat-error *ngIf="personalInfoForm.controls.firstName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="formData.personalInfo.middleName.display" fxFlex>
+                <input matInput placeholder="Middle Name" formControlName="middleName" maxlength="35">
+              </mat-form-field>
+            </div>
+
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field *ngIf="formData.personalInfo.motherName.display" fxFlex>
+                <input matInput placeholder="Mother's Name" formControlName="motherName" maxlength="35">
+                <mat-error *ngIf="personalInfoForm.controls.motherName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="formData.personalInfo.email.display" fxFlex>
+                <input matInput placeholder="E-Mail" formControlName="email" maxlength="100" (keydown.space)="$event.preventDefault()">
+                <mat-error *ngIf="personalInfoForm.controls.email.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                <mat-error *ngIf="personalInfoForm.controls.email.hasError('invalidEmail')">{{allMsgs.WRONG_EMAIL}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-radio-group *ngIf="formData.personalInfo.gender.display"  formControlName="gender" class="pad-top-10 mb-padng-btm-10 mb-padng-top-0" fxFlex>
+                <label class="mat-form-field">Gender<samp class="mandatory">*</samp>: </label>
+                <mat-radio-button class="mb-displ-block marg-left-10 mb-marg-left-0" value="male">Male</mat-radio-button>
+                <mat-radio-button class="mb-displ-block" value="female">Female</mat-radio-button>
+                <mat-radio-button class="mb-displ-block" value="other">Other</mat-radio-button>
+                <mat-error style="font-size: 12px;" *ngIf="personalInfoForm.controls.gender.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-radio-group>
+            </div>
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field *ngIf="formData.personalInfo.mobileNo.display" fxFlex>
+                <input matInput placeholder="Mobile Number" formControlName="mobileNo" (keydown.space)="$event.preventDefault()" (keypress)="globalFunctions.onlyNumberKey($event)" maxlength="10" pattern="[0-9]+" >
+                <mat-error *ngIf="personalInfoForm.controls.mobileNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                <mat-error *ngIf="personalInfoForm.controls.mobileNo.hasError('pattern')">{{allMsgs.WRONG_MOBILE_NO}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field *ngIf="formData?.personalInfo?.prnNo?.display" fxFlex>
+                <input formControlName="prnNo" placeholder="PRN Number" (keydown.space)="$event.preventDefault()" (keypress)="onPrnNoKeypress($event)" maxlength="{{formData?.personalInfo?.prnNo?.maxLength}}" matInput>
+                <mat-error *ngIf="personalInfoForm.controls.prnNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                <mat-error *ngIf="personalInfoForm.controls.prnNo.hasError('minlength')">{{allMsgs.WRONG_PRN_ENTERED}}</mat-error>
+              </mat-form-field>
+              <mat-form-field *ngIf="formData.personalInfo.seatNo.display" fxFlex>
+                <input formControlName="seatNo" placeholder="Seat Number" maxlength="35" matInput >
+                <mat-error *ngIf="personalInfoForm.controls.seatNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+             
+              <mat-form-field *ngIf="formData.personalInfo.eligibilityNo.display" fxFlex="25">
+                <input formControlName="eligibilityNo" placeholder="{{formData.personalInfo.eligibilityNo.label}}" (keydown.space)="$event.preventDefault()" (keypress)="globalFunctions.onlyNumberKey($event)" maxlength="16" pattern="[0-9]+" matInput>
+                <mat-error *ngIf="personalInfoForm.controls.eligibilityNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                <mat-error *ngIf="personalInfoForm.controls.eligibilityNo.hasError('minlength')">{{allMsgs.WRONG_PRN_ENTERED}}</mat-error>
+              </mat-form-field>
+
+              <mat-radio-group *ngIf="formData.personalInfo.divyang.display"  formControlName="divyang" class="pad-top-10 mb-padng-btm-10 mb-padng-top-0" fxFlex>
+                <label class="mat-form-field">{{formData.personalInfo.divyang.label}} <samp *ngIf="formData.personalInfo.divyang.isRequired" class="mandatory">*</samp>: </label>
+                <mat-radio-button *ngFor="let optn of formData.personalInfo.divyang.values" class="mb-displ-block marg-left-10 mb-marg-left-0" value="{{optn}}">{{optn}}</mat-radio-button>
+                <mat-error style="font-size: 12px;" *ngIf="personalInfoForm.controls.divyang.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-radio-group>
+
+              <mat-form-field *ngIf="formData.personalInfo.mediumInstruction.display" fxFlex="25" class="width-100">
+                <mat-select formControlName="mediumInstruction" placeholder="{{formData.personalInfo.mediumInstruction.label}}" required>
+                  <mat-option *ngFor="let optn of formData.personalInfo.mediumInstruction.values" [value]="optn">
+                    {{optn}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="personalInfoForm.controls.mediumInstruction.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div style="margin-top: 10px;">
+              <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+              <button mat-raised-button color="primary">Next</button>
+            </div>
+            <div class="flex-p" >
+              <mat-divider></mat-divider>
+            </div>
+          </form>
+        </span>
+
+        <span *ngIf="tab.stepName == 'addressInfo'">
+
+          <form [formGroup]="addressInfoForm" (ngSubmit)="onAddressInfoFormSubmit(addressInfoForm.value, stepper, tab)" autocomplete="off">
+            <ng-template matStepLabel>Address</ng-template>
+            <div formGroupName="residentialAddress" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field fxFlex>
+                <input matInput placeholder="Address" formControlName="address" maxlength="150" required>
+                <mat-error *ngIf="addressInfoForm.get('residentialAddress.address').errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div formGroupName="residentialAddress" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <mat-form-field fxFlex>
+                <input matInput formControlName="pincode" placeholder="Pincode" (keyup)="getFromPincode($event, 'residentialAddress')" (keypress)="globalFunctions.onlyNumberKey($event)" maxlength="6" pattern="[0-9]+" required>
+                <mat-error *ngIf="addressInfoForm.get('residentialAddress.pincode').errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                <mat-error *ngIf="addressInfoForm.get('residentialAddress.pincode').hasError('pattern')">{{allMsgs.WRONG_PINCODE}}</mat-error>
+              </mat-form-field>
+              <mat-form-field fxFlex>
+                <input matInput formControlName="state" placeholder="State" maxlength="35" required>
+                <mat-hint>State would be selected basis Pincode!</mat-hint>
+              </mat-form-field>
+              <mat-form-field fxFlex>
+                <input matInput formControlName="city" placeholder="City" maxlength="35" required>
+                <mat-hint>City would be selected basis Pincode!</mat-hint>
+              </mat-form-field>
+            </div>
+            <div style="margin-top: 10px;">
+              <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+              <button mat-raised-button color="primary">Next</button>
+            </div>
+            <div class="flex-p" >
+              <mat-divider></mat-divider>
+            </div>
+          </form>
+        </span>
+
+        <span *ngIf="tab.stepName == 'subjectSelection'">
+
+          <form [formGroup]="subjectInfoForm" (ngSubmit)="onSubjectInfoFormSubmit(subjectInfoForm.value, stepper, tab)" autocomplete="off" class="education-info-form">
+           
+            <ng-template matStepLabel>Subject Selection</ng-template>
+
+            <div *ngIf="showExamMarksPatterns" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px" >
+
+              <mat-form-field fxFlex class="width-100">
+                <mat-select formControlName="examMarksPatternSelected" placeholder="Exam Pattern" required>
+                  <mat-option *ngFor="let ep of formData.subjectInfo.examMarksPatterns" [value]="ep">
+                    {{ep}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="subjectInfoForm.controls.examMarksPatternSelected.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              </mat-form-field>
+
+            </div>
+
+            <div *ngFor="let subjectGroup of subjectGroupArray; let i=index" class="subj-grp-div">
+              
+              <div class="head">{{subjectGroup.groupTitle}}</div>
+              <div *ngIf="subjectGroup.minErr" style="margin: 10px 10px" class="error-msg">{{subjectGroup.minErrMsg}}</div>
+              <div *ngIf="subjectGroup.maxErr" style="margin: 10px 10px" class="error-msg">{{subjectGroup.maxErrMsg}}</div>
+
+              <div *ngIf="!subjectGroup.showInRadioBtn" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px" style="margin-left:10px; margin-top:20px;" >
+                <mat-checkbox flex fxLayoutGap="10px" class="mb-displ-block marg-right-10 marg-btm-10"
+                *ngFor="let subject of subjectGroup.subjectConfIds; let j=index" 
+                (change)="onSelectSubjectGroup(subjectGroup, subject.subjectConfId, i, j, $event.checked)" 
+                [checked]="subject.isChecked">{{subject.subjectName}}</mat-checkbox>
+              </div>
+
+              <div *ngIf="subjectGroup.showInRadioBtn" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px" style="margin-left:10px; margin-top:20px;" >
+                <mat-radio-group>
+                  <mat-radio-button flex fxLayoutGap="10px" class="mb-displ-block marg-right-10 marg-btm-10"
+                  *ngFor="let subject of subjectGroup.subjectConfIds; let j=index" 
+                  (change)="onSelectSubjectGroup(subjectGroup, subject.subjectConfId, i, j, true, 'radio')" 
+                  [checked]="subject.isChecked"
+                  value="{{subject.subjectConfId}}" >{{subject.subjectName}}</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+
+            <div formArrayName="subjects" class="education-info-div">
+              <table class="p-0 custom-table education-info">
+                <thead>
+                  <tr>
+                    <th>
+                      Action:
+                    </th>
+                    <th *ngIf="subjectHeaders.subjectCode">
+                      Subject Code:
+                    </th>
+                    <th *ngIf="subjectHeaders.subjectName">
+                      Subject Name:
+                    </th>
+                    <th *ngIf="subjectHeaders.answeringLanguage">
+                      Answering Language:
+                    </th>
+                    <th *ngIf="subjectHeaders.marksObtained"  >
+                      Enter Marks Only if claiming exemption:
+                    </th>
+                    <th *ngIf="subjectHeaders.marksTheory" >
+                      Theory Marks/Grade:
+                    </th>
+                    <th *ngIf="subjectHeaders.marksInternal" >
+                      Internal Marks/Grade:
+                    </th>
+                    <th *ngIf="subjectHeaders.marksPractical" >
+                      Marks Practical:
+                    </th>
+                    <th *ngIf="subjectHeaders.examTypes">
+                      Exam Types:
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let itemrow of subjectInfoForm.get('subjects')['controls']; let i=index" [formGroupName]="i">
+                    <td data-label="Action">
+                      <mat-checkbox 
+                      formControlName="isChecked"
+                      (change)="onSelectSubject(itemrow, itemrow.controls.subjectConfId.value, i, $event.checked)" 
+                      [checked]="itemrow.controls.isChecked.value"
+                      ></mat-checkbox>
+                    </td>
+                    <td *ngIf="subjectHeaders.subjectCode" data-label="Subject Code">
+                      {{itemrow.controls.subjectCode.value}}
+                    </td>
+                    <td *ngIf="subjectHeaders.subjectName" data-label="Subject Name">
+                      {{itemrow.controls.subjectName.value}}
+                    </td>
+                    <td *ngIf="subjectHeaders.answeringLanguage" data-label="Answering Language">
+                      <mat-form-field class="width-100 mb-adjust-form-field" style="width:100%">
+                        <mat-select formControlName="answeringLanguage" >
+                          <mat-option *ngFor="let al of answeringLanguagesArray" [value]="al">
+                            {{al}}
+                          </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="itemrow.controls.answeringLanguage.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td *ngIf="subjectHeaders.marksObtained" data-label="Enter Marks Only if claiming exemption">
+                      <mat-form-field class="width-100 mb-adjust-form-field" style="width:80%">
+                        <input matInput formControlName="marksObtained" (keydown.space)="$event.preventDefault()" (keypress)="globalFunctions.onlyNumberKey($event)" pattern="[0-9]+" maxlength="4" >
+                        <mat-error *ngIf="itemrow.controls.marksObtained.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                        <mat-error *ngIf="itemrow.controls.marksObtained.errors?.min">{{allMsgs.WRONG_MARKS_ENTERED45}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td *ngIf="subjectHeaders.marksTheory" data-label="Theory Marks/Grade">
+                      <mat-form-field class="width-100 mb-adjust-form-field" style="width:80%">
+                        <input formControlName="marksTheory" (keydown.space)="$event.preventDefault()" maxlength="12" matInput >
+                        <mat-error *ngIf="itemrow.controls.marksTheory.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                        <mat-error *ngIf="itemrow.controls.marksTheory.errors?.min">{{allMsgs.WRONG_MARKS_ENTERED45}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td *ngIf="subjectHeaders.marksInternal" data-label="Internal Marks/Grade">
+                      <mat-form-field class="width-100 mb-adjust-form-field" style="width:80%">
+                        <input formControlName="marksInternal" (keydown.space)="$event.preventDefault()" maxlength="12" matInput >
+                        <mat-error *ngIf="itemrow.controls.marksInternal.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                        <mat-error *ngIf="itemrow.controls.marksInternal.errors?.min">{{allMsgs.WRONG_MARKS_ENTERED45}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td *ngIf="subjectHeaders.marksPractical" data-label="Marks Practical">
+                      <mat-form-field class="width-100 mb-adjust-form-field" style="width:80%">
+                        <input formControlName="marksPractical" (keydown.space)="$event.preventDefault()" maxlength="12" matInput >
+                        <mat-error *ngIf="itemrow.controls.marksPractical.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                        <mat-error *ngIf="itemrow.controls.marksPractical.errors?.min">{{allMsgs.WRONG_MARKS_ENTERED45}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td *ngIf="subjectHeaders.examTypes" data-label="Exam Types">
+                      <mat-form-field *ngIf="showExamSession" fxFlex class="width-100" style="width:100%">
+                        <mat-select formControlName="examTypeValue" placeholder="Exam Types" multiple >
+                          <mat-option *ngFor="let examType of itemrow.controls.examTypes.value; let j = index" [value]="examType.examTypeId">
+                            {{examType.examType}}
+                          </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="itemrow.controls.examTypeValue.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="margin-top: 10px;">
+              <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+              <button mat-raised-button color="primary" >Next</button>
+            </div>
+            <div class="flex-p" >
+              <mat-divider></mat-divider>
+            </div>
+          </form>
+        </span>
+
+        <span *ngIf="tab.stepName == 'educationInfo'">
+
+          <form [formGroup]="educationInfoForm" (ngSubmit)="onEducationInfoFormSubmit(educationInfoForm.value, stepper, tab)" autocomplete="off" class="education-info-form">
+            <ng-template matStepLabel>Educational Details</ng-template>
+            <div formArrayName="eduInfo" class="education-info-div" >
+              <table class="p-0 custom-table education-info">
+                <thead>
+                  <tr>
+                    <th *ngIf="educationHeaders.courseName">
+                      Course Name:
+                    </th>
+                    <th *ngIf="educationHeaders.termExam">
+                      Term Exam:
+                    </th>
+                    <th *ngIf="educationHeaders.seatNo">
+                      Seat No. of previous semester:
+                    </th>
+                    <th *ngIf="educationHeaders.monthAppeared">
+                      Month Appeared:
+                    </th>
+                    <th *ngIf="educationHeaders.yearAppeared">
+                      Year Appeared:
+                    </th>
+                    <th *ngIf="educationHeaders.marksObtained">
+                      Marks Obtained:
+                    </th>
+                    <th *ngIf="educationHeaders.status">
+                      Status:
+                    </th>
+                    <th matTooltip="No. of Heads in which the student has failed" *ngIf="educationHeaders.internalFailed">
+                      Internal:
+                    </th>
+                    <th matTooltip="No. of Heads in which the student has failed" *ngIf="educationHeaders.externalFailed">
+                      External:
+                    </th>
+                    <th *ngIf="educationHeaders.sgpiCgpi">
+                      SGPI/CGPI:
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let itemrow of educationInfoForm.get('eduInfo')['controls']; let i=index" [formGroupName]="i">
+                    <td *ngIf="educationHeaders.courseName" data-label="Course Name">
+                      {{itemrow.controls.courseName.value}}
+                    </td>
+                    <td *ngIf="educationHeaders.termExam" data-label="Term Exam">
+                      {{itemrow.controls.termExam.value}}
+                    </td>
+                    <td *ngIf="educationHeaders.seatNo" data-label="Seat No. of previous semester.">
+                      <mat-form-field class="width-100 mb-adjust-form-field" >
+                        <input matInput formControlName="seatNo" maxlength="35" >
+                        <mat-error *ngIf="itemrow.controls.seatNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td *ngIf="educationHeaders.monthAppeared" data-label="Month of Passing">
+                      <mat-form-field class="width-100 mb-adjust-form-field" style="width:100%">
+                        <mat-select formControlName="monthAppeared" >
+                          <mat-option *ngFor="let month of months" [value]="month.id">
+                            {{month.name}}
+                          </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="itemrow.controls.monthAppeared.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td *ngIf="educationHeaders.yearAppeared" data-label="Year of Passing">
+                      <mat-form-field class="width-100 mb-adjust-form-field" style="width:100%">
+                        <mat-select formControlName="yearAppeared" >
+                          <mat-option *ngFor="let year of yearAppearedList" [value]="year">
+                            {{year}}
+                          </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="itemrow.controls.yearAppeared.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td *ngIf="educationHeaders.marksObtained" data-label="Marks Obtained">
+                      <mat-form-field class="width-100 mb-adjust-form-field" >
+                        <input matInput formControlName="marksObtained" (keydown.space)="$event.preventDefault()" (keypress)="globalFunctions.onlyNumberKey($event)" pattern="[0-9]+" maxlength="4" >
+                        <mat-error *ngIf="itemrow.controls.marksObtained.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                        <mat-error *ngIf="itemrow.controls.marksObtained.errors?.min">{{allMsgs.WRONG_MARKS_ENTERED2}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td *ngIf="educationHeaders.status" data-label="Status">
+                      <mat-form-field class="width-100 mb-adjust-form-field" style="width:100%">
+                        <mat-select formControlName="status" >
+                          <mat-option *ngFor="let pf of passFailStatusesArray" [value]="pf">
+                            {{pf}}
+                          </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="itemrow.controls.status.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td matTooltip="No. of Heads in which the student has failed" *ngIf="educationHeaders.internalFailed" data-label="Internal">
+                      <mat-form-field class="width-100 mb-adjust-form-field">
+                        <input matInput formControlName="internalFailed" maxlength="35" >
+                        <mat-error *ngIf="itemrow.controls.internalFailed.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td matTooltip="No. of Heads in which the student has failed" *ngIf="educationHeaders.externalFailed" data-label="External">
+                      <mat-form-field class="width-100 mb-adjust-form-field">
+                        <input matInput formControlName="externalFailed" maxlength="35" >
+                        <mat-error *ngIf="itemrow.controls.externalFailed.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                    <td *ngIf="educationHeaders.sgpiCgpi" data-label="SGPI/CGPI">
+                      <mat-form-field class="width-100 mb-adjust-form-field">
+                        <input matInput (keydown.space)="$event.preventDefault()" (keypress)="globalFunctions.onlypercentage($event)" formControlName="sgpiCgpi" maxlength="10" >
+                        <mat-error *ngIf="itemrow.controls.sgpiCgpi.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div *ngIf="repeatersInfoShow" formGroupName="repeatersInfo" class="education-info-div" style="margin-top: 20px;">
+              <div class="heading">To be filled in by Repeaters only:</div>
+              <table border="1" class="p-0 custom-table education-info engg-info" >
+                <thead>
+                  <tr>
+                    <th colspan="2" >
+                      {{educationInfoForm.controls.repeatersInfo.get('heading').value}}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="mb-displ-none" style="border-bottom:none;">
+                      i) Last Seat No.
+                    </td>
+                    <td data-label="i) Last Seat No." style="border-bottom:none; vertical-align:top;">
+                      <mat-form-field class="width-100 mb-adjust-form-field">
+                        <input matInput formControlName="lastSeatNo" (keydown.space)="$event.preventDefault()" maxlength="30" >
+                        <mat-error *ngIf="educationInfoForm.controls.repeatersInfo.controls.lastSeatNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mb-displ-none" style="border-bottom:none;">
+                      ii) Month
+                    </td>
+                    <td data-label="Month" style="border-bottom:none; vertical-align:top;">
+                      <mat-form-field class="width-100 mb-adjust-form-field" style="width:100%">
+                        <mat-select formControlName="month" >
+                          <mat-option *ngFor="let month of months" [value]="month.id">
+                            {{month.name}}
+                          </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="educationInfoForm.controls.repeatersInfo.controls.month.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mb-displ-none" style="border-bottom:none;">
+                      iii) Year
+                    </td>
+                    <td data-label="Year" style="border-bottom:none; vertical-align:top;">
+                      <mat-form-field class="width-100 mb-adjust-form-field" style="width:100%">
+                        <mat-select formControlName="year" >
+                          <mat-option *ngFor="let year of yearAppearedList" [value]="year">
+                            {{year}}
+                          </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="educationInfoForm.controls.repeatersInfo.controls.year.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      </mat-form-field>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 10px;">
+              <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+              <button mat-raised-button color="primary" >Next</button>
+            </div>
+            <div class="flex-p" >
+              <mat-divider></mat-divider>
+            </div>
+          </form>
+        </span>
+
+        <span *ngIf="tab.stepName == 'declarationInfo'">
+
+          <form (ngSubmit)="onUploadsInfoFormSubmit(stepper, tab)" autocomplete="off">
+            <ng-template matStepLabel>Applicant Photo and Signature Info</ng-template>
+            <div style="margin-bottom: 10px;" class="row"><b>Kindly upload applicant photo and signature below</b></div>
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
+              <div fxFlex>
+                <div>
+                  Applicant passport size photo:
+                  <div class="error-msg" *ngIf="passportSizePhotoError">{{allMsgs.REQUIRED_PASSPORT_SIZE_PHOTO}}</div>
+                </div>
+                <div>
+                  <div class="image-container">
+                    <a href="javascript:void(0)" *ngIf="isBrowsedPassportSizePhoto == false && isUploadedPassportSizePhoto == false">
+                      <img [src]="defaultImage" (click)="passportSizePhotoFileInput.click()" alt="defaultImage" class="img-box">
+                      <div (click)="passportSizePhotoFileInput.click()" class="txt-centered">
+                        Click here to upload your Passport Size Photo
+                      </div>
+                    </a>
+                    <img *ngIf="hasPassportSizePhoto" [src]="hasPassportSizePhoto" (click)="passportSizePhotoFileInput.click()" class="img-box" alt="browsedPassportSizePhoto">
+                    <div *ngIf="isBrowsedPassportSizePhoto == false && isUploadedPassportSizePhoto == false" class="info">Image Type Allowed : JPEG, JPG, PNG | Max Image Size : 1 MB</div>
+                  </div>
+                  <input type="file" [hidden]="true" id="avatar" (change)="readUrl($event, 'passportSizePhoto')" #passportSizePhotoFileInput accept=".png, .jpg, .jpeg">
+                  <button type="button" *ngIf="isBrowsedPassportSizePhoto" (click)="removeImage('passportSizePhoto')" color="warn" mat-raised-button class="mat-small-button remov-btn" >Remove</button>
+                  <button type="button" *ngIf="isBrowsedPassportSizePhoto == true && isUploadedPassportSizePhoto == true" (click)="resetImage('passportSizePhoto')" mat-raised-button class="mat-small-button marg-top-10" >Reset</button>
+                </div>
+              </div>
+              <div fxFlex class="mb-marg-top-50">
+                <div>
+                  Applicant signature:
+                  <div class="error-msg" *ngIf="signatureImageError">{{allMsgs.REQUIRED_SIGNATURE_IMAGE}}</div>
+                </div>
+                <div>
+                  <div class="image-container">
+                    <a href="javascript:void(0)" *ngIf="isBrowsedSignatureImage == false && isUploadedSignatureImage == false">
+                      <img [src]="defaultImage" (click)="signatureImageFileInput.click()" alt="defaultImage" class="img-box">
+                      <div (click)="signatureImageFileInput.click()" class="txt-centered">
+                        Click here to upload your Signature Image
+                      </div>
+                    </a>
+                    <img *ngIf="hasSignatureImage" [src]="hasSignatureImage" class="img-box" (click)="signatureImageFileInput.click()" alt="browsedSignatureImage">
+                    <div *ngIf="isBrowsedSignatureImage == false && isUploadedSignatureImage == false" class="info">Image Type Allowed : JPEG, JPG, PNG | Max Image Size : 1 MB</div>
+                  </div>
+                  <input type="file" [hidden]="true" id="signature" (change)="readUrl($event, 'signatureImage')" #signatureImageFileInput accept=".png, .jpg, .jpeg">
+                  <button type="button" *ngIf="isBrowsedSignatureImage" (click)="removeImage('signatureImage')" color="warn" mat-raised-button class="mat-small-button remov-btn" >Remove</button>
+                  <button type="button" *ngIf="isBrowsedSignatureImage == true && isUploadedSignatureImage == true" (click)="resetImage('signatureImage')" mat-raised-button class="mat-small-button marg-top-10" >Reset</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 70px;">
+              <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+              <button mat-raised-button color="primary" >Done</button>
+            </div>
+            <div class="flex-p" >
+              <mat-divider></mat-divider>
+            </div>
+          </form>
+        </span>
+
+      </mat-step>
+
+    </span>
+  </mat-vertical-stepper>
+
+  <div *ngIf="admissionClosed" fxLayout="column wrap" fxLayout.gt-sm="row">
+      <div fxFlex="100" class="flex-p mb-padng-0">
+          <mat-card fxFlex="100" class="flex-p mb-padng-0">
+              <div class="admission-closed">
+                  <div class="admission-closed-txt">
+                    <mat-icon class="info-icon">info</mat-icon>
+                    <div>{{admissionClosedMessage}}</div>
+                  </div>
+              </div>
+          </mat-card>
+      </div>
+  </div>
+</div>

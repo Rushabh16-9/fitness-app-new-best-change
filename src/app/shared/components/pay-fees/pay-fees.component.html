@@ -1,0 +1,294 @@
+<div class="pay-fees">
+
+  <div *ngIf="showFeesBlock" fxLayout="row wrap" fxFlex="100" >
+  
+    <div *ngIf="page == 'collectFees'" fxFlex="100" class="dlg-step-header">Step 1: Select Fees</div>
+    
+    <div *ngIf="panelMode == 'pendingFees'" fxFlex="100">
+      <div fxLayout="row" class="flex-p mb-padng-0" fxFlex="100" >
+        <mat-card class="select-box mb-displ-none" fxFlex="100" >
+          <mat-checkbox *ngIf="feesArray.length > 0" (change)="onSelectAllCards($event.checked)" [checked]="allSelected" class="flex-p mb-padng-0" style="vertical-align: middle;">
+            <p class="select-all-txt">SELECT ALL</p>
+          </mat-checkbox>
+          <span class="subtotal-blk" style="float: right;">
+            <strong class="subtotal-txt">
+              <span *ngIf="feesCount > 1;else itemsTextContent">
+                Subtotal ({{feesCount}} items): {{totalPayableAmount | currency:'INR'}}
+              </span>
+              <ng-template #itemsTextContent>
+                Subtotal ({{feesCount}} item): {{totalPayableAmount | currency:'INR'}}
+              </ng-template>
+            </strong>
+            <button (click)="onProceedToPay()" mat-raised-button class="mat-green-button mat-small-button" color="accent">Proceed to Pay</button>
+          </span>
+        </mat-card>
+
+        <mat-card class="flex-p mb-displ" fxFlex="100" style="margin-bottom: 10px;">
+          <mat-checkbox *ngIf="feesArray.length > 0" (change)="onSelectAllCards($event.checked)" [checked]="allSelected" class="mb-padng-0" style="vertical-align: middle;">
+            <p class="select-all-txt">SELECT ALL</p>
+          </mat-checkbox>
+          <div class="subtotal-blk">
+            <strong class="subtotal-txt">
+              <span *ngIf="feesCount > 1;else itemsTextContent">
+                ({{feesCount}} items): {{totalPayableAmount | currency:'INR'}}
+              </span>
+              <ng-template #itemsTextContent>
+                ({{feesCount}} item): {{totalPayableAmount | currency:'INR'}}
+              </ng-template>
+            </strong>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+    <div *ngFor="let admInvoice of admissionInvoices; let di=index" fxFlex="100" fxFlex.gt-md="50" fxFlex.md="100" class="flex-p mb-padng-0 mb-flex-auto" style="margin-bottom: 10px !important;">
+      <mat-card class="p-0 pad-btm-10 mb-padng-btm-0">
+        <mat-card-header class="bg-grey p-1" fxLayout="row" fxLayoutAlign="space-between center">
+          <mat-card-title class="m-0 fee-cards">
+            <div>
+              <div class="insti-name">{{admInvoice.studentName}}</div>
+              <h3 class="fees-name">
+                {{admInvoice.instituteName}}
+              </h3>
+            </div>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="p-">
+          <div fxLayout="row" fxLayoutAlign="space-around center" class="misc-fees pay-fees-blk">
+            <div fxFlex="100" fxLayout="column" class="transition-2">
+              <div class="custom-fixed-header">
+                <table class="p-0 custom-table admission-fee-summary">
+                  <thead>
+                    <tr>
+                      <th>Fees Name</th>
+                      <th>Total Fees</th>                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td data-label="Fees Name">Admission Form Fees</td>
+                      <td data-label="Total Fees">{{admInvoice.totalFormFees}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div *ngFor="let miscInvoice of miscInvoices; let di=index" fxFlex="100" fxFlex.gt-md="50" fxFlex.md="100" class="flex-p mb-padng-0 mb-flex-auto" style="margin-bottom: 10px !important;">
+      <mat-card class="p-0 pad-btm-10 mb-padng-btm-0">
+        <mat-card-header class="bg-grey p-1" fxLayout="row" fxLayoutAlign="space-between center">
+          <mat-card-title class="m-0 fee-cards">
+            <div>
+              <div class="insti-name">{{miscInvoice.studentName}}</div>
+              <h3 class="fees-name">
+                {{miscInvoice.instituteName}}
+              </h3>
+            </div>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="p-">
+          <div fxLayout="row" fxLayoutAlign="space-around center" class="misc-fees pay-fees-blk">
+            <div fxFlex="100" fxLayout="column" class="transition-2">
+              <div class="custom-fixed-header">
+                <table class="p-0 custom-table pay-fee-summary">
+                  <thead>
+                    <tr>
+                      <th>Sr. No.</th>
+                      <th>Fees Name</th>
+                      <th>Total Fees</th>                      
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let invoice of miscInvoice.invoices; let pi=index">
+                      <td data-label="Sr.No.">{{pi+1}}</td>
+                      <td data-label="Fees Name">{{invoice.ledgerName}}</td>
+                      <td data-label="Total Fees">{{invoice.amount}}</td>
+                      <td class="mb-txt-left text-center" data-label="Action" style="width: 105px;" >
+                        <i (click)="onAddMisFees(invoice, di, pi)" class="material-icons add-remove">add</i>
+                        <mat-form-field class="mb-adjust-form-field" appearance="outline" style="width:45px; height:55px;">
+                          <input matInput value="{{invoice.userAddedQuantity}}" disabled>
+                        </mat-form-field>
+                        <i (click)="onRemoveMisFees(invoice, di, pi)" class="material-icons add-remove">remove</i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div *ngFor="let feeDetails of feesArray; let di=index" fxFlex="100" fxFlex.gt-md="50" fxFlex.md="100" class="flex-p mb-padng-0 mb-flex-auto" style="margin-bottom: 10px !important;">
+      <mat-card class="p-0 pad-btm-10 mb-padng-btm-0">
+        <mat-card-header class="bg-grey p-1" fxLayout="row" fxLayoutAlign="space-between center">
+          <mat-card-title [matTooltip]="!feeDetails.isCompulsory && panelMode == 'pendingFees' ? 'Select/Deselect this card to pay the fee!' : '' " class="m-0 fee-cards">
+            <mat-checkbox *ngIf="!feeDetails.isCompulsory && panelMode == 'pendingFees'"
+              (change)="onSelectCard(feeDetails, di, $event.checked)" 
+              [checked]="feeDetails.isSelected">
+              <div class="insti-name">{{feeDetails.instituteName}}</div>
+              <h3 class="fees-name">
+                {{feeDetails.studentName}} - {{feeDetails.courseName}} <br>
+                {{feeDetails.feesName}} - ({{feeDetails.academicYear}}) <br>
+              </h3>
+            </mat-checkbox>
+            <div *ngIf="feeDetails.isCompulsory || panelMode == 'paidFees'">
+              <div class="insti-name">{{feeDetails.instituteName}}</div>
+              <h3 class="fees-name">
+                {{feeDetails.studentName}} - {{feeDetails.courseName}} <br>
+                {{feeDetails.feesName}} - ({{feeDetails.academicYear}}) <br>
+              </h3>
+            </div>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="p-">
+          <div [ngClass]="{'overlay-on-card': panelMode == 'pendingFees', 'overlay-on-card-after': feeDetails.isSelected == true }" fxLayout="row" fxLayoutAlign="space-around center" class="pay-fees-blk">
+            <!-- <p class="on-overlay-text" [ngClass]="{'on-overlay-text-after': feeDetails.isSelected == true }" >Select this card to change the details!</p> -->
+            <div fxFlex="100" fxLayout="column" class="transition-2">
+              <div *ngIf="panelMode == 'pendingFees'"
+                fxFlex="100"
+                fxLayout
+                fxLayout.xs="column"
+                fxLayoutAlign="center"
+                fxLayoutGap="10px"
+                fxLayoutGap.xs="0"
+                class="mb-marg-btm-10 p-1">
+                <div fxFlex="78">
+                  <mat-error class="mat-err" *ngIf="feeDetails.totalBalanceError">
+                    {{feeDetails.totalBalanceErrorMsg}}
+                  </mat-error>
+                </div>
+                <div *ngIf="!feeDetails.isCompulsory" fxFlex="22" style="margin-left: 10px;">
+                  <span style="margin-right: 5px;">Select All</span>
+                  <mat-checkbox (change)="onPfSelectAll(feeDetails, di, $event.checked)" [checked]="feeDetails.particularSelectAll"></mat-checkbox>
+                </div>
+              </div>
+              <div class="custom-fixed-header">
+                <table class="p-0 custom-table pay-fee-summary">
+                  <thead>
+                    <tr>
+                      <th>Sr. No.</th>
+                      <th>Particulars</th>
+                      <th>Total Fees</th>
+                      <th>Paid</th>
+                      <th *ngIf="panelMode == 'pendingFees'">Now Paying</th>
+                      <th>Balance Fees</th>
+                      <th *ngIf="panelMode == 'pendingFees'">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let feesParticular of feeDetails.feesParticulars; let pi=index">
+                      <td data-label="Sr.No.">{{pi+1}}</td>
+                      <td data-label="Particulars">{{feesParticular.ledgerName}}</td>
+                      <td data-label="Total Fees">{{feesParticular.totalAmount}}</td>
+                      <td data-label="Paid">{{feesParticular.paidAmount}}</td>
+                      
+                      <td data-label="Now Paying" *ngIf="feesParticular.isEditable && !feesParticular.isSettled && panelMode == 'pendingFees'" class="adjust-td mb-adjust-td" >
+                        <mat-form-field class="mb-adjust-form-field">
+                          <input matInput pattern="[0-9]+"
+                          (keypress)="globalFunctions.onlyNumberKey($event)"
+                          (keydown.space)="$event.preventDefault()"
+                          (keyup)="onChangeBalanceAmt($event.target.value, feesParticular.minAmount, feesParticular.balanceAmount, di, pi)"
+                          value="{{feesParticular.enteredAmt}}"
+                          ></mat-form-field>
+                        <mat-error style="margin-top: -16px;" class="mat-err" *ngIf="feesParticular.miErrors">{{feesParticular.miErrorsMsg}}</mat-error>
+                      </td>
+                      <td data-label="Now Paying" *ngIf="(!feesParticular.isEditable || feesParticular.isSettled) && panelMode == 'pendingFees'">
+                        {{feesParticular.enteredAmt}}
+                      </td>
+
+                      <td data-label="Balance Fees" *ngIf="panelMode == 'pendingFees'" >{{feesParticular.balanceFees}}</td>
+                      <td data-label="Balance Fees" *ngIf="panelMode == 'paidFees'" >{{feesParticular.enteredAmt}}</td>
+
+                      <td data-label="Action" *ngIf="feesParticular.isEditable && !feesParticular.isSettled && panelMode == 'pendingFees'">
+                        <mat-checkbox (change)="onSelectFees(feesParticular, di, pi, $event.checked)" [checked]="feesParticular.isSelected"></mat-checkbox>
+                      </td>
+                      <td data-label="Action" *ngIf="!feesParticular.isEditable && !feesParticular.isSettled && panelMode == 'pendingFees'" >
+                        <mat-checkbox matTooltip="Mandatory fees, need to pay!" [checked]="true" [disabled]="true" ></mat-checkbox>
+                      </td>
+                      <td data-label="Action" *ngIf="feesParticular.isSettled && panelMode == 'pendingFees'">
+                        <mat-icon class="selected-green">done</mat-icon>
+                      </td>
+                    </tr>
+                    <tr *ngIf="panelMode == 'pendingFees'" class="fee-total">
+                      <td class="mb-displ-none"></td>
+                      <td class="mb-displ-none"></td>
+                      <td class="mb-displ-none"></td>
+                      <td class="mb-displ-none"><b>Total</b></td>
+                      <td data-label="Total">
+                        <b> {{feeDetails.totalbalance | currency:'INR'}}</b>
+                      </td>
+                      <td class="mb-displ-none"></td>
+                      <td class="mb-displ-none"></td>
+                    </tr>
+                    <tr *ngIf="panelMode == 'paidFees'" class="fee-total">
+                      <td class="mb-displ-none"></td>
+                      <td class="mb-displ-none"></td>
+                      <td class="mb-displ-none"><b>Total Paid</b></td>
+                      <td data-label="Total Paid">
+                        <b> {{feeDetails.totalPaid | currency:'INR'}}</b>
+                      </td>
+                      <td data-label="Receipt" >
+                        <button (click)="downloadReceipt(feeDetails)" mat-raised-button class=" mat-small-button">Download Receipt</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div *ngIf="panelMode == 'pendingFees'" fxFlex="100" class="btm-sticky-blk">
+      <mat-card 
+        fxFlex="100" 
+        fxLayout
+        fxLayout.xs="column"
+        fxLayoutAlign="center"
+        fxLayoutGap="10px"
+        fxLayoutGap.xs="0"
+        class="mb-displ mb-padng-10">
+        <div class="subtotal-blk">
+          <span class="subtotal-txt" style="float: left;">
+            <strong>
+              {{totalPayableAmount | currency:'INR'}}
+            </strong>
+          </span>
+          <span style="float: right;">
+            <button (click)="onProceedToPay()" mat-raised-button class="mat-green-button" color="accent" >CONTINUE</button>
+          </span>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <div *ngIf="showFeesEmptyMsg" fxLayout="row wrap" fxFlex="100" class="flex-p mb-padng-0">
+    <mat-card fxFlex>
+      <div class="not-found-blk">
+        <div *ngIf="panelMode == 'pendingFees'">
+          {{noPendingFeesMsg}}
+        </div>
+        <div *ngIf="panelMode == 'paidFees'">
+          {{noPaidFeesMsg}}
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <div *ngIf="showCartPage" fxLayout="row wrap" fxFlex="100" >
+
+    <div fxFlex="100" fxFlex.gt-sm="100"  class="dlg-step-header">Step 2: Select Payment Options</div>
+
+    <app-cart fxFlex="100" [formType]="formType" [studentId]="studentId" [dialogRef]="dialogRef" [paymentOption]="paymentOption" [page]="page" (onAddUpdateFees)="onAddUpdateFees($event)" ></app-cart>
+
+  </div>
+
+</div>

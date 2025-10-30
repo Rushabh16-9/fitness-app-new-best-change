@@ -1,0 +1,37 @@
+/**************** fixed width with no horizontal scroll Start ************************/
+.payment-history .datatable-row-center, .datatable-body-row {
+  width: 100% !important;
+}
+.payment-history .datatable-header {
+  width: 100% !important;
+}
+.payment-history .datatable-row-group .datatable-body-cell,
+.payment-history .datatable-header .datatable-header-cell {
+  width: inherit;
+}
+.payment-history .ngx-datatable.scroll-horz .datatable-body {
+  overflow-x: hidden !important;
+}
+.payment-history .datatable-scroll {
+  width: 100% !important;
+}
+.payment-history .datatable-header-inner, .datatable-row-center {
+  width: 100% !important;
+}
+/**************** fixed width with no horizontal scroll End ************************/
+
+.payment-history .datatable-row-group .datatable-body-cell:nth-child(1),
+.payment-history .datatable-header .datatable-header-cell:nth-child(1) {
+    width: 35px !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .payment-history .datatable-row-group .datatable-body-cell:nth-child(2) {
+    width: 100% !important;
+  }
+  .payment-history .datatable-row-group .datatable-body-cell:nth-child(3), 
+  .payment-history .datatable-row-group .datatable-body-cell:nth-child(4),
+  .payment-history .datatable-row-group .datatable-body-cell:nth-child(5) {
+    display: none;
+  }
+}

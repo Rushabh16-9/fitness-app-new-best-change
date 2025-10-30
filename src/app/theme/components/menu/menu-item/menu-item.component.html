@@ -1,0 +1,43 @@
+<mat-menu #childMenu="matMenu" [overlapTrigger]="false">
+  <span *ngFor="let child of items">
+    <span *ngIf="child.children && child.children.length > 0">
+      <button mat-menu-item color="primary" [matMenuTriggerFor]="menu.childMenu">
+        <mat-icon>{{child.iconName}}</mat-icon>
+        <span>{{child.displayName}}</span>
+      </button>
+      <app-menu-item #menu [items]="child.children"></app-menu-item>
+    </span>
+    <span *ngIf="!child.children || child.children.length === 0">
+      <button mat-menu-item routerLinkActive="active-link" [routerLink]="child.route">
+        <mat-icon>{{child.iconName}}</mat-icon>
+        <span>{{child.displayName}}</span>
+      </button>
+    </span>
+  </span>
+</mat-menu>
+
+<!-- <mat-menu #childMenu="matMenu" [overlapTrigger]="false">
+  <span *ngFor="let child of items" >
+    <a *ngIf="child.children && child.children.length > 0" mat-button 
+        fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+        [matTooltip]="child.displayName" matTooltipPosition="above" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+        [id]="'horizontal-menu-item-'+child.id"
+        [matMenuTriggerFor]="menu.childMenu">
+        <mat-icon *ngIf="child.iconName" class="horizontal-menu-icon">{{child.iconName}}</mat-icon>
+        <i *ngIf="child.faIcon" [ngClass]="child.faIcon" class="fa menu-fa-icon"></i>
+        <span class="horizontal-menu-title">{{child.displayName}}</span>
+        <i style="margin-left: 5px;" class="fa fa-caret-down"></i>
+        <app-menu-item #menu [items]="child.children"></app-menu-item>            
+    </a>
+    <a *ngIf="!child.children || child.children.length === 0" mat-button 
+        fxLayout="row" [fxLayoutAlign]="(settings.menuType=='default') ? 'start center' : 'center center'"
+        [routerLink]="[child.route]" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact:true}"
+        [matTooltip]="child.displayName" matTooltipPosition="above" [matTooltipDisabled]="(settings.menuType=='mini') ? 'false' : 'true'"
+        [id]="'horizontal-menu-item-'+child.id">
+        <mat-icon *ngIf="child.iconName" class="horizontal-menu-icon">{{child.iconName}}</mat-icon>
+        <i *ngIf="child.faIcon" [ngClass]="child.faIcon" class="fa menu-fa-icon"></i>
+        <span class="horizontal-menu-title">{{child.displayName}}</span>
+    </a>
+  </span>
+</mat-menu>
+ -->

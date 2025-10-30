@@ -1,0 +1,20 @@
+<div fxLayout="column" class="info-dialog">
+	<div class="flex-p mb-padng-0">
+
+		<div *ngIf="modalTitle" mat-dialog-title class="modal-header" style="border-bottom: none;">
+			{{modalTitle}}
+		</div>
+		
+		<div mat-dialog-content class="modal-content">
+
+			<div [innerHTML]="innerHtmlMsg" style="max-height: 400px; overflow: auto;"></div>
+		</div>
+
+		<div *ngIf="noText || yesText" mat-dialog-actions class="btm-sticky-blk marg-btm-10" style="margin-top: 50px;">
+			<div fxLayout="row" fxFlex="100">
+				<button *ngIf="noText" [mat-dialog-close]="true" color="primary" type="button" mat-button fxFlex >{{noText}}</button>
+				<button *ngIf="yesText" (click)="onYesClick()" color="primary" type="button" mat-raised-button fxFlex style="margin-right:0px !important;">{{yesText}}</button>
+			</div>
+		</div>
+	</div>
+</div>

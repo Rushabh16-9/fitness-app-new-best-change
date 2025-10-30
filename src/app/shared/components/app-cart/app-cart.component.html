@@ -1,0 +1,491 @@
+<div *ngIf="showCartPage && instituteHeader" class="flex-p mb-padng-0">
+    <mat-card class="mb-padng-0">
+        <div class="mb-padng-10" style="text-align: center;">
+          <img style="max-width: 100%;" src="{{instituteHeader}}">
+        </div>
+    </mat-card>
+</div>
+
+<div *ngIf="showCartPage" fxLayout="column wrap" fxLayout.gt-sm="row" class="mb-padng-btm-20" >
+
+    <div fxFlex="70" class="flex-p mb-padng-0">
+     
+        <mat-card *ngIf="formType == 'openCart'">
+            <mat-card-header>
+                <mat-card-subtitle class="card-title">FEES SUMMARY</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+
+                <div *ngFor="let details of totalFeesArray; let di=index">
+                    <div>
+                        <mat-divider></mat-divider>
+                        <div fxLayout="column wrap" fxLayout.gt-sm="row">
+                            <div style="margin-top: 10px;">
+                                <div fxFlex="100" class="flex-p mb-padng-0">
+                                    <div style="font-size: 16px;">
+                                        {{details.courseName}} - ({{details.feesName}}) - ({{details.academicYear}})
+                                    </div>
+                                    <!-- <div class="fees-particular">
+                                        <span *ngFor="let feesParticular of details.feesParticulars;">
+                                            <span *ngIf="feesParticular.isSelected">
+                                                {{feesParticular.ledgerName}} -
+                                                {{feesParticular.enteredAmt}} |
+                                            </span>
+                                        </span>
+                                    </div> -->
+                                    <div *ngIf="details.studentName" class="stdnt-name">
+                                        <span>({{details.studentName}})</span>
+                                    </div>
+                                    <div class="inv-amt-blk">
+                                        <div *ngIf="details.totalBalanceError">
+                                            <mat-error>
+                                                <span class="mat-err">
+                                                    {{details.totalBalanceErrorMsg}}
+                                                </span>
+                                                <!-- <a class="blc-err" routerLink="/pendingFees">Click here to change amount/select fees</a> -->
+                                            </mat-error>
+                                        </div>
+                                        <span class="inv-amt">
+                                            {{details.totalFees | currency:'INR'}}
+                                        </span>
+                                        <!-- <button *ngIf="!details.isCompulsory" (click)="onRemoveItem(details, di)" mat-button color="">REMOVE</button> -->
+                                    </div>
+                                </div>
+                                <!-- <div fxFlex="30" class="flex-p mb-padng-0">
+                                    <div>
+                                        <span>{{details.instituteName}}</span>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card *ngIf="formType == 'studentFees'">
+            <mat-card-header>
+                <mat-card-subtitle class="card-title">FEES SUMMARY</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                
+                <div *ngFor="let admissionInvoice of admissionInvoices; let di=index">
+                    <div *ngIf="admissionInvoice.isSelected">
+                        <mat-divider></mat-divider>
+                        <div fxLayout="column wrap" fxLayout.gt-sm="row">
+                            <div style="margin-top: 10px; ">
+                                <div fxFlex="100" class="flex-p mb-padng-0">
+                                    <div style="font-size: 16px;">
+                                        {{admissionInvoice.studentName}}
+                                        ( <span style="font-size: 14px;">{{admissionInvoice.instituteName}}</span> )
+                                    </div>
+                                    <div class="inv-amt-blk">
+                                        <span class="inv-amt">
+                                            {{admissionInvoice.totalFormFees | currency:'INR'}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngFor="let miscInvoice of miscInvoices; let di=index">
+                    <div *ngIf="miscInvoice.isSelected">
+                        <mat-divider></mat-divider>
+                        <div fxLayout="column wrap" fxLayout.gt-sm="row">
+                            <div style="margin-top: 10px; ">
+                                <div fxFlex="100" class="flex-p mb-padng-0">
+                                    <div style="font-size: 16px;">
+                                        {{miscInvoice.studentName}}
+                                        ( <span style="font-size: 14px;">{{miscInvoice.instituteName}}</span> )
+                                    </div>
+                                    <div class="fees-particular">
+                                        <div *ngFor="let invoice of miscInvoice.invoices; let pi=index">
+                                            <span *ngIf="invoice.userAddedQuantity > 0">
+                                                {{invoice.ledgerName}} - ( {{invoice.amount}} * {{invoice.userAddedQuantity}} = {{invoice.payingAmount}} )
+                                            </span>
+                                            <!-- <span>
+                                                <i (click)="onAddMisFees(invoice, di, pi)" class="material-icons add-remove">add</i>
+                                                <mat-form-field class="mb-adjust-form-field" appearance="outline" style="width:45px; height:55px;">
+                                                    <input matInput value="{{invoice.userAddedQuantity}}" disabled>
+                                                </mat-form-field>
+                                                <i (click)="onRemoveMisFees(invoice, di, pi)" class="material-icons add-remove">remove</i>
+                                            </span> -->
+                                        </div>
+                                    </div>
+                                    <div class="inv-amt-blk">
+                                        <span class="inv-amt">
+                                            {{miscInvoice.totalAmt | currency:'INR'}}
+                                        </span>
+                                        <button (click)="onRemoveMiscItem(miscInvoice, di)" mat-button color="">REMOVE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngFor="let feeDetails of totalFeesArray; let di=index">
+                    <div *ngIf="feeDetails.isSelected">
+                        <mat-divider></mat-divider>
+                        <div fxLayout="column wrap" fxLayout.gt-sm="row">
+                            <div style="margin-top: 10px; ">
+                                <div fxFlex="70" class="flex-p mb-padng-0">
+                                    <div style="font-size: 16px;">
+                                        {{feeDetails.courseName}} - ({{feeDetails.feesName}}) - ({{feeDetails.academicYear}})
+                                    </div>
+                                    <div class="fees-particular">
+                                        <span *ngFor="let feesParticular of feeDetails.feesParticulars;">
+                                            <span *ngIf="feesParticular.isSelected">
+                                                {{feesParticular.ledgerName}} -
+                                                {{feesParticular.enteredAmt}} |
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div *ngIf="feeDetails.studentName" class="stdnt-name">
+                                        <span>({{feeDetails.studentName}})</span>
+                                    </div>
+                                    <div class="inv-amt-blk">
+                                        <div *ngIf="feeDetails.totalBalanceError">
+                                            <mat-error>
+                                                <span class="mat-err">
+                                                    {{feeDetails.totalBalanceErrorMsg}}
+                                                </span>
+                                                <a class="blc-err" routerLink="/pendingFees">Click here to change amount/select fees</a>
+                                            </mat-error>
+                                        </div>
+                                        <span class="inv-amt">
+                                            {{feeDetails.totalbalance | currency:'INR'}}
+                                        </span>
+                                        <button *ngIf="!feeDetails.isCompulsory" (click)="onRemoveItem(feeDetails, di)" mat-button color="">REMOVE</button>
+                                    </div>
+                                </div>
+                                <div fxFlex="30" class="flex-p mb-padng-0">
+                                    <div>
+                                        <span>{{feeDetails.instituteName}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card *ngIf="formType == '' || formType == 'preReg'">
+            <mat-card-header>
+                <mat-card-subtitle class="card-title">FEES SUMMARY</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div *ngFor="let cartDetails of totalCartDetailsArray; let di=index">
+                    <mat-divider></mat-divider>
+                    <div fxLayout="column wrap" fxLayout.gt-sm="row">
+                        <div style="margin-top: 10px; ">
+                            <div class="flex-p mb-padng-0">
+                                <div class="college-name">
+                                    {{cartDetails.instituteName}}
+                                </div>
+                                <div class="fees-particular">
+                                    <mat-chip-list>
+                                        <mat-chip *ngFor="let course of cartDetails.admissionConfs" (removed)="removeCourse(course.admissionConfId, cartDetails.instituteId)" [disabled]="addUpdateCourseBtn">
+                                            {{course.displayName}}
+                                            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                                <div class="inv-amt-blk">
+                                    <div *ngIf="cartDetails.totalBalanceError">
+                                        <mat-error>
+                                            <span class="mat-err">
+                                                {{cartDetails.totalBalanceErrorMsg}}
+                                            </span>
+                                            <a class="blc-err" (click)="redirectTo('/courseSelection')">Click here to change amount/select fees</a>
+                                        </mat-error>
+                                    </div>
+                                    <span class="inv-amt">
+                                        {{cartDetails.totalFormFees | currency:'INR'}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card *ngIf="formType == 'atkt' || formType == 'exam'">
+            <mat-card-header>
+                <mat-card-subtitle class="card-title">SELECTED SUBJECTS</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div>
+                    <mat-divider></mat-divider>
+                    <div fxLayout="column wrap" fxLayout.gt-sm="row">
+                        <div style="margin-top: 10px; ">
+                            <div class="flex-p mb-padng-0">
+                                <div class="fees-particular2">
+                                    <div *ngFor="let subject of cartSubjectsDetailsArray" class="college-name">
+                                        {{subject.subjectName}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div fxFlex="30" class="flex-p mb-padng-0 mb-padng-top-10" style="position: relative;">
+        <mat-card style="position: sticky; top:0;">
+            <mat-card-header>
+                <mat-card-subtitle class="card-title">PAYMENT OPTIONS</mat-card-subtitle>
+            </mat-card-header>
+            <mat-divider></mat-divider>
+            <mat-card-content>
+                <div class="paymt-opt-blk">
+                    <div class="paymt-opts">
+                        <div>
+                            <span *ngIf="cartCount > 1;else itemsTextContent">
+                                Price ({{cartCount}} items)
+                            </span>
+                            <ng-template #itemsTextContent>
+                                Price ({{cartCount}} item)
+                            </ng-template>
+                        </div>
+                        <div>
+                            {{totalItemsAmount | currency:'INR'}}
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+                    <div class="error-msg" *ngIf="paymentOptionError" >
+                        {{paymentOptionErrorMessage}}
+                    </div>
+
+                    <mat-radio-group *ngIf="paymentOption == 'online' && showConvenienceFeesOptions" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                        <mat-radio-button *ngFor="let convFee of convenienceFeesArray;" (click)="onChangePaymentOption(convFee.paymentOptionId, convFee.paymentValue)" value="{{convFee.paymentOptionId}}">
+                            <div class="paymt-opts">
+                                <div style="white-space:normal;">
+                                    {{convFee.description}}
+                                </div>
+                                <div>
+                                    {{convFee.paymentValue | currency:'INR'}}
+                                </div>
+                            </div>
+                            <mat-divider></mat-divider>
+                        </mat-radio-button>
+                    </mat-radio-group>
+
+                    <div *ngIf="paymentOption == 'offline' && showConvenienceFeesOptions">
+                        <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                          <mat-select (selectionChange)="onChangeOfflinePaymentOption($event.value)" placeholder="Payment Option" required >
+                            <mat-option *ngFor="let paymentOption of paymentOptions" [value]="paymentOption.id">
+                              {{ paymentOption.name }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+
+                        <form *ngIf="showCashForm" [formGroup]="cashForm" (ngSubmit)="onProceedToPay()" autocomplete="off">
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput [max]="maxDate" [matDatepicker]="cashReceiptDatePicker" placeholder="Receipt Date" formControlName="cashReceiptDate" required readonly (focus)="_openCashReceiptDatepicker(cashReceiptDatePicker)" (click)="_openCashReceiptDatePicker(cashReceiptDatePicker)" #cashReceiptDateElementFocus >
+                                <mat-datepicker-toggle matSuffix [for]="cashReceiptDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker disabled="false" #cashReceiptDatePicker="matDatepicker" (closed)="_closeCashReceiptDatepicker($event)"></mat-datepicker>
+                                <mat-error *ngIf="cashReceiptDate.invalid">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+                        </form>
+
+                        <form *ngIf="showDdForm" [formGroup]="ddForm" (ngSubmit)="onProceedToPay()" autocomplete="off">
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput [max]="maxDate" [matDatepicker]="ddReceiptDatePicker" placeholder="Receipt Date" formControlName="ddReceiptDate" required readonly (focus)="_openDdReceiptDatepicker(ddReceiptDatePicker)" (click)="_openDdReceiptDatePicker(ddReceiptDatePicker)" #ddReceiptDateElementFocus >
+                                <mat-datepicker-toggle matSuffix [for]="ddReceiptDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker disabled="false" #ddReceiptDatePicker="matDatepicker" (closed)="_closeDdReceiptDatepicker($event)"></mat-datepicker>
+                                <mat-error *ngIf="ddReceiptDate.invalid">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input formControlName="ddDate" placeholder="DD Date" [max]="maxDate" [matDatepicker]="ddDatePicker" (focus)="_openDdDatepicker(ddDatePicker)" (click)="_openDdDatePicker(ddDatePicker)" matInput #ddDateElementFocus required readonly >
+                                <mat-datepicker-toggle matSuffix [for]="ddDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker disabled="false" #ddDatePicker="matDatepicker" (closed)="_closeDdDatepicker($event)"></mat-datepicker>
+                                <mat-error *ngIf="ddDate.invalid">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput placeholder="DD Amount" formControlName="ddAmount" (keypress)="globalFunctions.onlyNumberKey($event)" (keydown.space)="$event.preventDefault()" maxlength="15" required>
+                                <mat-error *ngIf="ddForm.controls.ddAmount.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput placeholder="DD No" formControlName="dDNo" maxlength="35" required>
+                                <mat-error *ngIf="ddForm.controls.dDNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput placeholder="Bank Name" formControlName="bankName" maxlength="35" required>
+                                <mat-error *ngIf="ddForm.controls.bankName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput placeholder="Branch Name" formControlName="branchName" maxlength="35" required>
+                                <mat-error *ngIf="ddForm.controls.branchName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+                        </form>
+
+                        <form *ngIf="showChequeForm" [formGroup]="chequeForm" (ngSubmit)="onProceedToPay()" autocomplete="off">
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput [max]="maxDate" [matDatepicker]="chequeReceiptDatePicker" placeholder="Receipt Date" formControlName="chequeReceiptDate" required readonly (focus)="_openChequeReceiptDatepicker(chequeReceiptDatePicker)" (click)="_openChequeReceiptDatePicker(chequeReceiptDatePicker)" #chequeReceiptDateElementFocus >
+                                <mat-datepicker-toggle matSuffix [for]="chequeReceiptDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker disabled="false" #chequeReceiptDatePicker="matDatepicker" (closed)="_closeChequeReceiptDatepicker($event)"></mat-datepicker>
+                                <mat-error *ngIf="chequeReceiptDate.invalid">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input formControlName="chequeDate" placeholder="Cheque Date" [max]="maxDate" [matDatepicker]="chequeDatePicker" (focus)="_openChequeDatePicker(chequeDatePicker)" (click)="_openChequeDatePicker(chequeDatePicker)" #chequeDateElementFocus matInput required readonly >
+                                <mat-datepicker-toggle matSuffix [for]="chequeDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker disabled="false" #chequeDatePicker="matDatepicker" (closed)="_closeChequeDatePicker($event)"></mat-datepicker>
+                                <mat-error *ngIf="chequeDate.invalid">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput placeholder="Cheque Amount" formControlName="chequeAmount" (keypress)="globalFunctions.onlyNumberKey($event)" (keydown.space)="$event.preventDefault()" maxlength="15" required>
+                                <mat-error *ngIf="chequeForm.controls.chequeAmount.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput placeholder="Cheque No" formControlName="chequeNo" maxlength="35" required>
+                                <mat-error *ngIf="chequeForm.controls.chequeNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput placeholder="Bank Name" formControlName="bankName" maxlength="35" required>
+                                <mat-error *ngIf="chequeForm.controls.bankName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput placeholder="Branch Name" formControlName="branchName" maxlength="35" required>
+                                <mat-error *ngIf="chequeForm.controls.branchName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+                        </form>
+
+                        <form *ngIf="showNeftForm" [formGroup]="neftForm" (ngSubmit)="onProceedToPay()" autocomplete="off">
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput [max]="maxDate" [matDatepicker]="neftReceiptDatePicker" placeholder="Receipt Date" formControlName="neftReceiptDate" required readonly (focus)="_openNeftReceiptDatepicker(neftReceiptDatePicker)" (click)="_openNeftReceiptDatePicker(neftReceiptDatePicker)" #neftReceiptDateElementFocus >
+                                <mat-datepicker-toggle matSuffix [for]="neftReceiptDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker disabled="false" #neftReceiptDatePicker="matDatepicker" (closed)="_closeNeftReceiptDatepicker($event)"></mat-datepicker>
+                                <mat-error *ngIf="neftReceiptDate.invalid">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input formControlName="neftDate" placeholder="NEFT Date" [max]="maxDate" [matDatepicker]="neftDatePicker" (focus)="_openNeftDatepicker(neftDatePicker)" (click)="_openNeftDatePicker(neftDatePicker)" #neftDateElementFocus matInput required readonly >
+                                <mat-datepicker-toggle matSuffix [for]="neftDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker disabled="false" #neftDatePicker="matDatepicker" (closed)="_closeNeftDatepicker($event)"></mat-datepicker>
+                                <mat-error *ngIf="neftDate.invalid">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput placeholder="Transaction Id" formControlName="transactionId" (keydown.space)="$event.preventDefault()" maxlength="60" required>
+                                <mat-error *ngIf="neftForm.controls.transactionId.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+                        </form>
+
+                        <form *ngIf="showMswipeForm" [formGroup]="mswipeForm" (ngSubmit)="onProceedToPay()" autocomplete="off">
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput [max]="maxDate" [matDatepicker]="mswipeReceiptDatePicker" placeholder="Receipt Date" formControlName="mswipeReceiptDate" required readonly (focus)="_openMswipeReceiptDatepicker(mswipeReceiptDatePicker)" (click)="_openMswipeReceiptDatePicker(mswipeReceiptDatePicker)" #mswipeReceiptDateElementFocus >
+                                <mat-datepicker-toggle matSuffix [for]="mswipeReceiptDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker disabled="false" #mswipeReceiptDatePicker="matDatepicker" (closed)="_closeMswipeReceiptDatepicker($event)"></mat-datepicker>
+                                <mat-error *ngIf="mswipeReceiptDate.invalid">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field style="padding-top:15px;" fxLayout="column" fxLayoutAlign="center" class="fee-options">
+                                <input matInput placeholder="Transaction Number" formControlName="mswipeTransacNo" (keydown.space)="$event.preventDefault()" maxlength="35" required>
+                                <mat-error *ngIf="mswipeForm.controls.mswipeTransacNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                            </mat-form-field>
+                        </form>
+                    </div>
+
+                    <div class="payab-amt-blk">
+                        <div class="paymt-opts" style="display: block !important; text-align: center;">
+                            <div class="amt-paybl-text">Amount Payable</div>
+                            <div class="totl-amt-paybl">
+                                {{totalPayableAmount | currency:'INR'}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+
+<div *ngIf="showCartPage" fxLayout="row wrap" class="btm-sticky-blk" style="margin-top: 20px;">
+    <mat-card
+        fxFlex="100"
+        fxLayout
+        fxLayout.xs="column"
+        fxLayoutAlign="end"
+        fxLayoutGap="10px"
+        fxLayoutGap.xs="0"
+        class="mb-padng-5">
+        <div class="flex-p mb-padng-0">
+            <button *ngIf="formType == 'studentFees' && page != 'collectFees'" (click)="redirectTo('/pendingFees')" type="button" class="left-btn mb-left-btn" mat-raised-button >
+                < ADD/UPDATE FEES
+            </button>
+            <button *ngIf="formType == ''" (click)="redirectTo('/courseSelection')" type="button" class="left-btn mb-left-btn" [disabled]="addUpdateCourseBtn" mat-raised-button >
+                < ADD/UPDATE COURSES
+            </button>
+            <button *ngIf="formType == 'atkt' || formType == 'exam'" (click)="redirectTo('/atktForm')" type="button" class="left-btn mb-left-btn" mat-raised-button >
+                < ADD/UPDATE SUBJECTS
+            </button>
+            <button *ngIf="formType == 'studentFees' && page == 'collectFees'" (click)="addUpdateFees()" class="left-btn mb-left-btn" type="button" mat-raised-button >
+                < ADD/UPDATE FEES
+            </button>
+            <button *ngIf="formType == 'openCart'" (click)="redirectToThirdParty()" class="left-btn mb-left-btn" type="button" mat-raised-button >
+                < BACK
+            </button>
+            <button (click)="onProceedToPay()" color="accent" mat-raised-button class="mat-green-button right-btn mb-right-btn">
+                PAY {{totalPayableAmount | currency:'INR'}} 
+            </button>
+        </div>
+    </mat-card>
+</div>
+
+<div *ngIf="showEmptyCart" fxLayout="column wrap" fxLayout.gt-sm="row">
+    <div fxFlex="100" class="flex-p mb-padng-0">
+        <mat-card fxFlex="100" class="flex-p mb-padng-0">
+            <div class="not-found-blk">
+                <div class="not-found-txt">
+                    Your Cart is empty
+                </div>
+                <div class="add-items">
+                    <button *ngIf="formType == 'studentFees' && page != 'collectFees'" (click)="redirectTo('/pendingFees')" mat-raised-button type="button">
+                        + ADD ITEMS FROM APPLICATIONS
+                    </button>
+                    <button *ngIf="formType == ''" (click)="redirectTo('/courseSelection')" mat-raised-button type="button"> 
+                        + ADD COURSES FROM APPLICATIONS
+                    </button>
+                    <button *ngIf="formType == 'atkt' || formType == 'exam'" (click)="redirectTo('/atktForm')" mat-raised-button type="button"> 
+                        + ADD SUBJECTS FROM APPLICATIONS
+                    </button>
+                    <button *ngIf="formType == 'studentFees' && page == 'collectFees'" (click)="addUpdateFees()" mat-raised-button type="button" >
+                        + ADD ITEMS FROM APPLICATIONS
+                    </button>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</div>
+
+<div *ngIf="showInstMsg" fxLayout="column wrap" fxLayout.gt-sm="row">
+    <div fxFlex="100" class="flex-p mb-padng-0">
+        <mat-card fxFlex="100" class="flex-p mb-padng-0">
+            <div *ngIf="showInstMsg" class="not-found-blk">
+                <div *ngIf="headerImage" class="mb-padng-10" style="text-align: center;">
+                  <img style="max-width: 100%;" src="{{headerImage}}">
+                </div>
+                <div class="not-found-txt" style="color:#650000;">
+                    {{instMsg}}
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</div>
