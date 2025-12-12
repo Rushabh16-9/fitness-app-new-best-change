@@ -791,6 +791,7 @@ export class LoginComponent implements OnInit {
           this.subjectGroupsLabel = data.dataJson.subjectGroupsLabel;
           this.coursesArray = data.dataJson.courses;
         } else if (data.status == 0) {
+          window.location.reload();
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
         }
       } else {
