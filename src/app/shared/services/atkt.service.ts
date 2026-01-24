@@ -11,10 +11,10 @@ export class AtktService {
 
   constructor(
     private http: HttpClient
-  ) {}
+  ) { }
 
-  sendOtp(phone:string, instituteId: string = '', formType: string = ''): Observable<any> {
-    
+  sendOtp(phone: string, instituteId: string = '', formType: string = ''): Observable<any> {
+
     const url = atktApiUrls.sendOtp;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
@@ -26,8 +26,8 @@ export class AtktService {
     return this.http.post<any>(url, postData);
   }
 
-  otpConfirmation(phone:string, otp:string, instituteId:string = '', formPolicyId: string = '', formType: string = ''): Observable<any> {
-    
+  otpConfirmation(phone: string, otp: string, instituteId: string = '', formPolicyId: string = '', formType: string = ''): Observable<any> {
+
     const url = atktApiUrls.otpConfirmation;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
@@ -42,7 +42,7 @@ export class AtktService {
     return this.http.post<any>(url, postData);
   }
 
-  getUserStudentsList(postParam) : Observable<any> {
+  getUserStudentsList(postParam): Observable<any> {
 
     const url = atktApiUrls.getUserStudentsList;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -56,7 +56,7 @@ export class AtktService {
     return this.http.post<any>(url, postData);
   }
 
-  getStudentsCourses(values:any): Observable<any> {
+  getStudentsCourses(values: any): Observable<any> {
 
     const url = atktApiUrls.getStudentsCourses;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -69,7 +69,7 @@ export class AtktService {
     return this.http.post<any>(url, postData);
   }
 
-  getCourseExams(confId, instituteId) : Observable<any> {
+  getCourseExams(confId, instituteId): Observable<any> {
 
     const url = atktApiUrls.getCourseExams;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -79,9 +79,9 @@ export class AtktService {
     postData['instituteId'] = instituteId;
 
     return this.http.post<any>(url, postData);
-  }  
+  }
 
-  getFormDetails() : Observable<any> {
+  getFormDetails(): Observable<any> {
 
     const url = atktApiUrls.getFormDetails;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -89,6 +89,7 @@ export class AtktService {
 
     let postData = commonPostValues;
     postData['mobileNo'] = userProf.mobileNo;
+    postData['email'] = userProf.email;
     postData['confId'] = userProf.confId;
     postData['subjectGroupId'] = userProf.subjectGroupId;
     postData['termExamId'] = userProf.termExamId;
@@ -97,13 +98,14 @@ export class AtktService {
   }
 
   saveFormDetails(postParam, categoryFormValues, personalInfo, addressInfo, subjectInfo, examMarksPatternSelected, educationInfo, passportSizePhoto, signatureImage): Observable<any> {
-    
+
     const url = atktApiUrls.saveFormDetails;
     let commonPostValues = globalFunctions.getCommonPostValues();
     let userProf = globalFunctions.getUserProf();
 
     let postData = commonPostValues;
     postData['mobileNo'] = userProf.mobileNo;
+    postData['email'] = userProf.email;
     postData['categoryInfo'] = categoryFormValues;
     postData['atktApplicantId'] = postParam.atktApplicantId;
     postData['termYear'] = postParam.termYear;
@@ -121,7 +123,7 @@ export class AtktService {
     return this.http.post<any>(url, postData);
   }
 
-  listCart() : Observable<any> {
+  listCart(): Observable<any> {
 
     const url = atktApiUrls.listCart;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -176,6 +178,7 @@ export class AtktService {
 
     let postData = commonPostValues;
     postData['mobileNo'] = userProf.mobileNo;
+    postData['email'] = userProf.email;
     postData['confId'] = userProf.confId;
     postData['subjectGroupId'] = userProf.subjectGroupId;
     postData['termExamId'] = userProf.termExamId;
@@ -196,7 +199,7 @@ export class AtktService {
     return this.http.post<any>(url, postData);
   }
 
-  uploadPdf(file:any, docId = '', page = '') : Observable<any> {
+  uploadPdf(file: any, docId = '', page = ''): Observable<any> {
 
     const url = atktApiUrls.uploadPdf;
     let userProf = globalFunctions.getUserProf();
@@ -213,11 +216,11 @@ export class AtktService {
     fd.append('page', page);
     fd.append('docId', docId);
     fd.append('document', file, file.name);
-    
-    return this.http.post<any>(url, fd).pipe(timeout(globalFunctions.timeoutSeconds()));    
+
+    return this.http.post<any>(url, fd).pipe(timeout(globalFunctions.timeoutSeconds()));
   }
 
-  directFormGenerate(cartVal:any, page = ''): Observable<any> {
+  directFormGenerate(cartVal: any, page = ''): Observable<any> {
 
     const url = atktApiUrls.directFormGenerate;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -227,5 +230,5 @@ export class AtktService {
     postData['page'] = page;
 
     return this.http.post<any>(url, postData);
-  }  
+  }
 }

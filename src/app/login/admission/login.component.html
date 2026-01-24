@@ -15,16 +15,16 @@
           </div>
         </h2>
         <div class="login-title">
-          <p *ngIf="showLoginForm" >
+          <p *ngIf="showLoginForm">
             Login Form
           </p>
-          <p *ngIf="showOtpForm" >
+          <p *ngIf="showOtpForm">
             Enter the OTP which is sent on your mobile number
           </p>
-          <p *ngIf="showIdentifiersForm" >
+          <p *ngIf="showIdentifiersForm">
             Enter {{identifierLabel}}
           </p>
-          <p *ngIf="showGroupSelectionForm" >
+          <p *ngIf="showGroupSelectionForm">
             {{subjectGroupsLableHeading}}
           </p>
         </div>
@@ -33,35 +33,54 @@
 
         <div *ngIf="showLoginForm" class="login-form-container">
           <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()" autocomplete="off">
-              <div *ngIf="showNriLogin" class="nri-question">
-                  <label>{{showNriLogintxt}}</label>
-                  <mat-radio-group formControlName="isNri">
-                      <mat-radio-button value="no">No</mat-radio-button>
-                      <mat-radio-button value="yes">Yes</mat-radio-button>
-                  </mat-radio-group>
+            <div *ngIf="showNriLogin && !sendOtpFromEmail" class="nri-question">
+              <label>{{showNriLogintxt}}</label>
+              <mat-radio-group formControlName="isNri">
+                <mat-radio-button value="no">No</mat-radio-button>
+                <mat-radio-button value="yes">Yes</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <mat-form-field *ngIf="sendOtpFromEmail || !showNriLogin || loginForm.get('isNri')?.value === 'no'"
+              appearance="fill">
+              <mat-label>Mobile Number</mat-label>
+              <input matInput placeholder="Enter your mobile number" formControlName="phone"
+                (keypress)="globalFunctions.onlyNumberKey($event)" (keydown.space)="$event.preventDefault()"
+                maxlength="10" pattern="[0-9]+" required>
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="loginForm.controls.phone.errors?.required">{{allMsgs.REQUIRED_MOBILE_NO}}</mat-error>
+              <mat-error *ngIf="loginForm.controls.phone.hasError('pattern')">{{allMsgs.WRONG_MOBILE_NO}}</mat-error>
+            </mat-form-field>
+            <mat-form-field *ngIf="sendOtpFromEmail || loginForm.get('isNri')?.value === 'yes'" appearance="fill">
+              <mat-label>Email</mat-label>
+              <input matInput placeholder="Enter your email" formControlName="email" required>
+              <mat-icon matSuffix>email</mat-icon>
+            </mat-form-field>
+            <div class="submit-container">
+              <button mat-raised-button color="primary" class="submit-button" type="submit">Request OTP</button>
+            </div>
+            <div *ngIf="sendOtpFromEmail" class="info"
+              style="margin-top: 20px; padding: 15px; background-color: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; text-align: left !important;">
+              <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <mat-icon
+                  style="color: #2196f3; margin-right: 10px; font-size: 22px; height: 22px; width: 22px;">info</mat-icon>
+                <strong style="color: #1976d2; font-size: 14px;">Important Information:</strong>
               </div>
-              <mat-form-field *ngIf="!showNriLogin || loginForm.get('isNri')?.value === 'no'" appearance="fill">
-                  <mat-label>Mobile Number</mat-label>
-                  <input matInput placeholder="Enter your mobile number" formControlName="phone"  (keypress)="globalFunctions.onlyNumberKey($event)" (keydown.space)="$event.preventDefault()" maxlength="10" pattern="[0-9]+" required >
-                  <mat-icon matSuffix>phone</mat-icon>
-                   <mat-error *ngIf="loginForm.controls.phone.errors?.required">{{allMsgs.REQUIRED_MOBILE_NO}}</mat-error>
-                  <mat-error *ngIf="loginForm.controls.phone.hasError('pattern')">{{allMsgs.WRONG_MOBILE_NO}}</mat-error>
-              </mat-form-field>
-              <mat-form-field *ngIf="loginForm.get('isNri')?.value === 'yes'" appearance="fill">
-                  <mat-label>Email</mat-label>
-                  <input matInput placeholder="Enter your email" formControlName="email" required>
-                  <mat-icon matSuffix>email</mat-icon>
-              </mat-form-field>
-              <div class="submit-container">
-                  <button mat-raised-button color="primary" class="submit-button" type="submit">Request OTP</button>
+              <div style="color: #424242; font-size: 13px; line-height: 1.8; text-align: left !important;">
+                <div style="text-align: left !important;">• Please enter your registered mobile number in the field
+                  above.</div>
+                <div style="text-align: left !important;">• The OTP will be sent to your registered email address.</div>
               </div>
+            </div>
           </form>
         </div>
 
         <div *ngIf="showOtpForm" class="marg-top-20">
-          <form [formGroup]="otpFormGroup" (ngSubmit)="onOtpSubmit(otpFormGroup.value)" autocomplete="off" fxLayout="row wrap" fxLayoutAlign="center">
+          <form [formGroup]="otpFormGroup" (ngSubmit)="onOtpSubmit(otpFormGroup.value)" autocomplete="off"
+            fxLayout="row wrap" fxLayoutAlign="center">
             <mat-form-field>
-              <input matInput placeholder="Enter OTP Number" formControlName="otp" (keypress)="globalFunctions.onlyNumberKey($event)" (keydown.space)="$event.preventDefault()" maxlength="6" required autofocus>
+              <input matInput placeholder="Enter OTP Number" formControlName="otp"
+                (keypress)="globalFunctions.onlyNumberKey($event)" (keydown.space)="$event.preventDefault()"
+                maxlength="6" required autofocus>
               <mat-error *ngIf="otpFormGroup.controls.otp.errors?.required">{{allMsgs.REQUIRED_OTP_NO}}</mat-error>
               <mat-error *ngIf="otpFormGroup.controls.otp.hasError('pattern')">{{allMsgs.WRONG_OTP_NO}}</mat-error>
             </mat-form-field>
@@ -84,29 +103,41 @@
         </div>
 
         <div *ngIf="showIdentifiersForm" class="marg-top-20">
-          <form [formGroup]="identifierFormGroup" (ngSubmit)="onIdentifierSubmit(identifierFormGroup.value)" autocomplete="off" fxLayout="row wrap" fxLayoutAlign="center">
+          <form [formGroup]="identifierFormGroup" (ngSubmit)="onIdentifierSubmit(identifierFormGroup.value)"
+            autocomplete="off" fxLayout="row wrap" fxLayoutAlign="center">
 
-            <mat-radio-group *ngIf="showInHouseOptions" formControlName="inHouseSelection" fxFlex="100" style="position: relative; text-align:left;" required >
-              <label style="margin-right:5px;" class="mat-form-field">Are you an in-house student?<samp class="mandatory">*</samp>: </label>
+            <mat-radio-group *ngIf="showInHouseOptions" formControlName="inHouseSelection" fxFlex="100"
+              style="position: relative; text-align:left;" required>
+              <label style="margin-right:5px;" class="mat-form-field">Are you an in-house student?<samp
+                  class="mandatory">*</samp>: </label>
               <mat-radio-button class="mb-displ-block marg-left-10 mb-marg-left-0" value="yes">Yes</mat-radio-button>
               <mat-radio-button class="mb-displ-block" value="no">No</mat-radio-button>
-              <mat-error *ngIf="identifierFormGroup.controls.inHouseSelection.errors?.required" class="field-error-msg" style="margin-top:15px;">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              <mat-error *ngIf="identifierFormGroup.controls.inHouseSelection.errors?.required" class="field-error-msg"
+                style="margin-top:15px;">{{allMsgs.REQUIRED_FIELD}}</mat-error>
             </mat-radio-group>
 
             <mat-form-field *ngIf="showPrnNo" fxFlex="100">
-              <input formControlName="prnNo" placeholder="PRN Number" (keydown.space)="$event.preventDefault()" matInput required>
-              <mat-error *ngIf="identifierFormGroup.controls.prnNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              <input formControlName="prnNo" placeholder="PRN Number" (keydown.space)="$event.preventDefault()" matInput
+                required>
+              <mat-error
+                *ngIf="identifierFormGroup.controls.prnNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
             </mat-form-field>
 
-            <mat-form-field *ngIf="identifierFormGroup.get('inHouseSelection').value == 'yes' && showNameSearch" fxFlex="100">
-              <input formControlName="nameSearch" placeholder="Enter Your First Name" (keydown.space)="$event.preventDefault()" minlength="2" matInput required>
-              <mat-error *ngIf="identifierFormGroup.controls.nameSearch.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
-              <mat-error *ngIf="identifierFormGroup.controls.nameSearch.hasError('minlength')">{{allMsgs.REQUIRED_MIN_3_CHAR}}</mat-error>
+            <mat-form-field *ngIf="identifierFormGroup.get('inHouseSelection').value == 'yes' && showNameSearch"
+              fxFlex="100">
+              <input formControlName="nameSearch" placeholder="Enter Your First Name"
+                (keydown.space)="$event.preventDefault()" minlength="2" matInput required>
+              <mat-error
+                *ngIf="identifierFormGroup.controls.nameSearch.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              <mat-error
+                *ngIf="identifierFormGroup.controls.nameSearch.hasError('minlength')">{{allMsgs.REQUIRED_MIN_3_CHAR}}</mat-error>
             </mat-form-field>
 
             <mat-form-field *ngIf="identifierFormGroup.get('inHouseSelection').value == 'yes'" fxFlex="100">
-              <input formControlName="identifier" placeholder="{{identifierLabel}}" (keydown.space)="$event.preventDefault()" matInput required>
-              <mat-error *ngIf="identifierFormGroup.controls.identifier.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+              <input formControlName="identifier" placeholder="{{identifierLabel}}"
+                (keydown.space)="$event.preventDefault()" matInput required>
+              <mat-error
+                *ngIf="identifierFormGroup.controls.identifier.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
             </mat-form-field>
 
             <div fxFlex="100" class="marg-top-20">
@@ -124,7 +155,8 @@
 
           <div *ngIf="showLanguageGroups" class="flex-p">
             <mat-form-field fxFlex>
-              <mat-select (selectionChange)="onSelectLanguage($event.value)" placeholder="Select Compulsory Language" [(value)]="selectedLangGroupId">
+              <mat-select (selectionChange)="onSelectLanguage($event.value)" placeholder="Select Compulsory Language"
+                [(value)]="selectedLangGroupId">
                 <mat-option *ngFor="let langGroup of languageGroups" [value]="langGroup.langGroupId">
                   {{langGroup.langGroupName}}
                 </mat-option>
@@ -134,16 +166,19 @@
           </div>
 
           <div *ngIf="showSubjectGroups" style="text-align: left;">
-            
+
             <div>
               <span style="font-weight: 500;" class="p-1">{{subjectGroupsLable}} </span>
-              <div *ngIf="grpError" class="field-error-msg" style="margin-top:0px; margin-left: 10px; top: 0px; position: relative;" >{{allMsgs.REQUIRED_COURSE_GRP}}</div>
+              <div *ngIf="grpError" class="field-error-msg"
+                style="margin-top:0px; margin-left: 10px; top: 0px; position: relative;">{{allMsgs.REQUIRED_COURSE_GRP}}
+              </div>
             </div>
 
-            <div class="p-1" >
+            <div class="p-1">
               <mat-radio-group *ngFor="let subGrp of subjectGroups; let sgIndex = index">
                 <div>
-                  <mat-radio-button (change)="selectRadioGrp(subGrp.subjectGroupId, sgIndex)" value="{{subGrp.subjectGroupId}}" [checked]="subGrp.isSelected" class="wrap-chek-label p-1">
+                  <mat-radio-button (change)="selectRadioGrp(subGrp.subjectGroupId, sgIndex)"
+                    value="{{subGrp.subjectGroupId}}" [checked]="subGrp.isSelected" class="wrap-chek-label p-1">
                     {{ subGrp.subjectGroupName }}
                   </mat-radio-button>
                   <span class="subject-info">
@@ -161,9 +196,11 @@
 
         <div *ngIf="showAcademicInfo" class="marg-top-20">
           <div class="step-header">Select Academic Info</div>
-          <form [formGroup]="academicInfoForm" (ngSubmit)="onAcademicInfoSubmit(academicInfoForm.value)" autocomplete="off" fxLayout="row wrap" fxLayoutAlign="center">
+          <form [formGroup]="academicInfoForm" (ngSubmit)="onAcademicInfoSubmit(academicInfoForm.value)"
+            autocomplete="off" fxLayout="row wrap" fxLayoutAlign="center">
             <mat-form-field fxFlex="100" *ngIf="showStudentSelection">
-              <mat-select #student (selectionChange)="getStudentsCourses(student.value)" placeholder="Select Student" formControlName="studentId" required>
+              <mat-select #student (selectionChange)="getStudentsCourses(student.value)" placeholder="Select Student"
+                formControlName="studentId" required>
                 <mat-option *ngFor="let stdnt of studentsArray" [value]="stdnt.studentId">
                   {{stdnt.studentName}}
                 </mat-option>
@@ -171,7 +208,8 @@
             </mat-form-field>
 
             <mat-form-field fxFlex="100">
-              <mat-select #course (selectionChange)="getCourseExams(course.value)" placeholder="{{courseLabel}}" formControlName="confId" required>
+              <mat-select #course (selectionChange)="getCourseExams(course.value)" placeholder="{{courseLabel}}"
+                formControlName="confId" required>
                 <mat-option *ngFor="let cours of coursesArray" [value]="cours.confId">
                   {{cours.courseName}}
                 </mat-option>
@@ -201,13 +239,15 @@
         <div *ngIf="showPreRegForm" class="marg-top-20">
 
           <div class="step-header">New User Registration</div>
-          
+
           <div class="info" style="margin-bottom: 10px;">
-            Register your Username and Password with your correct email id and mobile number. Your email id and mobile number will be used for all future communication.
+            Register your Username and Password with your correct email id and mobile number. Your email id and mobile
+            number will be used for all future communication.
           </div>
-          
-          <form [formGroup]="preRegForm" (ngSubmit)="onPreRegFormSubmit(preRegForm.getRawValue())" autocomplete="off" fxLayout="row wrap" fxLayoutAlign="center">
-          
+
+          <form [formGroup]="preRegForm" (ngSubmit)="onPreRegFormSubmit(preRegForm.getRawValue())" autocomplete="off"
+            fxLayout="row wrap" fxLayoutAlign="center">
+
             <div fxFlex="100" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
               <mat-form-field fxFlex>
                 <input formControlName="firstName" matInput placeholder="First Name" maxlength="35" required>
@@ -215,7 +255,8 @@
               </mat-form-field>
               <mat-form-field fxFlex>
                 <input formControlName="middleName" matInput placeholder="Middle Name" maxlength="35">
-                <mat-error *ngIf="preRegForm.controls.middleName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                <mat-error
+                  *ngIf="preRegForm.controls.middleName.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
               </mat-form-field>
               <mat-form-field fxFlex>
                 <input formControlName="lastName" matInput placeholder="Last Name" maxlength="35">
@@ -225,20 +266,27 @@
 
             <div fxFlex="100" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
               <mat-form-field fxFlex>
-                <input formControlName="mobileNo" matInput placeholder="Mobile Number" (keydown.space)="$event.preventDefault()" (keypress)="globalFunctions.onlyNumberKey($event)" maxlength="10" pattern="[0-9]+" required >
+                <input formControlName="mobileNo" matInput placeholder="Mobile Number"
+                  (keydown.space)="$event.preventDefault()" (keypress)="globalFunctions.onlyNumberKey($event)"
+                  maxlength="10" pattern="[0-9]+" required>
                 <mat-error *ngIf="preRegForm.controls.mobileNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
-                <mat-error *ngIf="preRegForm.controls.mobileNo.hasError('pattern')">{{allMsgs.WRONG_MOBILE_NO}}</mat-error>
+                <mat-error
+                  *ngIf="preRegForm.controls.mobileNo.hasError('pattern')">{{allMsgs.WRONG_MOBILE_NO}}</mat-error>
               </mat-form-field>
               <mat-form-field fxFlex>
-                <input formControlName="email" matInput placeholder="E-Mail" maxlength="100" (keydown.space)="$event.preventDefault()" required>
+                <input formControlName="email" matInput placeholder="E-Mail" maxlength="100"
+                  (keydown.space)="$event.preventDefault()" required>
                 <mat-error *ngIf="preRegForm.controls.email.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
-                <mat-error *ngIf="preRegForm.controls.email.hasError('invalidEmail')">{{allMsgs.WRONG_EMAIL}}</mat-error>
+                <mat-error
+                  *ngIf="preRegForm.controls.email.hasError('invalidEmail')">{{allMsgs.WRONG_EMAIL}}</mat-error>
               </mat-form-field>
             </div>
 
             <div fxFlex="100" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
               <mat-form-field fxFlex>
-                <input formControlName="pincode" matInput placeholder="Pincode" (keyup)="getFromPincode($event, 'residentialAddress')" (keypress)="globalFunctions.onlyNumberKey($event)" maxlength="6" pattern="[0-9]+" required>
+                <input formControlName="pincode" matInput placeholder="Pincode"
+                  (keyup)="getFromPincode($event, 'residentialAddress')"
+                  (keypress)="globalFunctions.onlyNumberKey($event)" maxlength="6" pattern="[0-9]+" required>
                 <mat-error *ngIf="preRegForm.controls.pincode.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
                 <mat-error *ngIf="preRegForm.controls.pincode.hasError('pattern')">{{allMsgs.WRONG_PINCODE}}</mat-error>
               </mat-form-field>
@@ -268,16 +316,16 @@
             </div>
             <div fxFlex="100" class="info marg-top-20">
               <a href="javascript:void(0);" (click)="showLoginFormBox()">
-                 CLICK HERE TO SIGN-IN
+                CLICK HERE TO SIGN-IN
               </a>
             </div>
           </form>
         </div>
 
         <div *ngIf="showPaymentPage" class="marg-top-20">
-          <app-cart></app-cart>     
+          <app-cart></app-cart>
         </div>
-        
+
       </mat-card-content>
     </mat-card>
   </div>
