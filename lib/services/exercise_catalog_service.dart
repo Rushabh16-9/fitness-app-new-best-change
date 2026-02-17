@@ -1,0 +1,208 @@
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
+import '../asset_resolver.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class ExerciseEntry {
+  final String id;
+  final String name;
+  final String gifUrl; // optional network gif
+  final String? assetPath; // optional local asset preview (jpg/png/gif)
+  final List<String> tags;
+
+  ExerciseEntry({required this.id, required this.name, required this.gifUrl, required this.tags, this.assetPath});
+}
+
+class ExerciseCatalogService {
+  List<ExerciseEntry> _all = [];
+  bool _loaded = false;
+
+  Future<void> load() async {
+    if (_loaded) return;
+    try {
+      // 1) Load any network GIF entries from JSON if available (do not abort if missing)
+      try {
+        final raw = await rootBundle.loadString('assets/exercise_gifs.json');
+        final List list = jsonDecode(raw) as List;
+        final fromJson = list.map((e) {
+          final id = (e['exerciseId'] ?? '').toString();
+          final name = (e['name'] ?? '').toString();
+          final gifUrl = (e['gifUrl'] ?? '').toString();
+          final tags = _deriveTagsFromName(name);
+          return ExerciseEntry(id: id.isEmpty ? _slug(name) : id, name: name, gifUrl: gifUrl, tags: tags);
+        }).toList();
+        _all.addAll(fromJson);
+      } catch (_) {
+        // If the JSON isn't packaged, continue with local assets and Firestore without failing
+      }
+
+      // 2) Also scan bundled local dataset under assets/data/exercise_images/
+      await AssetResolver.init();
+      final assetFiles = AssetResolver.list(
+        prefix: 'assets/data/exercise_images/',
+        extensions: ['.jpg', '.jpeg', '.png', '.gif'],
+      );
+      final seenExercises = <String, String>{}; // exercise name -> first asset path
+      for (final p in assetFiles) {
+        // Extract exercise name from flat filename: "Exercise_Name_0.jpg"
+        final filename = p.split('/').last;
+        final nameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+        final parts = nameWithoutExt.split('_');
+        // Remove numeric suffix (0, 1, etc.)
+        if (parts.length > 1 && int.tryParse(parts.last) != null) {
+          parts.removeLast();
+        }
+        final exerciseName = parts.join('_');
+        seenExercises.putIfAbsent(exerciseName, () => p);
+      }
+      // Create/merge entries from folders (use first asset as preview)
+      for (final entry in seenExercises.entries) {
+        final exerciseName = entry.key;
+        final assetPath = entry.value;
+    // Clean up folder name to a human-readable exercise name
+    String name = exerciseName
+      .replaceAll('_', ' ')
+      .replaceAll('-', ' ')
+      .replaceAll('3 4', '3/4')
+      .replaceAll('90 90', '90/90');
+    // Uppercase first letter of each word
+    name = name.split(' ').where((w) => w.isNotEmpty).map((w) => w[0].toUpperCase() + w.substring(1)).join(' ');
+        final id = 'asset:${_slug(exerciseName)}';
+        final matchIdx = _all.indexWhere((e) => e.name.toLowerCase() == name.toLowerCase());
+        if (matchIdx != -1) {
+          // Merge: add assetPath to existing entry if missing
+          final existing = _all[matchIdx];
+          if (existing.assetPath == null || existing.assetPath!.isEmpty) {
+            _all[matchIdx] = ExerciseEntry(
+              id: existing.id,
+              name: existing.name,
+              gifUrl: existing.gifUrl,
+              assetPath: assetPath,
+              tags: existing.tags.isEmpty ? _deriveTagsFromName(existing.name) : existing.tags,
+            );
+          }
+        } else {
+          _all.add(ExerciseEntry(
+            id: id,
+            name: name,
+            gifUrl: '',
+            assetPath: assetPath,
+            tags: _deriveTagsFromName(name),
+          ));
+        }
+      }
+
+      // Optional: sort alphabetically for stable browsing
+      _all.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      // 3) Optionally merge remote Firestore 'exercises' (if present)
+      try {
+        final snap = await FirebaseFirestore.instance.collection('exercises').limit(500).get();
+        for (final doc in snap.docs) {
+          final data = doc.data();
+          final name = (data['name'] ?? '').toString();
+          if (name.isEmpty) continue;
+          final gifUrl = (data['gifUrl'] ?? data['imageUrl'] ?? '').toString();
+          final List tagsRaw = (data['tags'] is List) ? (data['tags'] as List) : const [];
+          final tags = tagsRaw.map((e) => e.toString()).where((e) => e.isNotEmpty).toList();
+          final id = 'fs:${doc.id}';
+          final exists = _all.any((e) => e.id == id || e.name.toLowerCase() == name.toLowerCase());
+          if (exists) continue;
+          _all.add(ExerciseEntry(
+            id: id,
+            name: name,
+            gifUrl: gifUrl,
+            assetPath: null,
+            tags: tags.isEmpty ? _deriveTagsFromName(name) : tags,
+          ));
+        }
+        _all.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      } catch (_) {
+        // ignore if Firestore not available or collection missing
+      }
+      // Final de-duplication pass by canonicalized name to remove near-duplicate entries
+      // (e.g., "3/4 Sit Up" vs "3/4 Sit-Up"). Prefer entries with a local asset preview,
+      // then prefer those with a GIF URL.
+      final Map<String, ExerciseEntry> byCanon = {};
+      int score(ExerciseEntry e) => (e.assetPath != null && e.assetPath!.isNotEmpty ? 2 : 0) + (e.gifUrl.isNotEmpty ? 1 : 0);
+      for (final e in _all) {
+        final key = _canonical(e.name);
+        final existing = byCanon[key];
+        if (existing == null) {
+          byCanon[key] = e;
+        } else {
+          byCanon[key] = score(e) >= score(existing) ? e : existing;
+        }
+      }
+      _all = byCanon.values.toList()
+        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      // Remove a few specific asset-derived entries that don't make sense in the
+      // catalog UI (user-reported): 3/4 sit-ups, 90/90 entries and explicit
+      // hamstring-only folders which are noisy or incorrectly named.
+      final blacklist = ['3/4 sit', '90/90', 'hamstring'];
+      _all = _all.where((e) {
+        final lname = e.name.toLowerCase();
+        for (final b in blacklist) {
+          if (lname.contains(b)) return false;
+        }
+        return true;
+      }).toList();
+      _loaded = true;
+    } catch (e) {
+      // In a hard failure, avoid throwing away already collected entries
+      _all = _all; // keep whatever we built
+      _loaded = true;
+    }
+  }
+
+  List<ExerciseEntry> get all => _all;
+
+  List<ExerciseEntry> search(String query, {Set<String>? tagFilter}) {
+    final q = query.trim().toLowerCase();
+    return _all.where((ex) {
+      final matchesText = q.isEmpty || ex.name.toLowerCase().contains(q);
+      final matchesTags = tagFilter == null || tagFilter.isEmpty || ex.tags.any(tagFilter.contains);
+      return matchesText && matchesTags;
+    }).toList();
+  }
+
+  List<String> getTopTags([int max = 12]) {
+    final counts = <String, int>{};
+    for (final e in _all) {
+      for (final t in e.tags) {
+        counts[t] = (counts[t] ?? 0) + 1;
+      }
+    }
+    final sorted = counts.keys.toList()
+      ..sort((a, b) => (counts[b] ?? 0).compareTo(counts[a] ?? 0));
+    return sorted.take(max).toList();
+  }
+
+  List<String> _deriveTagsFromName(String name) {
+    final lower = name.toLowerCase();
+    final tags = <String>[];
+    void addIf(bool cond, String tag) { if (cond) tags.add(tag); }
+    addIf(lower.contains('abs') || lower.contains('crunch') || lower.contains('core'), 'core');
+    addIf(lower.contains('hamstring') || lower.contains('leg') || lower.contains('squat'), 'legs');
+    addIf(lower.contains('bicep') || lower.contains('curl'), 'arms');
+    addIf(lower.contains('tricep') || lower.contains('dip'), 'arms');
+    addIf(lower.contains('chest') || lower.contains('bench') || lower.contains('push'), 'chest');
+    addIf(lower.contains('back') || lower.contains('row') || lower.contains('lat'), 'back');
+    addIf(lower.contains('shoulder') || lower.contains('press') || lower.contains('raise'), 'shoulders');
+    addIf(lower.contains('rope') || lower.contains('jump') || lower.contains('run'), 'cardio');
+    return tags.toSet().toList();
+  }
+
+  String _slug(String s) {
+    var out = s
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
+        .replaceAll(RegExp(r'-+'), '-');
+    // Trim leading/trailing dashes
+    out = out.replaceFirst(RegExp(r'^-+'), '');
+    out = out.replaceFirst(RegExp(r'-+$'), '');
+    return out;
+  }
+
+  // Canonical name used for de-duplication: lowercased and strip all non-alphanumeric chars
+  String _canonical(String s) => s.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+}

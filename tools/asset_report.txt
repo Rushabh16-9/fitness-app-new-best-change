@@ -1,0 +1,49 @@
+Per-exercise image resolution (first image only):
+
+No missing images found.
+
+Music files found (44):
+ - assets/data/music/39dash39-by-crusadope-21691.mp3
+ - assets/data/music/always-coming-back-21747.mp3
+ - assets/data/music/baby-mandala-nepalese-drill-music-169039.mp3
+ - assets/data/music/background-music-upbeat-398341.mp3
+ - assets/data/music/catch-the-flow-24823.mp3
+ - assets/data/music/club-vocal-house-343307.mp3
+ - assets/data/music/deep-house-beat-369715.mp3
+ - assets/data/music/drive-360122.mp3
+ - assets/data/music/dynamic-sport-electro-145061.mp3
+ - assets/data/music/electric_euphoria-257522 (1).mp3
+ - assets/data/music/electric_euphoria-257522.mp3
+ - assets/data/music/electro-house-13975.mp3
+ - assets/data/music/energetic-upbeat-background-music-377668.mp3
+ - assets/data/music/fashion-house-164924.mp3
+ - assets/data/music/fly-away-instrumental-268403.mp3
+ - assets/data/music/game-on-153596.mp3
+ - assets/data/music/glimmer-the-slap-house-beat-407051.mp3
+ - assets/data/music/hours-348240.mp3
+ - assets/data/music/indie-pop-music-148590.mp3
+ - assets/data/music/motivation-sport-391367.mp3
+ - assets/data/music/oldschool-hip-hop-type-beat-zum-rappen-111499.mp3
+ - assets/data/music/order-99518.mp3
+ - assets/data/music/racing_fast-day-125862.mp3
+ - assets/data/music/relaxing-beats-113556.mp3
+ - assets/data/music/safe-398700.mp3
+ - assets/data/music/sport-event-368391 (1).mp3
+ - assets/data/music/sport-event-368391.mp3
+ - assets/data/music/sport-workout-gym-fitness-189874.mp3
+ - assets/data/music/subsonic-groove-shift-by-meditative-tiger-392296.mp3
+ - assets/data/music/such-smooth-groove-252169.mp3
+ - assets/data/music/summer-lounge-house-349701.mp3
+ - assets/data/music/supra-drift-phonk-music-139106 (1).mp3
+ - assets/data/music/supra-drift-phonk-music-139106.mp3
+ - assets/data/music/testosterone-scream-fighting-sport-gym-workout-dubstep-266617.mp3
+ - assets/data/music/the-phonk-house-288538.mp3
+ - assets/data/music/upbeat-background-music-212772.mp3
+ - assets/data/music/upbeat-music-398339.mp3
+ - assets/data/music/upbeat-summer-music-398340.mp3
+ - assets/data/music/wasting-my-time-156442.mp3
+ - assets/data/music/wasting-my-time-no-vocal-156445.mp3
+ - assets/data/music/wataboi-fiyah-10150.mp3
+ - assets/data/music/we-are-worthy-house-electronics-381042 (1).mp3
+ - assets/data/music/we-are-worthy-house-electronics-381042.mp3
+ - assets/data/music/workout-beats-331317.mp3
