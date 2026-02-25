@@ -45,25 +45,25 @@ export class LoginComponent implements OnInit {
   signIn: boolean = true;
 
   showLoginForm: boolean = false;
-  showOtpForm:boolean = false;
-  showIdentifiersForm:boolean = false;
-  showGroupSelectionForm:boolean = false;
-  showLanguageGroups:boolean = false;
-  lngError:boolean = false;
-  grpError:boolean = false;
+  showOtpForm: boolean = false;
+  showIdentifiersForm: boolean = false;
+  showGroupSelectionForm: boolean = false;
+  showLanguageGroups: boolean = false;
+  lngError: boolean = false;
+  grpError: boolean = false;
   languageGroups = [];
   subjectGroups = [];
   allSubjectGroups = [];
-  selectedLangGroupId:number;
-  selectedSubjectGroupId:number;
-  showSubjectGroups:boolean = false;
-  showNameSearch:boolean = false;
-  showInHouseOptions:boolean = false;
-  showPrnNo:boolean = false;
-  showAcademicInfo:boolean = false;
-  showStudentSelection:boolean = false;
-  showPreRegForm:boolean = false;
-  showPaymentPage:boolean = false;
+  selectedLangGroupId: number;
+  selectedSubjectGroupId: number;
+  showSubjectGroups: boolean = false;
+  showNameSearch: boolean = false;
+  showInHouseOptions: boolean = false;
+  showPrnNo: boolean = false;
+  showAcademicInfo: boolean = false;
+  showStudentSelection: boolean = false;
+  showPreRegForm: boolean = false;
+  showPaymentPage: boolean = false;
 
   userId: string;
   authCode: string;
@@ -72,24 +72,24 @@ export class LoginComponent implements OnInit {
   email: string = '';
   otpMode: 'phone' | 'email';
   otpNo: string = '';
-  previousUrl:string;
+  previousUrl: string;
 
   instituteId: string = '';
-  inHouse:boolean = false;
+  inHouse: boolean = false;
   formPolicyId: string = '';
   formType: string = '';
   isMobileLogin: string = '';
   headerImage: string = '';
-  showBrandLogo:boolean = false;
-  
+  showBrandLogo: boolean = false;
+
   identifierLabel: string = 'Enter Identifier';
   otpConfirmationValues = [];
-  
+
   studentsArray = [];
   coursesArray = [];
-  courseLabel:string;
-  examTermsLabel:string;
-  subjectGroupsLabel:string;
+  courseLabel: string;
+  examTermsLabel: string;
+  subjectGroupsLabel: string;
   examsArray = [];
   subjectGroupsArray = [];
   showSubjectGroup: boolean = false;
@@ -100,36 +100,37 @@ export class LoginComponent implements OnInit {
   listOfKnowAbout = [];
   newPasswordHide: boolean = true;
   confirmPasswordHide: boolean = true;
-  subjectGroupsLable:string;
-  subjectGroupsLableHeading:string;
+  subjectGroupsLable: string;
+  subjectGroupsLableHeading: string;
   showNriLogin: boolean = false;
-  showNriLogintxt:string;
+  showNriLogintxt: string;
+  sendOtpFromEmail: boolean = false;
   constructor(
     private _formBuilder: UntypedFormBuilder,
     private authService: AuthService,
-    private _commonService: CommonService,    
+    private _commonService: CommonService,
     private _admissionService: AdmissionService,
     private _atktService: AtktService,
-    private activatedRoute: ActivatedRoute,     
+    private activatedRoute: ActivatedRoute,
     private router: Router,
-    public dialog: MatDialog,     
+    public dialog: MatDialog,
     public _snackBarMsgComponent: SnackBarMsgComponent,
-    public appSettings:AppSettings,    
+    public appSettings: AppSettings,
     private allEventEmitters: AllEventEmitters
-  ) { 
+  ) {
 
     this.settings = this.appSettings.settings;
 
     this.allEventEmitters.setTitle.emit(
       environment.WEBSITE_NAME + ' - ' +
-      environment.PANEL_NAME + 
+      environment.PANEL_NAME +
       ' | Login'
     );
     this.isMobileLogin = '';
     this.activatedRoute.queryParams.subscribe(params => {
       for (var key in params) {
         if (params.hasOwnProperty(key)) {
-         
+
           if (key.toLowerCase().includes('institute')) {
             this.instituteId = params[key];
           } else if (key.toLowerCase().includes('house')) {
@@ -157,17 +158,17 @@ export class LoginComponent implements OnInit {
     if (this.authService.isUserLoggedIn()) {
       this.authService.clearLocalStorage();
     }
-    
+
     globalFunctions.setUserProf('previousUrl', window.location.href);
 
     this.getDeviceConfig();
   }
 
   ngOnInit() {
-    this.createAcademicInfoFormControls();    
+    this.createAcademicInfoFormControls();
     this.createFormGroup();
     this.createPreRegFormControls();
-  } 
+  }
 
   ngAfterViewInit() {
 
@@ -184,10 +185,10 @@ export class LoginComponent implements OnInit {
   }
 
   getDeviceConfig() {
-    
+
     setTimeout(() => { this.allEventEmitters.showLoader.emit(true); }, 1);
     this.authService.callConfig().subscribe(data => {
- 
+
       setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);
 
       if (data.status != undefined) {
@@ -207,7 +208,7 @@ export class LoginComponent implements OnInit {
       setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
-  }  
+  }
 
   getFormPolicyInfo() {
 
@@ -228,8 +229,15 @@ export class LoginComponent implements OnInit {
             this.showBrandLogo = true;
           }
           this.showNriLogintxt = data.dataJson.showNriLogintxt;
+          this.sendOtpFromEmail = data.dataJson.sendOtpFromEmail || false;
 
-           if (this.showNriLogin) {
+          // If sendOtpFromEmail is true, both mobile and email are required
+          if (this.sendOtpFromEmail) {
+            this.loginForm.get('phone').setValidators([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(regexValidators.validate.phone)]);
+            this.loginForm.get('email').setValidators([Validators.required, Validators.email]);
+            this.loginForm.get('phone').updateValueAndValidity();
+            this.loginForm.get('email').updateValueAndValidity();
+          } else if (this.showNriLogin) {
             this.loginForm.addControl('isNri', this._formBuilder.control('no', Validators.required));
             this.loginForm.get('isNri').valueChanges.subscribe(value => {
               this.updateFormBasedOnNriStatus(value);
@@ -237,7 +245,7 @@ export class LoginComponent implements OnInit {
             this.updateFormBasedOnNriStatus(this.loginForm.get('isNri').value);
           }
 
-          if (!globalFunctions.isEmpty(data.dataJson.themeColor) ) {
+          if (!globalFunctions.isEmpty(data.dataJson.themeColor)) {
 
             globalFunctions.setUserProf('themeColor', data.dataJson.themeColor);
 
@@ -257,18 +265,18 @@ export class LoginComponent implements OnInit {
   }
 
   updateFormBasedOnNriStatus(isNri: string) {
-  if (isNri === 'yes') {
-    this.loginForm.addControl('email', this._formBuilder.control('', [Validators.required, Validators.email]));
-    if (this.loginForm.contains('phone')) {
-      this.loginForm.removeControl('phone');
-    }
-  } else {
-    this.loginForm.addControl('phone', this._formBuilder.control('', [Validators.required, Validators.pattern(regexValidators.validate.phone)]));
-    if (this.loginForm.contains('email')) {
-      this.loginForm.removeControl('email');
+    if (isNri === 'yes') {
+      this.loginForm.addControl('email', this._formBuilder.control('', [Validators.required, Validators.email]));
+      if (this.loginForm.contains('phone')) {
+        this.loginForm.removeControl('phone');
+      }
+    } else {
+      this.loginForm.addControl('phone', this._formBuilder.control('', [Validators.required, Validators.pattern(regexValidators.validate.phone)]));
+      if (this.loginForm.contains('email')) {
+        this.loginForm.removeControl('email');
+      }
     }
   }
-}
 
   getListOfKnowAbout() {
 
@@ -290,35 +298,39 @@ export class LoginComponent implements OnInit {
 
   createAcademicInfoFormControls() {
     this.academicInfoForm = this._formBuilder.group({
-      studentId : [null, Validators.required],      
-      confId : [null, Validators.required],      
-      termExamId : [null, Validators.required],
-      subjectGroupId : [null],
+      studentId: [null, Validators.required],
+      confId: [null, Validators.required],
+      termExamId: [null, Validators.required],
+      subjectGroupId: [null],
     });
   }
 
   createPreRegFormControls() {
     this.preRegForm = this._formBuilder.group({
-      firstName: [null, Validators.required], 
-      middleName: [null], 
-      lastName: [null], 
-      mobileNo: ['', Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(regexValidators.validate.phone) ])],
-      email: [null, Validators.compose([Validators.required, emailValidator])], 
-      pincode: [null, Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(6) ])], 
-      city: new UntypedFormControl({value: null, disabled: true}, Validators.required), 
-      state: new UntypedFormControl({value: null, disabled: true}, Validators.required), 
-      knowAbout: [null, Validators.required], 
+      firstName: [null, Validators.required],
+      middleName: [null],
+      lastName: [null],
+      mobileNo: ['', Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(regexValidators.validate.phone)])],
+      email: [null, Validators.compose([Validators.required, emailValidator])],
+      pincode: [null, Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(6)])],
+      city: new UntypedFormControl({ value: null, disabled: true }, Validators.required),
+      state: new UntypedFormControl({ value: null, disabled: true }, Validators.required),
+      knowAbout: [null, Validators.required],
     });
   }
 
   createFormGroup() {
     this.loginForm = this._formBuilder.group({
-      isNri: ['no'] ,
+      isNri: ['no'],
       phone: ['', [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(regexValidators.validate.phone)]],
       email: ['']
     });
     this.loginForm.get('isNri')?.valueChanges.subscribe(value => {
-      if (value === 'yes') {
+      if (this.sendOtpFromEmail) {
+        // When sendOtpFromEmail is true, both fields are required
+        this.loginForm.get('email').setValidators([Validators.required, Validators.email]);
+        this.loginForm.get('phone').setValidators([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(regexValidators.validate.phone)]);
+      } else if (value === 'yes') {
         this.loginForm.get('email').setValidators([Validators.required, Validators.email]);
         this.loginForm.get('phone').clearValidators();
       } else {
@@ -328,9 +340,9 @@ export class LoginComponent implements OnInit {
       this.loginForm.get('email').updateValueAndValidity();
       this.loginForm.get('phone').updateValueAndValidity();
     });
-  
+
     this.otpFormGroup = this._formBuilder.group({
-      'otp': [null, Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(regexValidators.validate.otp) ])]
+      'otp': [null, Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(regexValidators.validate.otp)])]
     });
 
     this.identifierFormGroup = this._formBuilder.group({
@@ -361,7 +373,7 @@ export class LoginComponent implements OnInit {
   }
 
   showLoginFormBox(): void {
-    this._snackBarMsgComponent.closeSnackBar();    
+    this._snackBarMsgComponent.closeSnackBar();
     this.showIdentifiersForm = false;
     this.showGroupSelectionForm = false;
     this.showOtpForm = false;
@@ -370,7 +382,7 @@ export class LoginComponent implements OnInit {
   }
 
   showPreRegFormBox(): void {
-    this._snackBarMsgComponent.closeSnackBar();    
+    this._snackBarMsgComponent.closeSnackBar();
     this.showIdentifiersForm = false;
     this.showGroupSelectionForm = false;
     this.showOtpForm = false;
@@ -381,7 +393,13 @@ export class LoginComponent implements OnInit {
   onLoginSubmit() {
     if (this.loginForm.valid) {
       this.signIn = true;
-      if (this.loginForm.value.isNri === 'yes') {
+      if (this.sendOtpFromEmail) {
+        // When sendOtpFromEmail is true, both mobile and email are required
+        this.mobileNo = this.loginForm.value.phone;
+        this.email = this.loginForm.value.email;
+        this.otpMode = 'email';
+        this.sendOtp(this.email, false, 'email');
+      } else if (this.loginForm.value.isNri === 'yes') {
         this.loginForm.value.phone = "";
         this.email = this.loginForm.value.email;
         this.otpMode = 'email';
@@ -405,15 +423,15 @@ export class LoginComponent implements OnInit {
   }
 
 
-  sendOtp(mobileNo:string, resend:boolean = false, mode: 'phone' | 'email') {
+  sendOtp(mobileNo: string, resend: boolean = false, mode: 'phone' | 'email') {
 
-    let postValues:any = {
-      instituteId: this.instituteId, 
+    let postValues: any = {
+      instituteId: this.instituteId,
       formPolicyId: this.formPolicyId,
-      formType: this.formType, 
-      signIn: this.signIn, 
-      isMobileLogin: this.isMobileLogin, 
-      resend: resend, 
+      formType: this.formType,
+      signIn: this.signIn,
+      isMobileLogin: this.isMobileLogin,
+      resend: resend,
     };
 
     if (mode === 'phone') {
@@ -421,7 +439,12 @@ export class LoginComponent implements OnInit {
       postValues.email = null;
     } else if (mode === 'email') {
       postValues.email = mobileNo;
-      postValues.mobileNo = null;
+      // When sendOtpFromEmail is true, also pass mobileNo
+      if (this.sendOtpFromEmail && this.mobileNo) {
+        postValues.mobileNo = this.mobileNo;
+      } else {
+        postValues.mobileNo = null;
+      }
     }
 
     this.allEventEmitters.showLoader.emit(true);
@@ -434,18 +457,25 @@ export class LoginComponent implements OnInit {
         if (data.status == 1) {
 
           if (data.dataJson.otp) {
-            this.otpFormGroup.setValue({otp: data.dataJson.otp});
+            this.otpFormGroup.setValue({ otp: data.dataJson.otp });
           } else {
-            this.otpFormGroup.setValue({otp: ''});
+            this.otpFormGroup.setValue({ otp: '' });
           }
 
           this.showLoginForm = false;
           this.showPreRegForm = false;
           this.showOtpForm = true;
-          
-          this._snackBarMsgComponent.openSnackBar(allMsgs.OTP_SENT+ ' ' + mobileNo, 'x', 'info-snackbar');
-        
-        }else if(data.status == 4){
+
+          // Show customized message based on OTP mode
+          let successMessage = '';
+          if (mode === 'email') {
+            successMessage = 'OTP sent successfully to your Email ID - ' + mobileNo;
+          } else {
+            successMessage = allMsgs.OTP_SENT + ' ' + mobileNo;
+          }
+          this._snackBarMsgComponent.openSnackBar(successMessage, 'x', 'info-snackbar');
+
+        } else if (data.status == 4) {
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
         } else {
 
@@ -464,19 +494,19 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onOtpSubmit(values:form_elements):void {
+  onOtpSubmit(values: form_elements): void {
 
     if (this.otpFormGroup.valid) {
 
-      let postValues:any = {
-        instituteId: this.instituteId, 
+      let postValues: any = {
+        instituteId: this.instituteId,
         formPolicyId: this.formPolicyId,
-        mobileNo: this.mobileNo, 
-        email: this.email, 
-        formType: this.formType, 
-        preRegFormValues: this.preRegFormValues, 
-        otp: values.otp, 
-        isMobileLogin: this.isMobileLogin, 
+        mobileNo: this.mobileNo,
+        email: this.email,
+        formType: this.formType,
+        preRegFormValues: this.preRegFormValues,
+        otp: values.otp,
+        isMobileLogin: this.isMobileLogin,
       };
 
       this.allEventEmitters.showLoader.emit(true);
@@ -487,17 +517,17 @@ export class LoginComponent implements OnInit {
         if (data.status != undefined) {
           if (data.status == 1) {
             this._snackBarMsgComponent.closeSnackBar();
-            data.dataJson['instituteId']  = this.instituteId;
-            data.dataJson['inHouse']      = this.inHouse;
+            data.dataJson['instituteId'] = this.instituteId;
+            data.dataJson['inHouse'] = this.inHouse;
             data.dataJson['formPolicyId'] = this.formPolicyId;
-            data.dataJson['formType']     = this.formType;
-            this.otpConfirmationValues    = data.dataJson;
+            data.dataJson['formType'] = this.formType;
+            this.otpConfirmationValues = data.dataJson;
             if (data.dataJson.showIdentifier) {
               this.showNameSearch = data.dataJson.showNameSearch;
               this.showInHouseOptions = data.dataJson.showInHouseOptions;
 
               if (!this.showInHouseOptions) {
-                this.identifierFormGroup.controls['inHouseSelection'].setValue('yes', {emitEvent: false});
+                this.identifierFormGroup.controls['inHouseSelection'].setValue('yes', { emitEvent: false });
               }
 
               this.showPrnNo = data.dataJson.showPrnNo;
@@ -510,7 +540,7 @@ export class LoginComponent implements OnInit {
             } else if (this.formType == 'atkt' || this.formType == 'exam') {
               // this.getUserStudentsList();
               this.getStudentsCourses(0);
-              this.academicInfoForm.controls['studentId'].setValue(0, {emitEvent: false});
+              this.academicInfoForm.controls['studentId'].setValue(0, { emitEvent: false });
             } else {
               this.setLocalStorage(this.otpConfirmationValues);
             }
@@ -527,28 +557,28 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onIdentifierSubmit():void {
- 
+  onIdentifierSubmit(): void {
+
     if (this.identifierFormGroup.valid) {
 
-      let postValues:any = {
-        userId: this.userId, 
-        instituteId: this.instituteId, 
-        mobileNo: this.mobileNo, 
-        inHouseSelection: this.identifierFormGroup.get("inHouseSelection").value, 
-        prnNo: this.identifierFormGroup.get("prnNo").value, 
-        nameSearch: this.identifierFormGroup.get("nameSearch").value, 
-        identifier: this.identifierFormGroup.get("identifier").value, 
-        applicantId: this.otpConfirmationValues['applicantId'], 
+      let postValues: any = {
+        userId: this.userId,
+        instituteId: this.instituteId,
+        mobileNo: this.mobileNo,
+        inHouseSelection: this.identifierFormGroup.get("inHouseSelection").value,
+        prnNo: this.identifierFormGroup.get("prnNo").value,
+        nameSearch: this.identifierFormGroup.get("nameSearch").value,
+        identifier: this.identifierFormGroup.get("identifier").value,
+        applicantId: this.otpConfirmationValues['applicantId'],
         formPolicyId: this.formPolicyId,
-        formType: this.formType, 
+        formType: this.formType,
       };
 
       this.allEventEmitters.showLoader.emit(true);
       this._admissionService.identifierConfirmation(postValues).subscribe(data => {
- 
+
         this.allEventEmitters.showLoader.emit(false);
- 
+
         if (data.status != undefined) {
 
           if (data.status == 1) {
@@ -561,38 +591,38 @@ export class LoginComponent implements OnInit {
             this._snackBarMsgComponent.closeSnackBar();
 
             if (data.dataJson.showCourseSelection) {
-          
+
               this.showIdentifiersForm = false;
               this.getStudentsCourses(0);
-              this.academicInfoForm.controls['studentId'].setValue(data?.dataJson?.studentId, {emitEvent: false});
+              this.academicInfoForm.controls['studentId'].setValue(data?.dataJson?.studentId, { emitEvent: false });
 
             } else if (data.dataJson.groupSelection) {
-              
+
               this.showIdentifiersForm = false;
               this.showGroupSelectionForm = true;
 
               this.showSubjectGroups = false;
-              if ( !globalFunctions.isEmpty(data.dataJson.subjectGroups) ) {
+              if (!globalFunctions.isEmpty(data.dataJson.subjectGroups)) {
 
                 this.allSubjectGroups = data.dataJson.subjectGroups;
                 this.subjectGroups = data.dataJson.subjectGroups;
 
-                this.showSubjectGroups = true;  
-                this.subjectGroupsLable = data.dataJson.subjectGroupsLable; 
-                this.subjectGroupsLableHeading = data.dataJson.subjectGroupsLableHeading;             
+                this.showSubjectGroups = true;
+                this.subjectGroupsLable = data.dataJson.subjectGroupsLable;
+                this.subjectGroupsLableHeading = data.dataJson.subjectGroupsLableHeading;
               }
 
               this.showLanguageGroups = false;
-              if ( !globalFunctions.isEmpty(data.dataJson.languageGroups) ) {
+              if (!globalFunctions.isEmpty(data.dataJson.languageGroups)) {
 
                 this.languageGroups = data.dataJson.languageGroups;
 
-                this.showSubjectGroups = false;                
+                this.showSubjectGroups = false;
                 this.showLanguageGroups = true;
               }
             } else {
               this.setLocalStorage(this.otpConfirmationValues);
-            }            
+            }
           } else if (data.status == 0) {
             this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
           }
@@ -627,10 +657,10 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  selectRadioGrp(subjectGroupId:number, sgIndex:number) {
+  selectRadioGrp(subjectGroupId: number, sgIndex: number) {
 
     this._snackBarMsgComponent.closeSnackBar();
-    
+
     this.selectedSubjectGroupId = subjectGroupId;
     this.grpError = false;
 
@@ -639,10 +669,10 @@ export class LoginComponent implements OnInit {
       if (sgIndex == index) {
         subGrp.isSelected = true;
       }
-    });    
+    });
   }
 
-  showSubjectInfo(subGrp:any = {}) {
+  showSubjectInfo(subGrp: any = {}) {
 
     let dialogRef = this.dialog.open(SubjectsInfoDialogComponent, {
       width: '600px',
@@ -651,8 +681,8 @@ export class LoginComponent implements OnInit {
     });
 
     dialogRef.componentInstance.modalTitle = subGrp.subjectGroupName;
-    dialogRef.componentInstance.subGrp     = subGrp;
-    dialogRef.componentInstance.dialogRef  = dialogRef;
+    dialogRef.componentInstance.subGrp = subGrp;
+    dialogRef.componentInstance.dialogRef = dialogRef;
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == 'loadPage') {
@@ -667,7 +697,7 @@ export class LoginComponent implements OnInit {
     this.grpError = false;
     if (this.showLanguageGroups) {
 
-      if ( globalFunctions.isEmpty(this.selectedLangGroupId) ) {
+      if (globalFunctions.isEmpty(this.selectedLangGroupId)) {
         this.lngError = true;
         err = true;
       }
@@ -675,7 +705,7 @@ export class LoginComponent implements OnInit {
 
     if (this.showSubjectGroups) {
 
-      if ( globalFunctions.isEmpty(this.selectedSubjectGroupId) ) {
+      if (globalFunctions.isEmpty(this.selectedSubjectGroupId)) {
         this.grpError = true;
         err = true;
       }
@@ -683,28 +713,28 @@ export class LoginComponent implements OnInit {
 
     if (err) {
 
-      this._snackBarMsgComponent.openSnackBar(allMsgs.REQUIRED_ALL_FIELDS, 'x', 'error-snackbar', 5000);      
+      this._snackBarMsgComponent.openSnackBar(allMsgs.REQUIRED_ALL_FIELDS, 'x', 'error-snackbar', 5000);
     } else {
 
       this.updateSubjectGroup();
     }
   }
 
-  updateSubjectGroup():void {
+  updateSubjectGroup(): void {
 
-    let postValues:any = {
-      userId: this.userId, 
-      instituteId: this.instituteId, 
-      mobileNo: this.mobileNo, 
-      inHouseSelection: this.identifierFormGroup.get("inHouseSelection").value, 
-      prnNo: this.identifierFormGroup.get("prnNo").value, 
-      nameSearch: this.identifierFormGroup.get("nameSearch").value, 
-      identifier: this.identifierFormGroup.get("identifier").value, 
-      applicantId: this.otpConfirmationValues['applicantId'], 
+    let postValues: any = {
+      userId: this.userId,
+      instituteId: this.instituteId,
+      mobileNo: this.mobileNo,
+      inHouseSelection: this.identifierFormGroup.get("inHouseSelection").value,
+      prnNo: this.identifierFormGroup.get("prnNo").value,
+      nameSearch: this.identifierFormGroup.get("nameSearch").value,
+      identifier: this.identifierFormGroup.get("identifier").value,
+      applicantId: this.otpConfirmationValues['applicantId'],
       formPolicyId: this.formPolicyId,
       langGroupId: this.selectedLangGroupId,
       subjectGroupId: this.selectedSubjectGroupId,
-      admissionConfId: this.otpConfirmationValues['admissionConfId']      
+      admissionConfId: this.otpConfirmationValues['admissionConfId']
     };
 
     this.allEventEmitters.showLoader.emit(true);
@@ -715,7 +745,7 @@ export class LoginComponent implements OnInit {
       if (data.status != undefined) {
         if (data.status == 1) {
           this.setLocalStorage(this.otpConfirmationValues);
-        }else if (data.status == 2) {
+        } else if (data.status == 2) {
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
         } else {
           this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
@@ -729,7 +759,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  getUserStudentsList():void {
+  getUserStudentsList(): void {
 
     let postParam = {
       userId: this.userId,
@@ -750,14 +780,14 @@ export class LoginComponent implements OnInit {
         if (data.status == 1 && data.dataJson) {
           if (data.dataJson.length == 1) {
             this.getStudentsCourses(data.dataJson[0].studentId);
-            this.academicInfoForm.controls['studentId'].setValue(data.dataJson[0].studentId, {emitEvent: false});
+            this.academicInfoForm.controls['studentId'].setValue(data.dataJson[0].studentId, { emitEvent: false });
           } else {
             this.showStudentSelection = true;
             this.studentsArray = data.dataJson;
           }
         } else {
           this.getStudentsCourses(0);
-          this.academicInfoForm.controls['studentId'].setValue(0, {emitEvent: false});
+          this.academicInfoForm.controls['studentId'].setValue(0, { emitEvent: false });
         }
       } else {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
@@ -768,7 +798,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  getStudentsCourses(studentId):void {
+  getStudentsCourses(studentId): void {
 
     let postParam = {
       studentId: studentId,
@@ -778,7 +808,7 @@ export class LoginComponent implements OnInit {
 
     this.allEventEmitters.showLoader.emit(true);
     this._atktService.getStudentsCourses(postParam).subscribe(data => {
-     
+
       this.allEventEmitters.showLoader.emit(false);
 
       this.showOtpForm = false;
@@ -803,9 +833,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  getCourseExams(confId):void {
+  getCourseExams(confId): void {
 
-    this.showSubjectGroup = false;   
+    this.showSubjectGroup = false;
     this.allEventEmitters.showLoader.emit(true);
     this._atktService.getCourseExams(confId, this.instituteId).subscribe(data => {
 
@@ -820,7 +850,7 @@ export class LoginComponent implements OnInit {
             this.showSubjectGroup = true;
           }
         } else if (data.status == 0) {
-          this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);          
+          this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
         }
       } else {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
@@ -829,13 +859,14 @@ export class LoginComponent implements OnInit {
       this.allEventEmitters.showLoader.emit(false);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
-  } 
+  }
 
-  setLocalStorage(data:any):void {
+  setLocalStorage(data: any): void {
 
     data['userTypeId'] = 5;
     data['afterLoginPage'] = 'admissionForm';
     data['admissionId'] = data.userId;
+    data['email'] = this.email;
     globalFunctions.setUserProfInfo(data);
     if (!data.isPaymentDone && data.prePayment) {
       this.showOtpForm = false;
@@ -853,18 +884,18 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onAcademicInfoSubmit(values:any):void {
+  onAcademicInfoSubmit(values: any): void {
 
     if (this.academicInfoForm.valid) {
-      this.otpConfirmationValues['studentId']  = this.academicInfoForm.get("studentId").value;
-      this.otpConfirmationValues['confId']  = this.academicInfoForm.get("confId").value;
-      this.otpConfirmationValues['termExamId']  = this.academicInfoForm.get("termExamId").value;
-      this.otpConfirmationValues['subjectGroupId']  = this.academicInfoForm.get("subjectGroupId").value;
+      this.otpConfirmationValues['studentId'] = this.academicInfoForm.get("studentId").value;
+      this.otpConfirmationValues['confId'] = this.academicInfoForm.get("confId").value;
+      this.otpConfirmationValues['termExamId'] = this.academicInfoForm.get("termExamId").value;
+      this.otpConfirmationValues['subjectGroupId'] = this.academicInfoForm.get("subjectGroupId").value;
       this.setLocalStorage(this.otpConfirmationValues);
     }
   }
 
-  onPreRegFormSubmit(values:any):void {
+  onPreRegFormSubmit(values: any): void {
 
     if (this.preRegForm.valid) {
       this.preRegFormValues = values;
@@ -879,7 +910,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  getFromPincode(event:any, mode):void {
+  getFromPincode(event: any, mode): void {
 
     let pincode = event.target.value;
     if (pincode.length == 6) {
@@ -891,9 +922,9 @@ export class LoginComponent implements OnInit {
 
         if (data.status != undefined) {
           if (data.status == 1) {
-            this.preRegForm.controls.state.setValue(data.dataJson.stateName, {emitEvent: false});
-            this.preRegForm.controls.state.disable();              
-            this.preRegForm.controls.city.setValue(data.dataJson.cityName, {emitEvent: false});
+            this.preRegForm.controls.state.setValue(data.dataJson.stateName, { emitEvent: false });
+            this.preRegForm.controls.state.disable();
+            this.preRegForm.controls.city.setValue(data.dataJson.cityName, { emitEvent: false });
             this.preRegForm.controls.city.disable();
           } else if (data.status == 0) {
             this.preRegForm.controls.state.enable();
@@ -910,7 +941,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  openInfoDialog(data:any) {
+  openInfoDialog(data: any) {
 
     let dialogRef = this.dialog.open(InfoDialogComponent, {
       disableClose: data.required,
@@ -933,7 +964,7 @@ export class LoginComponent implements OnInit {
 
       }
     });
-  }   
+  }
 
 }
 
