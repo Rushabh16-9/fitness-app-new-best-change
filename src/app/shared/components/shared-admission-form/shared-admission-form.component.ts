@@ -8333,12 +8333,6 @@ export class SharedAdmissionFormComponent implements OnInit {
     this.filteredCastesList = this.castesList.filter(obj => obj.caste.toLowerCase().indexOf(text.toString().toLowerCase()) === 0);
   }
 
-  displayCaste(casteId: any) {
-    if (!casteId || !this.castesList) return casteId;
-    let caste = this.castesList.find(obj => obj.casteId === casteId);
-    return caste ? caste.caste : casteId;
-  }
-
   filterMotherTongues(event: any) {
     let text: string = event.target.value;
     this.filteredMotherTongues = this.motherTongueList.filter(obj => obj.motherTongueName.toLowerCase().indexOf(text.toString().toLowerCase()) === 0);

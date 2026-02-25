@@ -922,7 +922,7 @@
                 <input formControlName="casteId" placeholder="{{formData.personalInfo.casteLabel}}"
                   (keyup)="filterCastes($event)" [matAutocomplete]="autoCaste"
                   [required]="formData.personalInfo.casteRequired" matInput>
-                <mat-autocomplete #autoCaste="matAutocomplete" [displayWith]="displayCaste.bind(this)">
+                <mat-autocomplete #autoCaste="matAutocomplete">
                   <mat-option *ngFor="let cast of filteredCastesList" [value]="cast.casteId">
                     {{cast.caste}}
                   </mat-option>
