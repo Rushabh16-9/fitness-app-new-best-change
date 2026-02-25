@@ -919,12 +919,14 @@
             <div *ngIf="formData.personalInfo.casteFieldType == 'selectBox'" flex fxLayout="row"
               fxLayout.lt-sm="column">
               <mat-form-field *ngIf="formData.personalInfo.showCaste" fxFlex>
-                <mat-select formControlName="casteId" placeholder="{{formData.personalInfo.casteLabel}}"
-                  [required]="formData.personalInfo.casteRequired">
-                  <mat-option *ngFor="let cast of castesList" [value]="cast.casteId">
+                <input formControlName="casteId" placeholder="{{formData.personalInfo.casteLabel}}"
+                  (keyup)="filterCastes($event)" [matAutocomplete]="autoCaste"
+                  [required]="formData.personalInfo.casteRequired" matInput>
+                <mat-autocomplete #autoCaste="matAutocomplete" [displayWith]="displayCaste.bind(this)">
+                  <mat-option *ngFor="let cast of filteredCastesList" [value]="cast.casteId">
                     {{cast.caste}}
                   </mat-option>
-                </mat-select>
+                </mat-autocomplete>
                 <mat-error *ngIf="personalInfoForm.controls.casteId.errors?.required">{{allMsgs.REQUIRED_FIELD}}
                 </mat-error>
                 <mat-hint *ngIf="formData.personalInfo.casteNote"> {{formData.personalInfo.casteNote}}</mat-hint>
@@ -6108,8 +6110,10 @@
             <div style="border-bottom: 1px solid black; padding: 10px 0px;">
               <mat-radio-group formControlName="workExp" class="mb-padng-btm-10 mb-padng-top-0">
                 <b style="color: #3e3e3e;">{{formData.workExpDetails.oldStructure.workexperenceOptionLable}}: </b>
-                <mat-radio-button class="mb-displ-block marg-left-10 mb-marg-left-0 mb-marg-btm-10" value="yes">{{formData.workExpDetails.oldStructure.workexperenceOptionYes}}</mat-radio-button>
-                <mat-radio-button class="mb-displ-block" value="no">{{formData.workExpDetails.oldStructure.workexperenceOptionNo}}</mat-radio-button>
+                <mat-radio-button class="mb-displ-block marg-left-10 mb-marg-left-0 mb-marg-btm-10"
+                  value="yes">{{formData.workExpDetails.oldStructure.workexperenceOptionYes}}</mat-radio-button>
+                <mat-radio-button class="mb-displ-block"
+                  value="no">{{formData.workExpDetails.oldStructure.workexperenceOptionNo}}</mat-radio-button>
                 <mat-error *ngIf="workExperienceForm.controls.workExp.errors?.required" style="font-size: 12px;">
                   {{allMsgs.REQUIRED_FIELD}}</mat-error>
               </mat-radio-group>
@@ -6837,7 +6841,8 @@
                   {{personalInfoForm.get('fullNameMarksheet').value}}
                 </ng-template>
                 <span>
-                 & My Parents / Guardian Mr./Mrs. {{guardianName}} <div [innerHTML]="formData.declarationInfo.studentParentDeclaration"></div>
+                  & My Parents / Guardian Mr./Mrs. {{guardianName}} <div
+                    [innerHTML]="formData.declarationInfo.studentParentDeclaration"></div>
 
                 </span>
               </div>
