@@ -919,15 +919,15 @@
             <div *ngIf="formData.personalInfo.casteFieldType == 'selectBox'" flex fxLayout="row"
               fxLayout.lt-sm="column">
               <mat-form-field *ngIf="formData.personalInfo.showCaste" fxFlex>
-                <input formControlName="casteId" placeholder="{{formData.personalInfo.casteLabel}}"
+                <input formControlName="casteName" placeholder="{{formData.personalInfo.casteLabel}}"
                   (keyup)="filterCastes($event)" [matAutocomplete]="autoCaste"
-                  [required]="formData.personalInfo.casteRequired" matInput>
+                  [required]="formData.personalInfo.casteRequired" maxlength="300" matInput>
                 <mat-autocomplete #autoCaste="matAutocomplete">
-                  <mat-option *ngFor="let cast of filteredCastesList" [value]="cast.casteId">
+                  <mat-option *ngFor="let cast of filteredCastesList" [value]="cast.caste">
                     {{cast.caste}}
                   </mat-option>
                 </mat-autocomplete>
-                <mat-error *ngIf="personalInfoForm.controls.casteId.errors?.required">{{allMsgs.REQUIRED_FIELD}}
+                <mat-error *ngIf="personalInfoForm.controls.casteName.errors?.required">{{allMsgs.REQUIRED_FIELD}}
                 </mat-error>
                 <mat-hint *ngIf="formData.personalInfo.casteNote"> {{formData.personalInfo.casteNote}}</mat-hint>
               </mat-form-field>
