@@ -132,6 +132,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
   monthsList = [];
   otherActivities = [];
+  sportsQualificationEntries: any[] = [];
+  sportsQualificationConfig: any = { display: false, maxEntries: 3, fields: [], entries: [] };
   streams = ['Arts', 'Science', 'Commerce'];
   nationality = ['Indian', '*Foreigner', '*N.R.I'];
   semesterArray = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -6272,6 +6274,31 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       if (formData.extraCurriculumActivities.onlineLearningPreparedness.display && !globalFunctions.isEmpty(formData.extraCurriculumActivities.onlineLearningPreparedness.questionsList)) {
         this.setOnlineLearningPreparednessRows(formData.extraCurriculumActivities.onlineLearningPreparedness.questionsList);
       }
+
+      // Initialize Sports Qualification for preview
+      if (formData.extraCurriculumActivities.sportsQualification) {
+        let sqData = formData.extraCurriculumActivities.sportsQualification;
+        if (Array.isArray(sqData)) {
+          let autoFields = [];
+          if (sqData.length > 0) {
+            Object.keys(sqData[0]).forEach(key => {
+              if (key === 'certificateUpload' || key === 'documentUrl') {
+                autoFields.push({ name: key, label: 'Upload Certificate', type: 'file' });
+              } else {
+                let label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                autoFields.push({ name: key, label: label, type: 'text' });
+              }
+            });
+          }
+          this.sportsQualificationConfig = { display: true, maxEntries: 10, fields: autoFields, entries: sqData };
+          this.sportsQualificationEntries = sqData;
+        } else {
+          this.sportsQualificationConfig = sqData;
+          if (this.sportsQualificationConfig.display && this.sportsQualificationConfig.entries && this.sportsQualificationConfig.entries.length > 0) {
+            this.sportsQualificationEntries = this.sportsQualificationConfig.entries;
+          }
+        }
+      }
     }
 
     this.extraCurriculumForm.disable();
@@ -8911,6 +8938,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       }
     });
     this.extraCurriculumFormValues['otherActivities'] = this.otherActivities;
+    this.extraCurriculumFormValues['sportsQualification'] = this.sportsQualificationEntries.map(entry => {
+      return { ...entry, documentLink: entry.certificateUpload || '' };
+    });
 
     this.questionnaireFormValues = this.questionnaireForm.get('questionnaire').value;
 

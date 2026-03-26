@@ -6404,13 +6404,32 @@ export class SharedAdmissionFormComponent implements OnInit {
 
       // Initialize Sports Qualification
       if (formData.extraCurriculumActivities.sportsQualification) {
-        this.sportsQualificationConfig = formData.extraCurriculumActivities.sportsQualification;
-        if (this.sportsQualificationConfig.display && this.sportsQualificationConfig.entries && this.sportsQualificationConfig.entries.length > 0) {
-          this.sportsQualificationEntries = this.sportsQualificationConfig.entries;
-        } else if (this.sportsQualificationConfig.display) {
-          this.sportsQualificationEntries = [];
-          // Add one empty form by default on first load
-          this.addSportsQualificationEntry();
+        let sqData = formData.extraCurriculumActivities.sportsQualification;
+        // Handle when sportsQualification is a raw array (saved form data)
+        if (Array.isArray(sqData)) {
+          // Auto-generate fields from entry keys
+          let autoFields = [];
+          if (sqData.length > 0) {
+            Object.keys(sqData[0]).forEach(key => {
+              if (key === 'certificateUpload' || key === 'documentUrl') {
+                autoFields.push({ name: key, label: 'Upload Certificate', type: 'file' });
+              } else {
+                let label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                autoFields.push({ name: key, label: label, type: 'text' });
+              }
+            });
+          }
+          this.sportsQualificationConfig = { display: true, maxEntries: 10, fields: autoFields, entries: sqData };
+          this.sportsQualificationEntries = sqData;
+        } else {
+          this.sportsQualificationConfig = sqData;
+          if (this.sportsQualificationConfig.display && this.sportsQualificationConfig.entries && this.sportsQualificationConfig.entries.length > 0) {
+            this.sportsQualificationEntries = this.sportsQualificationConfig.entries;
+          } else if (this.sportsQualificationConfig.display) {
+            this.sportsQualificationEntries = [];
+            // Add one empty form by default on first load
+            this.addSportsQualificationEntry();
+          }
         }
         this.sportsQualificationCertUploading = new Array(this.sportsQualificationEntries.length).fill(false);
         this.sportsQualificationCertProgress = new Array(this.sportsQualificationEntries.length).fill(0);
@@ -6476,7 +6495,7 @@ export class SharedAdmissionFormComponent implements OnInit {
     this._admissionService.uploadPdf(file, 'sportsQualificationCert_' + entryIndex, this.panelMode).subscribe(data => {
       this.sportsQualificationCertUploading[entryIndex] = false;
       if (data.status == 1) {
-        this.sportsQualificationEntries[entryIndex]['certificateUpload'] = data.dataJson.documentUrl;
+        this.sportsQualificationEntries[entryIndex]['certificateUpload'] = data.dataJson.uploadedFile;
         this._snackBarMsgComponent.openSnackBar('Certificate uploaded successfully', 'x', 'success-snackbar', 3000);
       } else {
         this._snackBarMsgComponent.openSnackBar(data.message || 'Upload failed', 'x', 'error-snackbar', 5000);
@@ -9307,7 +9326,9 @@ export class SharedAdmissionFormComponent implements OnInit {
       }
     });
     this.extraCurriculumFormValues['otherActivities'] = this.otherActivities;
-    this.extraCurriculumFormValues['sportsQualification'] = this.sportsQualificationEntries;
+    this.extraCurriculumFormValues['sportsQualification'] = this.sportsQualificationEntries.map(entry => {
+      return { ...entry, documentLink: entry.certificateUpload || '' };
+    });
     this.additionalCertificationFormValues = this.additionalCertificationForm.value;
 
     this.questionnaireFormValues = this.questionnaireForm.get('questionnaire').value;
