@@ -202,6 +202,11 @@ export class SharedAdmissionFormComponent implements OnInit {
   extraCurriculumForm: UntypedFormGroup;
   extraCurriculumFormValues = [];
 
+  sportsQualificationConfig: any = { display: false, maxEntries: 3, fields: [], entries: [] };
+  sportsQualificationEntries: any[] = [];
+  sportsQualificationCertUploading: boolean[] = [];
+  sportsQualificationCertProgress: number[] = [];
+
   additionalCertificationForm: UntypedFormGroup;
   additionalCertificationFormValues = [];
 
@@ -6396,6 +6401,20 @@ export class SharedAdmissionFormComponent implements OnInit {
       if (formData.extraCurriculumActivities.onlineLearningPreparedness.display && !globalFunctions.isEmpty(formData.extraCurriculumActivities.onlineLearningPreparedness.questionsList)) {
         this.setOnlineLearningPreparednessRows(formData.extraCurriculumActivities.onlineLearningPreparedness.questionsList);
       }
+
+      // Initialize Sports Qualification
+      if (formData.extraCurriculumActivities.sportsQualification) {
+        this.sportsQualificationConfig = formData.extraCurriculumActivities.sportsQualification;
+        if (this.sportsQualificationConfig.display && this.sportsQualificationConfig.entries && this.sportsQualificationConfig.entries.length > 0) {
+          this.sportsQualificationEntries = this.sportsQualificationConfig.entries;
+        } else if (this.sportsQualificationConfig.display) {
+          this.sportsQualificationEntries = [];
+          // Add one empty form by default on first load
+          this.addSportsQualificationEntry();
+        }
+        this.sportsQualificationCertUploading = new Array(this.sportsQualificationEntries.length).fill(false);
+        this.sportsQualificationCertProgress = new Array(this.sportsQualificationEntries.length).fill(0);
+      }
     }
   }
 
@@ -6411,6 +6430,76 @@ export class SharedAdmissionFormComponent implements OnInit {
       chkBoxErr: [false],
       value: [null],
     });
+  }
+
+  addSportsQualificationEntry() {
+    if (this.sportsQualificationEntries.length < this.sportsQualificationConfig.maxEntries) {
+      let newEntry: any = {};
+      this.sportsQualificationConfig.fields.forEach((field) => {
+        newEntry[field.name] = '';
+      });
+      this.sportsQualificationEntries.push(newEntry);
+      this.sportsQualificationCertUploading.push(false);
+      this.sportsQualificationCertProgress.push(0);
+    }
+  }
+
+  removeSportsQualificationEntry(index: number) {
+    this.sportsQualificationEntries.splice(index, 1);
+    this.sportsQualificationCertUploading.splice(index, 1);
+    this.sportsQualificationCertProgress.splice(index, 1);
+  }
+
+  onSportsQualificationFieldChange(entryIndex: number, fieldName: string, value: any) {
+    this.sportsQualificationEntries[entryIndex][fieldName] = value;
+  }
+
+  onSportsQualificationCertUpload(event: any, entryIndex: number) {
+    let file = event.target.files[0];
+    if (!file) return;
+
+    let fileExt = file.name.split('.').pop().toLowerCase();
+    let allowedExts = ['jpg', 'png', 'pdf', 'jpeg'];
+    if (!allowedExts.includes(fileExt)) {
+      this._snackBarMsgComponent.openSnackBar('Only JPG, PNG, PDF files allowed', 'x', 'error-snackbar', 5000);
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      this._snackBarMsgComponent.openSnackBar('File size should be less than 5 MB', 'x', 'error-snackbar', 5000);
+      return;
+    }
+
+    this.sportsQualificationCertUploading[entryIndex] = true;
+    this.sportsQualificationCertProgress[entryIndex] = 0;
+
+    this._admissionService.uploadPdf(file, 'sportsQualificationCert_' + entryIndex, this.panelMode).subscribe(data => {
+      this.sportsQualificationCertUploading[entryIndex] = false;
+      if (data.status == 1) {
+        this.sportsQualificationEntries[entryIndex]['certificateUpload'] = data.dataJson.documentUrl;
+        this._snackBarMsgComponent.openSnackBar('Certificate uploaded successfully', 'x', 'success-snackbar', 3000);
+      } else {
+        this._snackBarMsgComponent.openSnackBar(data.message || 'Upload failed', 'x', 'error-snackbar', 5000);
+      }
+    }, err => {
+      this.sportsQualificationCertUploading[entryIndex] = false;
+      this._snackBarMsgComponent.openSnackBar('Upload failed. Please try again.', 'x', 'error-snackbar', 5000);
+    });
+  }
+
+  removeSportsQualificationCert(entryIndex: number) {
+    this.sportsQualificationEntries[entryIndex]['certificateUpload'] = '';
+  }
+
+  onSportsQualificationFormSubmit(stepper: any, tab: any): void {
+    this._snackBarMsgComponent.closeSnackBar();
+    this.goToNextStep(stepper, tab);
+  }
+
+  viewSportsQualificationCert(url: string) {
+    if (url) {
+      window.open(url, '_blank');
+    }
   }
 
   additionalCertificationFormRows(itemRow): UntypedFormGroup {
@@ -9218,6 +9307,7 @@ export class SharedAdmissionFormComponent implements OnInit {
       }
     });
     this.extraCurriculumFormValues['otherActivities'] = this.otherActivities;
+    this.extraCurriculumFormValues['sportsQualification'] = this.sportsQualificationEntries;
     this.additionalCertificationFormValues = this.additionalCertificationForm.value;
 
     this.questionnaireFormValues = this.questionnaireForm.get('questionnaire').value;
