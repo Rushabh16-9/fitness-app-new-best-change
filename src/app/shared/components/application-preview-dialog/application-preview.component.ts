@@ -1,8 +1,8 @@
-import { Component, ViewEncapsulation, ViewChild, ElementRef, Input, OnInit,Inject } from '@angular/core';
+import { Component, ViewEncapsulation, ViewChild, ElementRef, Input, OnInit, Inject } from '@angular/core';
 import { HttpResponse, HttpEventType } from '@angular/common/http';
 
 import { Router } from '@angular/router';
-import { AbstractControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, UntypedFormBuilder, Validators , FormGroup} from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, UntypedFormBuilder, Validators, FormGroup } from '@angular/forms';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 import { SharedCourseSelectionComponent } from 'app/shared/components/shared-course-selection/shared-course-selection.component';
@@ -23,7 +23,7 @@ import { InfoDialogComponent } from 'app-shared-components/info-dialog/info-dial
 //import { ApplicationPreviewDialogComponent } from 'app-shared-components/application-preview-dialog/application-preview.component';
 
 import { ImageCropperDialogComponent } from 'app-shared-components/image-cropper-dialog/image-cropper-dialog.component';
-import { MatLegacyDialog as MatDialog,MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatLegacyDialog as MatDialog, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import * as _moment from 'moment';
 const moment = _moment;
 
@@ -53,27 +53,27 @@ export const MY_FORMATS = {
   providers: [
     SnackBarMsgComponent,
     AmazingTimePickerService,
-    AdmissionService, 
-    CommonService, 
+    AdmissionService,
+    CommonService,
     InstitutesService,
     DatePipe,
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},    
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}          
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }
   ],
   encapsulation: ViewEncapsulation.None
 })
 export class ApplicationPreviewDialogComponent implements OnInit {
 
 
-  @ViewChild('courseSelectionComponent') courseSelectionComponent:SharedCourseSelectionComponent;
+  @ViewChild('courseSelectionComponent') courseSelectionComponent: SharedCourseSelectionComponent;
   // @ViewChild('child') child:SharedCourseSelectionComponent;
 
   //@Input('panelMode') panelMode;
   //@Input('formDetails') formDetails;
   //@Input('sharedDialogRef') sharedDialogRef;
   panelMode = 'admission';
-  formDetails:any = {};
- 
+  formDetails: any = {};
+
   modalTitle = "Preview";
 
   allMsgs: any = allMsgs;
@@ -87,8 +87,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   @ViewChild('schoDocToUploadFileInput') schoDocToUploadFileInput: ElementRef;
   @ViewChild('docToUploadFileInput') docToUploadFileInput: ElementRef;
   attachmentFileExt: string = "ppt, pptx, doc, docx, xls, xlsx, txt, pdf, jpg, jpeg, png";
-  imageFileExt: string = "png, jpg, jpeg";  
-  attachmentMaxFileSize:number = 10;
+  imageFileExt: string = "png, jpg, jpeg";
+  attachmentMaxFileSize: number = 10;
 
   fromDateMinDate: Date;
   toDateMinDate: Date;
@@ -96,7 +96,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   minDate: Date;
 
   isLinear = false;
-  uploadsInfoFormValues = [];  
+  uploadsInfoFormValues = [];
 
   motherTongueList = [];
   filteredMotherTongues = [];
@@ -113,8 +113,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   selectedInstitutesArray = [];
   semesterNoList = [];
   yearNoList = [];
-  showFormTitle: boolean  = false;
-  removable: boolean  = true;
+  showFormTitle: boolean = false;
+  removable: boolean = true;
   selectable: boolean = true;
   showBank: boolean = false;
   showUnderGraduate: boolean = false;
@@ -146,14 +146,14 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   examinations = [];
 
   courseForm: UntypedFormGroup;
-  courseFormValues = [];  
+  courseFormValues = [];
 
   categoryForm: UntypedFormGroup;
   categoryFormValues = [];
   applyingCategoriesList = [];
-  categoryCheckboxes = [];  
-  subCategoryList = [];  
-  subCategoryReverseArray = {};  
+  categoryCheckboxes = [];
+  subCategoryList = [];
+  subCategoryReverseArray = {};
   subCategoryBunch = [];
   selectedCatName = '';
   categoryError: boolean = false;
@@ -167,7 +167,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   personalInfoFormValues = [];
 
   addressInfoForm: UntypedFormGroup;
-  addressInfoFormValues = [];  
+  addressInfoFormValues = [];
 
   guardianInfoForm: UntypedFormGroup;
   guardianInfoFormValues = [];
@@ -200,12 +200,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   additionalCertificationFormValues = [];
 
   documentsForm: UntypedFormGroup;
-  documentsFormValues = [];  
+  documentsFormValues = [];
   defaultPdfImage = '../assets/images/users/default-pdf.png';
   defaultDocImage = '../assets/images/users/default-doc.jpg';
 
   declarationForm: UntypedFormGroup;
-  declarationFormValues = [];  
+  declarationFormValues = [];
   defaultImage = '../assets/images/users/default-user.jpg';
 
   isFatherBrowsedPassportSizePhoto: boolean = false;
@@ -229,16 +229,16 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   guardianPassportSizePhotoError: boolean = false;
   guardianSignaturePhotoError: boolean = false;
 
-  isFatherUploadedPassportSizePhoto:boolean = false;
-  isMotherUploadedPassportSizePhoto:boolean = false;
-  isBrotherUploadedPassportSizePhoto:boolean = false;
-  isSisterUploadedPassportSizePhoto:boolean = false;
-  isGuardianUploadedPassportSizePhoto:boolean = false;
-  isGuardianUploadedSignaturePhoto:boolean = false;
-  isFatherUploadedSignaturePhoto:boolean = false
-  isMotherUploadedSignaturePhoto:boolean = false
-  isBrotherUploadedSignaturePhoto:boolean = false
-  isSisterUploadedSignaturePhoto:boolean = false
+  isFatherUploadedPassportSizePhoto: boolean = false;
+  isMotherUploadedPassportSizePhoto: boolean = false;
+  isBrotherUploadedPassportSizePhoto: boolean = false;
+  isSisterUploadedPassportSizePhoto: boolean = false;
+  isGuardianUploadedPassportSizePhoto: boolean = false;
+  isGuardianUploadedSignaturePhoto: boolean = false;
+  isFatherUploadedSignaturePhoto: boolean = false
+  isMotherUploadedSignaturePhoto: boolean = false
+  isBrotherUploadedSignaturePhoto: boolean = false
+  isSisterUploadedSignaturePhoto: boolean = false
 
   isBrowsedSignatureImage: boolean = false;
   isBrowsedParentSignatureImage: boolean = false;
@@ -307,8 +307,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   @ViewChild('fatherSignaturePhotoFileInput') fatherSignaturePhotoFileInput: ElementRef;
   @ViewChild('motherSignaturePhotoFileInput') motherSignaturePhotoFileInput: ElementRef;
   @ViewChild('brotherSignaturePhotoFileInput') brotherSignaturePhotoFileInput: ElementRef;
-  @ViewChild('sisterSignaturePhotoFileInput')  sisterSignaturePhotoFileInput: ElementRef;
-  maxSize:number = 1;
+  @ViewChild('sisterSignaturePhotoFileInput') sisterSignaturePhotoFileInput: ElementRef;
+  maxSize: number = 1;
   fileExt: string = "JPG, JPEG, PNG";
   docFileExt: string = "JPG, JPEG, PNG, PDF";
   passportSizePhotoError: boolean = false;
@@ -321,11 +321,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   disableInHouseInfo: string = '';
   disableInHouse: boolean = false;
   showInHouseOptions: boolean = false;
-  underGraduateHeaders: any = {boardName:false, cgpi:false, creditsEarned: false, grade: false, liveAtkt:false, marksObtained:false, marksOutof: false, monthAppeared:false, percentage: false, percentageOrCgpa: false, percentageOrSgpa:false, schoolName:false, seatNo:false, class:false, studyDuration:false, minPassGrade:false, maxPassGrade:false, sgpa: false, stream: false, yearAppeared: false, gradingSystem: false, document: false};
-  graduateHeaders: any = {boardName:false, cgpi:false, creditsEarned: false, grade: false, liveAtkt:false, marksObtained:false, marksOutof: false, monthAppeared:false, percentage: false, percentageOrCgpa: false, percentageOrSgpa:false, schoolName:false, seatNo:false, class:false, studyDuration:false, minPassGrade:false, maxPassGrade:false, creditPoints:false, creditGrade:false, sgpa: false, stream: false, yearAppeared: false, document: false};
-  postGraduateHeaders: any = {boardName:false, cgpi:false, creditsEarned: false, grade: false, liveAtkt:false, marksObtained:false, marksOutof: false, monthAppeared:false, percentage: false, percentageOrCgpa: false, percentageOrSgpa:false, schoolName:false, seatNo:false, class:false, studyDuration:false, minPassGrade:false, maxPassGrade:false, sgpa: false, stream: false, yearAppeared: false, document: false};
+  underGraduateHeaders: any = { boardName: false, cgpi: false, creditsEarned: false, grade: false, liveAtkt: false, marksObtained: false, marksOutof: false, monthAppeared: false, percentage: false, percentageOrCgpa: false, percentageOrSgpa: false, schoolName: false, seatNo: false, class: false, studyDuration: false, minPassGrade: false, maxPassGrade: false, sgpa: false, stream: false, yearAppeared: false, gradingSystem: false, document: false };
+  graduateHeaders: any = { boardName: false, cgpi: false, creditsEarned: false, grade: false, liveAtkt: false, marksObtained: false, marksOutof: false, monthAppeared: false, percentage: false, percentageOrCgpa: false, percentageOrSgpa: false, schoolName: false, seatNo: false, class: false, studyDuration: false, minPassGrade: false, maxPassGrade: false, creditPoints: false, creditGrade: false, sgpa: false, stream: false, yearAppeared: false, document: false };
+  postGraduateHeaders: any = { boardName: false, cgpi: false, creditsEarned: false, grade: false, liveAtkt: false, marksObtained: false, marksOutof: false, monthAppeared: false, percentage: false, percentageOrCgpa: false, percentageOrSgpa: false, schoolName: false, seatNo: false, class: false, studyDuration: false, minPassGrade: false, maxPassGrade: false, sgpa: false, stream: false, yearAppeared: false, document: false };
   masterGraduateHeaders: any = { boardName: false, cgpi: false, creditsEarned: false, grade: false, liveAtkt: false, marksObtained: false, marksOutof: false, monthAppeared: false, percentage: false, percentageOrCgpa: false, percentageOrSgpa: false, schoolName: false, seatNo: false, class: false, studyDuration: false, minPassGrade: false, maxPassGrade: false, sgpa: false, stream: false, yearAppeared: false, document: false };
-  
+
   formData: any;
   admissionClosed: boolean = false;
   admissionClosedMessage: string = 'Admissions are closed';
@@ -343,12 +343,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   coursesListValues = [];
   coursesBunch = [];
   preferenceAray = [];
-  
+
   subjectSelectionList = [];
-  
+
   parentsDeclarationArray = [];
   studentDeclarationArray = [];
-  
+
   studentDeclaration: any;
 
   formType: any = '';
@@ -364,7 +364,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
   showCategoryQuestions: boolean = false;
   smallScreen: boolean = true;
-  showHorizontalStepper: boolean  = false;
+  showHorizontalStepper: boolean = false;
   showEntranceExamFor: boolean = false;
   showEntranceExamYear: boolean = false;
   showEntranceExamMonth: boolean = false;
@@ -376,16 +376,16 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   showStudentPresentStatus: boolean = false;
 
   constructor(
-    private breakpointObserver: BreakpointObserver,    
-    private _formBuilder: UntypedFormBuilder, 
-    private atp: AmazingTimePickerService,   
-    private router: Router, 
+    private breakpointObserver: BreakpointObserver,
+    private _formBuilder: UntypedFormBuilder,
+    private atp: AmazingTimePickerService,
+    private router: Router,
     private datePipe: DatePipe,
     public dialog: MatDialog,
     private _admissionService: AdmissionService,
-    private _institutesService: InstitutesService,    
-    private _commonService: CommonService, 
-    public _snackBarMsgComponent: SnackBarMsgComponent,    
+    private _institutesService: InstitutesService,
+    private _commonService: CommonService,
+    public _snackBarMsgComponent: SnackBarMsgComponent,
     private allEventEmitters: AllEventEmitters,
     @Inject(MAT_DIALOG_DATA) public dialogRef: any
   ) {
@@ -423,8 +423,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
 
     this.maxDate = new Date(this.datePipe.transform(new Date(), 'yyyy, MM, dd'));
-    this.fromDateMinDate = new Date(this.datePipe.transform(new Date(), 'yyyy, MM, dd'));    
-    this.toDateMinDate = new Date(this.datePipe.transform(new Date(), 'yyyy, MM, dd'));    
+    this.fromDateMinDate = new Date(this.datePipe.transform(new Date(), 'yyyy, MM, dd'));
+    this.toDateMinDate = new Date(this.datePipe.transform(new Date(), 'yyyy, MM, dd'));
   }
 
   ngOnInit(): void {
@@ -478,7 +478,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
     setTimeout(() => { this.allEventEmitters.showLoader.emit(true); }, 1);
     this._admissionService.getAdmissionFormDetails().subscribe(data => {
-      
+
       setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);
 
       if (data.status != undefined) {
@@ -505,7 +505,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
       }
     }, err => {
-      setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);        
+      setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
   }
@@ -541,7 +541,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
       }
     }, err => {
-      setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);        
+      setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
   }
@@ -574,7 +574,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
       }
     }, err => {
-      setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);        
+      setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
   }
@@ -607,13 +607,13 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
       }
     }, err => {
-      setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);        
+      setTimeout(() => { this.allEventEmitters.showLoader.emit(false); }, 2);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
   }
-  
+
   setFormValues(formData) {
-  
+
     if (formData.formFillingInstructions.display) {
       this.openInfoDialog(formData.formFillingInstructions);
     }
@@ -629,7 +629,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
     globalFunctions.setUserProf('instituteName', formData.instituteName);
     setTimeout(() => { this.allEventEmitters.setHeaderImage.emit(true); }, 2);
-    
+
     this.boardList = formData.educationInfo.boardList;
     this.filteredBoardList = formData.educationInfo.boardList;
 
@@ -654,12 +654,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       this.showEnrollmentNumber = false;
     }
 
-    this.showMkclNo         = formData.showMkclNo;
-    this.universityApplicationFormNo.setValue(formData.universityApplicationFormNo, {emitEvent: false});
-    this.showSubCategories  = formData.optAdmissionSubCategories;
-    this.showBank           = formData.showBank;
+    this.showMkclNo = formData.showMkclNo;
+    this.universityApplicationFormNo.setValue(formData.universityApplicationFormNo, { emitEvent: false });
+    this.showSubCategories = formData.optAdmissionSubCategories;
+    this.showBank = formData.showBank;
     this.showInHouseOptions = formData.showInHouseOptions;
-    this.disableInHouse     = formData.disableInHouse;
+    this.disableInHouse = formData.disableInHouse;
     this.disableInHouseInfo = formData.disableInHouseInfo;
 
     this.setSubjectSelectionValues(formData);
@@ -669,10 +669,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.setBankInfoValues(formData);
     this.setBranchingQuestionValues(formData);
     this.setPersonalInfoValues(formData);
-    this.setExtraCertificateValues(formData,'');
+    this.setExtraCertificateValues(formData, '');
     this.setAddressInfoValues(formData);
     this.setGuardianInfoValues(formData);
-    
+
     this.setAdditionalQualificationValues(formData);
     this.setWorkExpDetailsValues(formData);
     this.setSoftwareKnowledgeValues(formData);
@@ -739,7 +739,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       districtOfBirth: [null],
       religionId: [null],
       domicile: [null],
-      casteId: [null],
+      casteName: [null],
       subCaste: [null],
       weight: [null],
       height: [null],
@@ -750,7 +750,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       alternateNo: ['', Validators.compose([Validators.minLength(10), Validators.maxLength(10), Validators.pattern(regexValidators.validate.phone)])],
       nadId: [null],
       isDisability: ['no'],
-      isScholarship: ['no'], 
+      isScholarship: ['no'],
       scholarship: this._formBuilder.group({
         scholarshipType: [null],
         percentage: [null],
@@ -832,27 +832,27 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         address: [null],
         area: [null],
         street: [null],
-        isForeignStudent:[null],
-        state : new UntypedFormControl({value: null, disabled: true}),
-        city : new UntypedFormControl({value: null, disabled: true}),
+        isForeignStudent: [null],
+        state: new UntypedFormControl({ value: null, disabled: true }),
+        city: new UntypedFormControl({ value: null, disabled: true }),
         district: [null],
         title: [null],
         showNearByRailwayStation: [false],
         nearByRailwayStation: [null],
-        pincode: [null, Validators.compose([Validators.minLength(6), Validators.maxLength(6) ])],
+        pincode: [null, Validators.compose([Validators.minLength(6), Validators.maxLength(6)])],
       }),
       nativeAddress: this._formBuilder.group({
         address: [null],
         area: [null],
         street: [null],
-        isForeignStudent:[null],
-        state : new UntypedFormControl({value: null, disabled: true}),
-        city : new UntypedFormControl({value: null, disabled: true}),
+        isForeignStudent: [null],
+        state: new UntypedFormControl({ value: null, disabled: true }),
+        city: new UntypedFormControl({ value: null, disabled: true }),
         district: [null],
-        title: [null],        
+        title: [null],
         showNearByRailwayStation: [false],
         nearByRailwayStation: [null],
-        pincode: [null, Validators.compose([Validators.minLength(6), Validators.maxLength(6) ])],
+        pincode: [null, Validators.compose([Validators.minLength(6), Validators.maxLength(6)])],
       })
     });
   }
@@ -987,7 +987,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         underGraduate: this._formBuilder.group({
           filter: this._formBuilder.group({
             display: [false]
-          }),          
+          }),
           list: this._formBuilder.array([
             this.initItemRows()
           ])
@@ -1018,13 +1018,13 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           ])
         }),
         postGraduate: this._formBuilder.group({
-          postGraduation: [null], 
+          postGraduation: [null],
           filter: this._formBuilder.group({
-            display: [false],            
+            display: [false],
             appearing: [null],
             degree: [null],
             otherText: [null],
-            specialization: [null],            
+            specialization: [null],
           }),
           list: this._formBuilder.array([
             this.initItemRows()
@@ -1047,8 +1047,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           showCet: [false],
           showDiploma: [false],
           cet: this._formBuilder.group({
-            subjectHeading : [null],
-            subjectInfoReq : [false],
+            subjectHeading: [null],
+            subjectInfoReq: [false],
             subjectInfo: this._formBuilder.group({
               maths: [null],
               mathsHeader: [null],
@@ -1063,8 +1063,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
             })
           }),
           diploma: this._formBuilder.group({
-            subjectHeading : [null],
-            subjectInfoReq : [false],
+            subjectHeading: [null],
+            subjectInfoReq: [false],
             subjectInfo: this._formBuilder.group({
               instituteName: [null],
               instituteNameHeader: [null],
@@ -1111,33 +1111,33 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           })
         }),
       }),
-      stream: [null], 
-      showPrnNo: [false], 
-      prnNo: [null], 
-      passedHscWith: [null], 
-      mathsMarks: [null, Validators.compose([Validators.min(35)])], 
-      passedHscExemption: [false], 
-      hscRepeater: [false], 
-      showMediumOfEducation: [false], 
-      mediumOfEducation: [null], 
+      stream: [null],
+      showPrnNo: [false],
+      prnNo: [null],
+      passedHscWith: [null],
+      mathsMarks: [null, Validators.compose([Validators.min(35)])],
+      passedHscExemption: [false],
+      hscRepeater: [false],
+      showMediumOfEducation: [false],
+      mediumOfEducation: [null],
       showSubjectCompulsory: [false],
       showSubjectInfo: [false],
       showSubjectLanguagesOptional: [false],
       showSubjectOptional: [false],
       subjectInfo: this._formBuilder.group({
-        subjectLanguagesOptionalSelected : [null],
-        subjectOptionalSelected : [null]
+        subjectLanguagesOptionalSelected: [null],
+        subjectOptionalSelected: [null]
       }),
-      
+
       showLlbMhCet: [false],
       llbMhCetInfo: this._formBuilder.group({
-        cetMarks : [null],
-        cetFormNo : [null],
-        admissionRound : [null],
-        cetSeatNo : [null],
-        provisionalAdmissionLetterNo : [null],
+        cetMarks: [null],
+        cetFormNo: [null],
+        admissionRound: [null],
+        cetSeatNo: [null],
+        provisionalAdmissionLetterNo: [null],
       }),
-      showOtherEduInfo: [false],      
+      showOtherEduInfo: [false],
       otherEduInfo: this._formBuilder.group({
         courseType: [null],
         courseName: [null],
@@ -1178,7 +1178,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  initAddQlfRows() : UntypedFormGroup {
+  initAddQlfRows(): UntypedFormGroup {
     return this._formBuilder.group({
       courseName: [null],
       instName: [null],
@@ -1197,7 +1197,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  setAdditionalQualificationValues(formData:any) {
+  setAdditionalQualificationValues(formData: any) {
 
     if (!globalFunctions.isEmpty(formData.additionalQualification)) {
 
@@ -1224,59 +1224,59 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       let reqFields = this.formData.additionalQualification.listInfo.requiredFields;
 
-      let courseNameReq:any;
+      let courseNameReq: any;
       if (reqFields.courseName) {
         courseNameReq = Validators.required;
       }
-      let instNameReq:any;
+      let instNameReq: any;
       if (reqFields.instName) {
         instNameReq = Validators.required;
       }
-      let monthAppearedReq:any;
+      let monthAppearedReq: any;
       if (reqFields.monthAppeared) {
         monthAppearedReq = Validators.required;
       }
-      let yearAppearedReq:any;
+      let yearAppearedReq: any;
       if (reqFields.yearAppeared) {
         yearAppearedReq = Validators.required;
       }
-      let marksObtainedReq:any;
+      let marksObtainedReq: any;
       if (reqFields.marksObtained) {
         marksObtainedReq = Validators.required;
       }
-      let marksOutofReq:any;
+      let marksOutofReq: any;
       if (reqFields.marksOutof) {
         marksOutofReq = Validators.required;
       }
-      let percentageReq:any;
+      let percentageReq: any;
       if (reqFields.percentage) {
         percentageReq = Validators.required;
       }
-      let creditsEarnedReq:any;
+      let creditsEarnedReq: any;
       if (reqFields.creditsEarned) {
         creditsEarnedReq = Validators.required;
       }
-      let sgpaReq:any;
+      let sgpaReq: any;
       if (reqFields.sgpa) {
         sgpaReq = Validators.required;
       }
-      let percentageOrSgpaReq:any;
+      let percentageOrSgpaReq: any;
       if (reqFields.percentageOrSgpa) {
         percentageOrSgpaReq = Validators.required;
       }
-      let percentageOrCgpaReq:any;
+      let percentageOrCgpaReq: any;
       if (reqFields.percentageOrCgpa) {
         percentageOrCgpaReq = Validators.required;
       }
-      let seatNoReq:any;
+      let seatNoReq: any;
       if (reqFields.seatNo) {
         seatNoReq = Validators.required;
       }
-      let cgpiReq:any;
+      let cgpiReq: any;
       if (reqFields.cgpi) {
         cgpiReq = Validators.required;
       }
-      let gradeReq:any;
+      let gradeReq: any;
       if (reqFields.grade) {
         gradeReq = Validators.required;
       }
@@ -1332,7 +1332,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
     if (!globalFunctions.isEmpty(subjectInfo.subject2.marksObtained)) {
       totalMarksObtained = totalMarksObtained + parseFloat(subjectInfo.subject2.marksObtained);
-    }    
+    }
     if (!globalFunctions.isEmpty(subjectInfo.subject3.marksObtained)) {
       totalMarksObtained = totalMarksObtained + parseFloat(subjectInfo.subject3.marksObtained);
     }
@@ -1355,7 +1355,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
     if (!globalFunctions.isEmpty(subjectInfo.subject2.marksOutof)) {
       totalmarksOutof = totalmarksOutof + parseFloat(subjectInfo.subject2.marksOutof);
-    }    
+    }
     if (!globalFunctions.isEmpty(subjectInfo.subject3.marksOutof)) {
       totalmarksOutof = totalmarksOutof + parseFloat(subjectInfo.subject3.marksOutof);
     }
@@ -1381,7 +1381,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     if (!globalFunctions.isEmpty(subjectInfo.subject2.totalPercentage)) {
       totaltotalSubjects++;
       totaltotalPercentage = totaltotalPercentage + parseFloat(subjectInfo.subject2.totalPercentage);
-    }    
+    }
     if (!globalFunctions.isEmpty(subjectInfo.subject3.totalPercentage)) {
       totaltotalSubjects++;
       totaltotalPercentage = totaltotalPercentage + parseFloat(subjectInfo.subject3.totalPercentage);
@@ -1402,7 +1402,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       totaltotalSubjects++;
       totaltotalPercentage = totaltotalPercentage + parseFloat(subjectInfo.optionalSubject3.totalPercentage);
     }
-   
+
     let totalPercentage;
     if (!globalFunctions.isEmpty(totaltotalPercentage) && !globalFunctions.isEmpty(totaltotalSubjects)) {
       totalPercentage = (totaltotalPercentage / totaltotalSubjects).toFixed(2);
@@ -1431,7 +1431,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     let chemistryMrks = 0;
     if (!globalFunctions.isEmpty(chemistry.value)) {
       chemistryMrks = parseFloat(chemistry.value);
-    }    
+    }
 
     let totalMrks = (mathsMrks + physicsMrks + chemistryMrks);
 
@@ -1455,7 +1455,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     } else {
       this.addtnlQltnAddMaxReached = true;
     }
-  }  
+  }
 
   deleteOtherQlfRow(i: number): void {
     const list = <UntypedFormArray>this.additionalQualificationForm.controls.listInfo['controls'].list;
@@ -1476,7 +1476,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.softwareInfoForm.disable();
   }
 
-  initItemRows() : UntypedFormGroup {
+  initItemRows(): UntypedFormGroup {
     return this._formBuilder.group({
       fieldsLabel: [null],
       boardName: [null],
@@ -1541,18 +1541,18 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  questionnaireRows() : UntypedFormGroup {
+  questionnaireRows(): UntypedFormGroup {
     return this._formBuilder.group({
       fieldType: [null],
       options: [null],
-      answer : [null],
-      question : [null],
-      questionId : [null],
-      isCompulsory : [false],
+      answer: [null],
+      question: [null],
+      questionId: [null],
+      isCompulsory: [false],
     });
   }
 
-  
+
   branchingQuestionFormControls() {
     this.branchingQuestionForm = this._formBuilder.group({
       questions: this._formBuilder.array([])
@@ -1634,7 +1634,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  documentsRows() : UntypedFormGroup {
+  documentsRows(): UntypedFormGroup {
     return this._formBuilder.group({
       breakRow: [false],
       docId: [null],
@@ -1647,7 +1647,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       required: [false],
       uploadedFile: [null]
     });
-  }  
+  }
 
   declarationFormControls() {
     this.declarationForm = this._formBuilder.group({
@@ -1659,7 +1659,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  openInfoDialog(data:any) {
+  openInfoDialog(data: any) {
 
     let dialogRef = this.dialog.open(InfoDialogComponent, {
       disableClose: data.required,
@@ -1688,7 +1688,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       }
     });
-  }  
+  }
 
   _openCalendar(picker: MatDatepicker<Date>) {
     picker.open();
@@ -1726,7 +1726,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     setTimeout(() => this._expiryDateInput.nativeElement.blur());
   }
 
-  setCoursesListValues(formData:any) {
+  setCoursesListValues(formData: any) {
 
     this.coursesList = formData.coursesList.list;
     this.coursesBunch = [];
@@ -1735,9 +1735,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     let loopIdx = 0;
     let preference = 0;
     this.coursesList.forEach((course, index) => {
-     
-      preference = preference+1;
-     
+
+      preference = preference + 1;
+
       this.preferenceAray.push(preference);
 
       if (index != 0 && index % 2 == 0) {
@@ -1751,21 +1751,21 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  setSubjectSelectionValues(formData:any) {
+  setSubjectSelectionValues(formData: any) {
 
     this.subjectSelectionList = formData.subjectSelection;
 
     this.subjectSelectionList.forEach((details, index) => {
 
       details.subjSelctnErr = false;
-      
+
       let preference = 0;
       let preferenceAray;
       preferenceAray = [];
       details.subjectsList.forEach((subj, subjIndex) => {
 
         subj.subjectErr = false;
-        preference = preference+1;
+        preference = preference + 1;
         preferenceAray.push(preference);
       });
 
@@ -1791,27 +1791,27 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  onSelectSubject(subjSelectnIndex:number, subjIndex:number, checked) {
+  onSelectSubject(subjSelectnIndex: number, subjIndex: number, checked) {
 
     this.subjectSelectionList[subjSelectnIndex]['subjSelctnErr'] = false;
     this.subjectSelectionList[subjSelectnIndex]['maxChoices'] = false;
 
-    this.subjectSelectionList[subjSelectnIndex]['subjectsList'][subjIndex].isSelected = checked; 
+    this.subjectSelectionList[subjSelectnIndex]['subjectsList'][subjIndex].isSelected = checked;
   }
 
-  onSelectRadioSubject(subjSelectnIndex:number, subjBunchIndx:number, subjIndx:number) {
+  onSelectRadioSubject(subjSelectnIndex: number, subjBunchIndx: number, subjIndx: number) {
 
     this.subjectSelectionList[subjSelectnIndex]['subjSelctnErr'] = false;
 
     this.subjectSelectionList[subjSelectnIndex]['subjectsListBunch'].forEach((subjSelectn, subjSelectnInx) => {
-   
+
       subjSelectn.forEach((subj, subjInx) => {
         subj.isSelected = false;
       });
     });
 
     this.subjectSelectionList[subjSelectnIndex]['subjectsListBunch'][subjBunchIndx][subjIndx].isSelected = true;
-    
+
     // this.subjectSelectionList[subjSelectnIndex]['subjSelctnErr'] = false;
 
     // this.subjectSelectionList[subjSelectnIndex]['subjectsList'].forEach((subj, subjInx) => {
@@ -1835,7 +1835,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.subjectSelectionList[subjSelectnIndex]['subjectsList'][subjIndex]['preference'] = preference;
   }
 
-  onSubjectSelectionSubmit(stepper: MatStepper, tab:any):void {
+  onSubjectSelectionSubmit(stepper: MatStepper, tab: any): void {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -1850,16 +1850,16 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   validateSubjectSelection() {
 
     let err = false;
-    
+
     this.subjectSelectionList.forEach((details) => {
-   
+
       details.subjSelctnErr = false;
 
       if (details.type == 'singleChoice') {
-        
+
         // let subjSelected = false;
         // details.subjectsList.forEach((subj) => {
-      
+
         //   if (subj.isSelected) {
         //     subjSelected = true;
         //   }
@@ -1872,7 +1872,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
         let subjSelected = false;
         details.subjectsListBunch.forEach((subjectsLst, subjectsListBunchInx) => {
-        
+
           subjectsLst.forEach((subj, subjInx) => {
 
             if (subj.isSelected) {
@@ -1892,19 +1892,19 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         let selectedPreference = 0;
         details.doublePreference = false;
         details.subjectsList.forEach((subj) => {
-      
+
           subj.subjectErr = false;
           if (!globalFunctions.isEmpty(subj.preference)) {
-      
+
             selectedPreference++;
 
             if (preferenceArray[subj.preference]) {
-      
-              err = true;      
+
+              err = true;
               details.doublePreference = true;
-            
+
             } else {
-      
+
               preferenceArray[subj.preference] = subj.preference;
             }
           }
@@ -1924,7 +1924,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         });
 
         if (firstPrefNotSeltd) {
-          err = true;          
+          err = true;
           details.firstPrefNotSeltd = true;
         }
 
@@ -1946,9 +1946,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       } else if (details.type == 'multichoice') {
 
         let selectedSubjcts = 0;
-        let subjSelected = false;        
+        let subjSelected = false;
         details.subjectsList.forEach((subj) => {
-      
+
           if (subj.isSelected) {
             selectedSubjcts++;
             subjSelected = true;
@@ -1958,7 +1958,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         if (!subjSelected) {
           err = true;
           details.subjSelctnErr = true;
-        }        
+        }
 
         details.maxChoices = false;
         if (details.typeConfig.totalChoiceMatch !== undefined) {
@@ -1978,11 +1978,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
 
     return {
-     err: err, 
+      err: err,
     }
-  }    
+  }
 
-  setCategoryFormValues(formData:any) {
+  setCategoryFormValues(formData: any) {
 
     this.subCategoryList = formData?.categories?.admissionSubCategories?.list;
 
@@ -2015,7 +2015,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         }
         this.subCategoryBunch[loopIdx].push(details);
       });
-  
+
       if (!globalFunctions.isEmpty(formData?.applyingSubCategories)) {
 
         formData.applyingSubCategories.forEach((appliedSubCategory) => {
@@ -2039,12 +2039,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       }
     }
 
-    let candidateFromReq:any;
+    let candidateFromReq: any;
     if (formData?.candidateFromRequired && formData?.candidateFromDisplay) {
       candidateFromReq = Validators.required;
     }
 
-    let inhouseInfoReq:any;
+    let inhouseInfoReq: any;
     if (formData?.inhouseInfo?.display && formData?.inhouseInfo?.required) {
       inhouseInfoReq = Validators.required;
     }
@@ -2057,20 +2057,20 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     if (!globalFunctions.isEmpty(formData?.categories?.admissionCategories?.groups)) {
 
       formData.categories.admissionCategories.groups.forEach((catGrp) => {
-      
+
         catGrp?.list.forEach((details) => {
 
           details.isSelected = false;
           if (formData?.applyingCategories == details.admissionCategoryId) {
-            
+
             details.isSelected = true;
             this.selectedCatName = details.admissionCategoryName;
 
             if (details.documentUpload.display) {
-              
+
               showCatDocumentUpload = true;
               catDocumentUploadObj = details?.documentUpload;
-              
+
               if (details.documentUpload.required) {
                 catDocReq = true;
               }
@@ -2103,7 +2103,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       catDocError: [false],
       catDocBrowsed: [false],
       catDocUploadPercent: [null],
-      catDocUploading: [false], 
+      catDocUploading: [false],
       applyingSubCategories: [formData?.applyingSubCategories],
       admissionType: [formData?.admissionType],
       candidateFrom: [formData?.candidateFrom, candidateFromReq],
@@ -2111,10 +2111,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       isInHouse: [formData?.inhouseInfo?.value, inhouseInfoReq]
     });
 
-    this.categoryFormValues = this.categoryForm.getRawValue();    
+    this.categoryFormValues = this.categoryForm.getRawValue();
   }
 
-  setBankInfoValues(formData:any) {
+  setBankInfoValues(formData: any) {
 
     if (!globalFunctions.isEmpty(formData.bankInfo)) {
       this.bankInfoForm = this._formBuilder.group({
@@ -2443,12 +2443,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         stateOfBirth: [formData.personalInfo.stateOfBirth.value, stateOfBirthReq],
         countryOfBirth: [formData.personalInfo.countryOfBirth.value, countryOfBirthReq],
         districtOfBirth: [formData.personalInfo.districtOfBirth.value, districtOfBirthReq],
-        dob: new UntypedFormControl({ value:  moment(formData.personalInfo.dob), disabled: !formData.personalInfo.isDobEditable }, Validators.compose([dobReq])),
+        dob: new UntypedFormControl({ value: moment(formData.personalInfo.dob), disabled: !formData.personalInfo.isDobEditable }, Validators.compose([dobReq])),
         aadharDob: [moment(formData.personalInfo.aadharDob), aadharDobReq],
         age: [formData.personalInfo.age],
         aadharAge: [formData.personalInfo.aadharAge],
         religionId: [formData.personalInfo.religionId, religionReq],
-        casteId: [formData.personalInfo.casteId, casteReq],
+        casteName: [formData.personalInfo.casteName, casteReq],
         subCaste: [formData.personalInfo.subCaste, subCasteReq],
         weight: [formData.personalInfo.weight, weightReq],
         height: [formData.personalInfo.height, heightReq],
@@ -2456,7 +2456,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         aadharNo: [formData.personalInfo.aadharNo.value, Validators.compose([aadharNoReq, Validators.minLength(12), Validators.maxLength(12)])],
         mobileNo: new UntypedFormControl({ value: formData.personalInfo.mobileNo, disabled: !formData.personalInfo.isMobileEditable }, Validators.compose([mobileNoReq])),
         udiseNo: [formData.personalInfo.udiseNo, udiseNoReq],
-        nadId: [formData.personalInfo.nadId.value,Validators.compose([nadIdReq, Validators.minLength(formData.personalInfo.nadId.minLength)])],
+        nadId: [formData.personalInfo.nadId.value, Validators.compose([nadIdReq, Validators.minLength(formData.personalInfo.nadId.minLength)])],
         alternateNo: [formData.personalInfo.alternateNo.value, Validators.compose([alternateNoReq, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(regexValidators.validate.phone)])],
         maritalStatus: [formData.personalInfo.maritalStatus.value, maritalStatusReq],
         isForeignStudent: [formData.personalInfo.isForeignStudent, isForeignStudentReq],
@@ -2572,8 +2572,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       this.showStudentPresentStatus = true;
     }
   }
-  
-  categoryQuestionsRows() : UntypedFormGroup {
+
+  categoryQuestionsRows(): UntypedFormGroup {
     return this._formBuilder.group({
       label: [null],
       chkBoxErr: [false],
@@ -2585,32 +2585,32 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  studentPresentStatusRows() : UntypedFormGroup {
+  studentPresentStatusRows(): UntypedFormGroup {
     return this._formBuilder.group({
-          label: [null],
-          display: [false],
-          requiredRow: [false],
-          options: [null],
-          chkBox: [null],
+      label: [null],
+      display: [false],
+      requiredRow: [false],
+      options: [null],
+      chkBox: [null],
       chkBoxErr: [false],
-          radioBtn: [null],
-          input: [null],
-          txtArea: [null],
-          selectBox: [null],
+      radioBtn: [null],
+      input: [null],
+      txtArea: [null],
+      selectBox: [null],
       fieldValue: [null],
     });
   }
 
   setStudentPresentStatusRows() {
-   
+
     if (!globalFunctions.isEmpty(this.formData?.personalInfo?.studentPresentStatus?.fields)) {
-      
+
       const control = <UntypedFormArray>this.personalInfoForm.controls.studentPresentStatus;
       control.controls = [];
 
       this.formData?.personalInfo?.studentPresentStatus?.fields.forEach((itemRow) => {
-        let isRequired:any;
-        let itemRowReq:boolean = false;
+        let isRequired: any;
+        let itemRowReq: boolean = false;
         if (itemRow?.required) {
           itemRowReq = true;
           isRequired = Validators.required;
@@ -2619,25 +2619,25 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         const control = <UntypedFormArray>this.personalInfoForm.controls.studentPresentStatus;
 
         let row = this._formBuilder.group({
-          fieldValue    : [itemRow.value, isRequired],
-              requiredRow   : [itemRowReq],
-              label         : [itemRow.lable],
-              options       : [itemRow.options],
-              radioBtn      : [itemRow.radioBtn],
-              chkBox        : [itemRow.chkBox],
-          chkBoxErr     : [false],
-              input         : [itemRow.input],
-              txtArea       : [itemRow.txtArea],
-              selectBox     : [itemRow.selectBox],
-              display       : [itemRow.display],
+          fieldValue: [itemRow.value, isRequired],
+          requiredRow: [itemRowReq],
+          label: [itemRow.lable],
+          options: [itemRow.options],
+          radioBtn: [itemRow.radioBtn],
+          chkBox: [itemRow.chkBox],
+          chkBoxErr: [false],
+          input: [itemRow.input],
+          txtArea: [itemRow.txtArea],
+          selectBox: [itemRow.selectBox],
+          display: [itemRow.display],
         });
 
         control.push(row);
       });
     }
-} 
+  }
 
-  setCategoryQuestionsRows(setRequired:boolean = false) {
+  setCategoryQuestionsRows(setRequired: boolean = false) {
 
     if (!globalFunctions.isEmpty(this.formData.personalInfo.categoryQuestions.list)) {
 
@@ -2646,8 +2646,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       this.formData.personalInfo.categoryQuestions.list.forEach((itemRow) => {
 
-        let isRequired:any;
-        let itemRowReq:boolean = false;
+        let isRequired: any;
+        let itemRowReq: boolean = false;
         if (itemRow.required && setRequired) {
           itemRowReq = true;
           isRequired = Validators.required;
@@ -2673,14 +2673,14 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         control.push(row);
       });
     }
-  }  
+  }
 
-  onChangeQuestions(qstIndx:number, optIndx:number, checked: boolean) {
+  onChangeQuestions(qstIndx: number, optIndx: number, checked: boolean) {
 
     this.personalInfoForm.controls.categoryQuestions['controls'][qstIndx]['controls']['options']['value'][optIndx].isSelected = checked;
   }
 
-  onChangePresentStatus(qstIndx:number, optIndx:number, checked: boolean) {
+  onChangePresentStatus(qstIndx: number, optIndx: number, checked: boolean) {
 
     this.personalInfoForm.controls.studentPresentStatus['controls'][qstIndx]['controls']['options']['value'][optIndx].isSelected = checked;
   }
@@ -2698,22 +2698,22 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
 
     const disability = this.personalInfoForm.get('disability');
-   
+
     this.personalInfoForm.get('isDisability').valueChanges.subscribe((mode: string) => {
       if (mode === 'yes') {
         disability['controls'].disabilityType.setValidators([Validators.required]);
 
-        if(disability['controls'].percentageReq.value == true){
-        disability['controls'].percentage.setValidators([Validators.required]);
+        if (disability['controls'].percentageReq.value == true) {
+          disability['controls'].percentage.setValidators([Validators.required]);
         }
 
-        if( disability['controls'].disabilityDocReq.value == true){
-          this.personalInfoForm.controls['disability']['controls'].disabilityDoc.setValue(true, {emitEvent: false});
+        if (disability['controls'].disabilityDocReq.value == true) {
+          this.personalInfoForm.controls['disability']['controls'].disabilityDoc.setValue(true, { emitEvent: false });
         }
       } else {
         disability['controls'].percentage.clearValidators();
         disability['controls'].disabilityType.clearValidators();
-        this.personalInfoForm.controls['disability']['controls'].disabilityDoc.setValue(false, {emitEvent: false});
+        this.personalInfoForm.controls['disability']['controls'].disabilityDoc.setValue(false, { emitEvent: false });
       }
 
       disability['controls'].percentage.updateValueAndValidity();
@@ -2722,25 +2722,25 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
     if (this.personalInfoForm.get('isDisability').value == 'yes') {
       disability['controls'].disabilityType.setValidators([Validators.required]);
-      
-      if(disability['controls'].percentageReq  == true){
+
+      if (disability['controls'].percentageReq == true) {
         disability['controls'].percentage.setValidators([Validators.required]);
       }
 
-      if( disability['controls'].disabilityDocReq.value == true){
-        this.personalInfoForm.controls['disability']['controls'].disabilityDoc.setValue(true, {emitEvent: false});
+      if (disability['controls'].disabilityDocReq.value == true) {
+        this.personalInfoForm.controls['disability']['controls'].disabilityDoc.setValue(true, { emitEvent: false });
       }
-      
-      disability['controls'].percentage.updateValueAndValidity();
-      disability['controls'].disabilityType.updateValueAndValidity();
-    }else{
-      disability['controls'].percentage.clearValidators();
-      disability['controls'].disabilityType.clearValidators();
-      this.personalInfoForm.controls['disability']['controls'].disabilityDoc.setValue(false, {emitEvent: false});
 
       disability['controls'].percentage.updateValueAndValidity();
       disability['controls'].disabilityType.updateValueAndValidity();
-      }
+    } else {
+      disability['controls'].percentage.clearValidators();
+      disability['controls'].disabilityType.clearValidators();
+      this.personalInfoForm.controls['disability']['controls'].disabilityDoc.setValue(false, { emitEvent: false });
+
+      disability['controls'].percentage.updateValueAndValidity();
+      disability['controls'].disabilityType.updateValueAndValidity();
+    }
 
     const passportNo = this.personalInfoForm.controls.passportDetails.get('passportNo');
     const issueDate = this.personalInfoForm.controls.passportDetails.get('issueDate');
@@ -2761,46 +2761,46 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  setAddressInfoValues(formData:any) {
+  setAddressInfoValues(formData: any) {
 
     if (!globalFunctions.isEmpty(formData.addressInfo)) {
-    
+
       let resAddress = formData.addressInfo.fields.residentialAddress.fields;
-      let resAddressReq:any;
+      let resAddressReq: any;
       let isForeignStudentReq: any;
-      let resStateReq:any;
+      let resStateReq: any;
       let resAreaReq: any;
       let resStreetReq: any;
       let pincodeValidator: any;
-      let rescityReq:any;
+      let rescityReq: any;
       let resdistrictReq: any;
-      let resnearByRailwayStationReq:any;
-      let respincodeReq:any;
-      let natAddress = formData.addressInfo.fields.nativeAddress.fields;      
-      let natIsForeignStudentReq:any;   
-      let natnearByRailwayStationReq:any;   
-      let natAddressReq:any;
-      let natStateReq:any;
+      let resnearByRailwayStationReq: any;
+      let respincodeReq: any;
+      let natAddress = formData.addressInfo.fields.nativeAddress.fields;
+      let natIsForeignStudentReq: any;
+      let natnearByRailwayStationReq: any;
+      let natAddressReq: any;
+      let natStateReq: any;
       let natAreaReq: any;
       let natStreetReq: any;
-      let natcityReq:any;
+      let natcityReq: any;
       let natdistrictReq: any;
-      let natpincodeReq:any;
-      let adhAddress = formData.addressInfo.fields.aadharAddress.fields;    
-      let adhnearByRailwayStationReq:any;  
-      let adhAddressReq:any;
-      let adhStateReq:any;
-      let adhcityReq:any;
-      let adhpincodeReq:any;
-      let adhdistrictReq:any;
-     
+      let natpincodeReq: any;
+      let adhAddress = formData.addressInfo.fields.aadharAddress.fields;
+      let adhnearByRailwayStationReq: any;
+      let adhAddressReq: any;
+      let adhStateReq: any;
+      let adhcityReq: any;
+      let adhpincodeReq: any;
+      let adhdistrictReq: any;
+
       if (formData.addressInfo.display) {
 
         if (formData.addressInfo.fields.residentialAddress.display) {
 
           if (resAddress.isForeignStudent.required && resAddress.isForeignStudent.display) {
             isForeignStudentReq = Validators.required;
-          }       
+          }
           if (resAddress.address.required && resAddress.address.display) {
             resAddressReq = Validators.required;
           }
@@ -2827,11 +2827,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           }
           let pincodeValidator: any;
           if (resAddress.isForeignStudent.required && resAddress.isForeignStudent.display && resAddress.isForeignStudent.value == 'no') {
-             pincodeValidator =  Validators.minLength(6), Validators.maxLength(6);
+            pincodeValidator = Validators.minLength(6), Validators.maxLength(6);
           }
         }
-       
-        if (formData.addressInfo.fields.nativeAddress.display) { 
+
+        if (formData.addressInfo.fields.nativeAddress.display) {
 
           if (natAddress.address.required && natAddress.address.display) {
             natAddressReq = Validators.required;
@@ -2882,31 +2882,31 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           address: [resAddress.address.value, resAddressReq],
           area: [resAddress.area.value, resAreaReq],
           street: [resAddress.street.value, resStreetReq],
-          state : new UntypedFormControl({value: resAddress.state.value, disabled: true}, resStateReq),
-          city : new UntypedFormControl({value: resAddress.city.value, disabled: true}, rescityReq),
+          state: new UntypedFormControl({ value: resAddress.state.value, disabled: true }, resStateReq),
+          city: new UntypedFormControl({ value: resAddress.city.value, disabled: true }, rescityReq),
           district: [resAddress.district.value, resdistrictReq],
           nearByRailwayStation: [resAddress.nearByRailwayStation.value, resnearByRailwayStationReq],
           pincode: [resAddress.pincode.value, Validators.compose([pincodeValidator])],
         }),
         nativeAddress: this._formBuilder.group({
-          address:[natAddress.address.value, natAddressReq],
+          address: [natAddress.address.value, natAddressReq],
           area: [natAddress.area.value, natAreaReq],
           street: [natAddress.street.value, natStreetReq],
           // isForeignStudent: [natAddress.isForeignStudent.value, natIsForeignStudentReq],
-          state : new UntypedFormControl({value: natAddress.state.value, disabled: true}, natStateReq),
-          city : new UntypedFormControl({value: natAddress.city.value, disabled: true}, natcityReq),
+          state: new UntypedFormControl({ value: natAddress.state.value, disabled: true }, natStateReq),
+          city: new UntypedFormControl({ value: natAddress.city.value, disabled: true }, natcityReq),
           district: [resAddress.district.value, natdistrictReq],
           nearByRailwayStation: [natAddress.nearByRailwayStation.value, natnearByRailwayStationReq],
-          pincode:[natAddress.pincode.value, Validators.compose([pincodeValidator])],
+          pincode: [natAddress.pincode.value, Validators.compose([pincodeValidator])],
         }),
         aadharAddress: this._formBuilder.group({
-          address:[adhAddress.address.value, adhAddressReq],
-          state : new UntypedFormControl({value: adhAddress.state.value, disabled: true}, adhStateReq),
-          city : new UntypedFormControl({value: adhAddress.city.value, disabled: true}, adhcityReq),
-          pincode:[adhAddress.pincode.value, Validators.compose([adhpincodeReq, Validators.minLength(6), Validators.maxLength(6) ])],
+          address: [adhAddress.address.value, adhAddressReq],
+          state: new UntypedFormControl({ value: adhAddress.state.value, disabled: true }, adhStateReq),
+          city: new UntypedFormControl({ value: adhAddress.city.value, disabled: true }, adhcityReq),
+          pincode: [adhAddress.pincode.value, Validators.compose([adhpincodeReq, Validators.minLength(6), Validators.maxLength(6)])],
         })
       });
-      
+
       this.addressInfoFormValues = this.addressInfoForm.value;
       this.addressInfoForm.disable();
     }
@@ -3082,7 +3082,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       if (motherDetails?.officeStreetRequired) {
         motherOfficeAreaReq = Validators.required;
       }
-      
+
       let motherOfficeTelReq: any;
       if (motherDetails?.officeTelRequired) {
         motherOfficeTelReq = Validators.required;
@@ -4744,53 +4744,53 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
   }
 
-  setEducationInfoValues(formData:any) {
+  setEducationInfoValues(formData: any) {
 
     if (!globalFunctions.isEmpty(formData.educationInfo)) {
 
       this.streams = formData.educationInfo.streamArray;
 
-      let mediumOfEducationReq:any;
+      let mediumOfEducationReq: any;
       if (formData.educationInfo.showMediumOfEducation && formData.educationInfo.mediumOfEducationRequired) {
         mediumOfEducationReq = Validators.required;
       }
-      let passedHscWithReq:any;
+      let passedHscWithReq: any;
       if (formData.educationInfo.passedHscWith.display && formData.educationInfo.passedHscWith.required) {
         passedHscWithReq = Validators.required;
       }
-      let mathsMarksReq:any;
+      let mathsMarksReq: any;
       if (formData.educationInfo.mathsMarks.display && formData.educationInfo.mathsMarks.required) {
         mathsMarksReq = Validators.required;
       }
-      let passedHscExemptionReq:any;
+      let passedHscExemptionReq: any;
       if (formData.educationInfo.passedHscExemption.required && formData.educationInfo.passedHscExemption.display) {
         passedHscExemptionReq = Validators.required;
       }
-      let hscRepeaterReq:any;
+      let hscRepeaterReq: any;
       if (formData.educationInfo.hscRepeater.required && formData.educationInfo.hscRepeater.display) {
         hscRepeaterReq = Validators.required;
       }
-      let prnNoReq:any;
+      let prnNoReq: any;
       if (formData.educationInfo.showPrnNo && formData.educationInfo.prnNoRequired) {
-        prnNoReq = Validators.compose([Validators.required, Validators.minLength(16), Validators.maxLength(16) ]);
+        prnNoReq = Validators.compose([Validators.required, Validators.minLength(16), Validators.maxLength(16)]);
       }
 
-      let cetSubjectInfoReq:any;
+      let cetSubjectInfoReq: any;
       if (formData.educationInfo.enggInfo.cet.subjectInfoReq) {
         cetSubjectInfoReq = Validators.required;
       }
-      let diplomaSubjectInfoReq:any;
+      let diplomaSubjectInfoReq: any;
       if (formData.educationInfo.enggInfo.diploma.subjectInfoReq) {
         diplomaSubjectInfoReq = Validators.required;
       }
-      let hscSubjectInfoReq:any;
-      let hscSubject1Req:any;
-      let hscSubject2Req:any;
-      let hscSubject3Req:any;
-      let hscOptionalSubjectReq:any;
-      let hscOptionalSubject1Req:any;
-      let hscOptionalSubject2Req:any;
-      let hscOptionalSubject3Req:any;
+      let hscSubjectInfoReq: any;
+      let hscSubject1Req: any;
+      let hscSubject2Req: any;
+      let hscSubject3Req: any;
+      let hscOptionalSubjectReq: any;
+      let hscOptionalSubject1Req: any;
+      let hscOptionalSubject2Req: any;
+      let hscOptionalSubject3Req: any;
 
       if (formData.educationInfo.enggInfo.hsc.subjectInfo.subject1.required) {
         hscSubject1Req = Validators.required;
@@ -4805,19 +4805,19 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       }
 
       if (formData.educationInfo.enggInfo.hsc.subjectInfo.optionalSubject.required) {
-          hscOptionalSubjectReq = Validators.required;
+        hscOptionalSubjectReq = Validators.required;
       }
 
       if (formData.educationInfo.enggInfo.hsc.subjectInfo.optionalSubject1.required) {
-          hscOptionalSubject1Req = Validators.required;
+        hscOptionalSubject1Req = Validators.required;
       }
 
       if (formData.educationInfo.enggInfo.hsc.subjectInfo.optionalSubject2.required) {
-          hscOptionalSubject2Req = Validators.required;
+        hscOptionalSubject2Req = Validators.required;
       }
 
       if (formData.educationInfo.enggInfo.hsc.subjectInfo.optionalSubject3.required) {
-          hscOptionalSubject3Req = Validators.required;
+        hscOptionalSubject3Req = Validators.required;
       }
 
       if (formData.educationInfo.enggInfo.hsc.subjectInfoReq) {
@@ -4835,11 +4835,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         //   hscOptionalSubjectReq = Validators.required;
         // }
       }
-      let sscSubjectInfoReq:any;
+      let sscSubjectInfoReq: any;
       if (formData.educationInfo.enggInfo.ssc.subjectInfoReq && formData.educationInfo.enggInfo.showSsc) {
         // sscSubjectInfoReq = Validators.required;
       }
-      let llbMhtCetMarksReq:any;
+      let llbMhtCetMarksReq: any;
       if (formData.educationInfo.showLlbMhCet && formData.educationInfo.llbMhCetRequired) {
         llbMhtCetMarksReq = Validators.required;
       }
@@ -4849,9 +4849,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this.showUnderGraduate = true;
       }
 
-      let graduateAppearingReq:any;
-      let graduateYearSemesterWiseReq:any;
-      let graduateSemesterReq:any;
+      let graduateAppearingReq: any;
+      let graduateYearSemesterWiseReq: any;
+      let graduateSemesterReq: any;
 
       let graduateAppearing = null;
       let graduateCgpa = null;
@@ -4865,11 +4865,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       let graduateYearOfPassing = null;
       let graduateMonthOfPassing = null;
 
-      let boardNameReq:any;
-      let schoolNameReq:any;
-      let marksObtainedReq:any;
-      let marksOutofReq:any;
-      let percentageReq:any;
+      let boardNameReq: any;
+      let schoolNameReq: any;
+      let marksObtainedReq: any;
+      let marksOutofReq: any;
+      let percentageReq: any;
 
       if (formData.educationInfo.eduInfo.graduate.filter.display) {
 
@@ -4917,9 +4917,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this.showGraduate = true;
       }
 
-      let postGraduateAppearingReq:any;
-      let postGraduateDegreeReq:any;
-      let postGraduateSpecializationReq:any;
+      let postGraduateAppearingReq: any;
+      let postGraduateDegreeReq: any;
+      let postGraduateSpecializationReq: any;
 
       let postGraduateAppearing = null;
       let postGraduateDegree = null;
@@ -4948,8 +4948,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         postGraduateSpecialization = formData.educationInfo.eduInfo.postGraduate.filter.specialization.value;
       }
 
-      let enteranceExamReq:any;
-      let subjectInfoReqReq:any;
+      let enteranceExamReq: any;
+      let subjectInfoReqReq: any;
       if (formData.educationInfo.showEnteranceDetails) {
 
         this.showEnteranceDetailsBlk = true;
@@ -5029,9 +5029,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
             ])
           }),
           postGraduate: this._formBuilder.group({
-            postGraduation: [formData.educationInfo.eduInfo.postGraduate.postGraduation], 
+            postGraduation: [formData.educationInfo.eduInfo.postGraduate.postGraduation],
             filter: this._formBuilder.group({
-              appearing: [postGraduateAppearing, postGraduateAppearingReq],              
+              appearing: [postGraduateAppearing, postGraduateAppearingReq],
               degree: [postGraduateDegree, postGraduateDegreeReq],
               otherText: [postGraduateOtherText],
               specialization: [postGraduateSpecialization, postGraduateSpecializationReq],
@@ -5056,8 +5056,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
             showCet: [formData.educationInfo.enggInfo.showCet],
             showDiploma: [formData.educationInfo.enggInfo.showDiploma],
             cet: this._formBuilder.group({
-              subjectHeading : [formData.educationInfo.enggInfo.cet.subjectHeading],
-              subjectInfoReq : [formData.educationInfo.enggInfo.cet.subjectInfoReq],
+              subjectHeading: [formData.educationInfo.enggInfo.cet.subjectHeading],
+              subjectInfoReq: [formData.educationInfo.enggInfo.cet.subjectInfoReq],
               subjectInfo: this._formBuilder.group({
                 maths: [formData.educationInfo.enggInfo.cet.subjectInfo.maths, cetSubjectInfoReq],
                 mathsHeader: [formData.educationInfo.enggInfo.cet.subjectInfo.mathsHeader],
@@ -5072,8 +5072,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
               })
             }),
             diploma: this._formBuilder.group({
-              subjectHeading : [formData.educationInfo.enggInfo.diploma.subjectHeading],
-              subjectInfoReq : [formData.educationInfo.enggInfo.diploma.subjectInfoReq],
+              subjectHeading: [formData.educationInfo.enggInfo.diploma.subjectHeading],
+              subjectInfoReq: [formData.educationInfo.enggInfo.diploma.subjectInfoReq],
               subjectInfo: this._formBuilder.group({
                 instituteName: [formData.educationInfo.enggInfo.diploma.subjectInfo.instituteName, diplomaSubjectInfoReq],
                 instituteNameHeader: [formData.educationInfo.enggInfo.diploma.subjectInfo.instituteNameHeader],
@@ -5143,7 +5143,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
               })
             })
           }),
-        }),        
+        }),
         showPrnNo: [formData.educationInfo.showPrnNo],
         prnNo: [formData.educationInfo.prnNo, prnNoReq],
         passedHscWith: [formData.educationInfo.passedHscWith.value, passedHscWithReq],
@@ -5157,19 +5157,19 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         showSubjectCompulsory: [formData.educationInfo.subjectInfo.showSubjectCompulsory],
         showSubjectOptional: [formData.educationInfo.subjectInfo.showSubjectOptional],
         subjectInfo: this._formBuilder.group({
-          subjectLanguagesOptionalSelected : [formData.educationInfo.subjectInfo.subjectLanguagesOptionalSelected],
-          subjectOptionalSelected : [formData.educationInfo.subjectInfo.subjectOptionalSelected]
+          subjectLanguagesOptionalSelected: [formData.educationInfo.subjectInfo.subjectLanguagesOptionalSelected],
+          subjectOptionalSelected: [formData.educationInfo.subjectInfo.subjectOptionalSelected]
         }),
-       
+
         showLlbMhCet: [formData.educationInfo.showLlbMhCet],
         llbMhCetInfo: this._formBuilder.group({
-          cetMarks : [formData.educationInfo.llbMhCetInfo.cetMarks, llbMhtCetMarksReq],
-          cetFormNo : [formData.educationInfo.llbMhCetInfo.cetFormNo, llbMhtCetMarksReq],
-          admissionRound : [formData.educationInfo.llbMhCetInfo.admissionRound, llbMhtCetMarksReq],
-          cetSeatNo : [formData.educationInfo.llbMhCetInfo.cetSeatNo, llbMhtCetMarksReq],
-          provisionalAdmissionLetterNo : [formData.educationInfo.llbMhCetInfo.provisionalAdmissionLetterNo],
+          cetMarks: [formData.educationInfo.llbMhCetInfo.cetMarks, llbMhtCetMarksReq],
+          cetFormNo: [formData.educationInfo.llbMhCetInfo.cetFormNo, llbMhtCetMarksReq],
+          admissionRound: [formData.educationInfo.llbMhCetInfo.admissionRound, llbMhtCetMarksReq],
+          cetSeatNo: [formData.educationInfo.llbMhCetInfo.cetSeatNo, llbMhtCetMarksReq],
+          provisionalAdmissionLetterNo: [formData.educationInfo.llbMhCetInfo.provisionalAdmissionLetterNo],
         }),
-        showOtherEduInfo: [formData.educationInfo.showOtherEduInfo],      
+        showOtherEduInfo: [formData.educationInfo.showOtherEduInfo],
         otherEduInfo: this._formBuilder.group({
           courseType: [formData.educationInfo.otherEduInfo.courseType],
           courseName: [formData.educationInfo.otherEduInfo.courseName],
@@ -5267,15 +5267,15 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           semesterNo.clearValidators();
           yearNo.setValidators([Validators.required]);
         }
-        semesterNo.updateValueAndValidity();        
-        yearNo.updateValueAndValidity();        
+        semesterNo.updateValueAndValidity();
+        yearNo.updateValueAndValidity();
       });
     }
 
     if (this.formData.educationInfo.showEnteranceDetails) {
-      
+
       this.setEnteranceExamDetailsValidations();
-      
+
       this.educationInfoForm.controls.enteranceDetails.get('enteranceExam').valueChanges.subscribe((mode: string) => {
         this.setEnteranceExamDetailsValidations();
       });
@@ -5293,7 +5293,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     const marksObtained = this.educationInfoForm.controls.eduInfo['controls'].graduate.controls.filter.get('marksObtained');
     const marksOutof = this.educationInfoForm.controls.eduInfo['controls'].graduate.controls.filter.get('marksOutof');
     const percentage = this.educationInfoForm.controls.eduInfo['controls'].graduate.controls.filter.get('percentage');
-    
+
     if (this.formData.educationInfo.eduInfo.graduate.filter.degree.required && this.formData.educationInfo.eduInfo.graduate.filter.degree.display) {
       degree.setValidators([Validators.required]);
     }
@@ -5301,9 +5301,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     if (this.formData.educationInfo.eduInfo.graduate.filter.specialization.required && this.formData.educationInfo.eduInfo.graduate.filter.specialization.display) {
       specialization.setValidators([Validators.required]);
     }
-    
+
     if (this.educationInfoForm.controls.eduInfo['controls'].graduate.controls.filter.get('appearing').value == 'no') {
-    
+
       if (this.formData.educationInfo.eduInfo.graduate.filter.grade.display) {
         grade.setValidators([Validators.required]);
       }
@@ -5325,9 +5325,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       if (this.formData.educationInfo.eduInfo.graduate.filter.percentage.display) {
         percentage.setValidators([Validators.required]);
       }
-   
+
     } else {
-    
+
       monthOfPassing.clearValidators();
       yearOfPassing.clearValidators();
       cgpa.clearValidators();
@@ -5367,28 +5367,28 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         const monthAppeared = itemRow.get('monthAppeared');
         if (this.graduateHeaders.monthAppeared) {
           monthAppeared.clearValidators();
-        } 
-    
+        }
+
         const yearAppeared = itemRow.get('yearAppeared');
         if (this.graduateHeaders.yearAppeared) {
           yearAppeared.clearValidators();
         }
-    
+
         const marksObtained = itemRow.get('marksObtained');
         if (this.graduateHeaders.marksObtained) {
           marksObtained.clearValidators();
-        } 
-    
+        }
+
         const marksOutof = itemRow.get('marksOutof');
         if (this.graduateHeaders.marksOutof) {
           marksOutof.clearValidators();
-        } 
+        }
 
         const grade = itemRow.get('grade');
         if (this.graduateHeaders.grade) {
           grade.clearValidators();
-        } 
-    
+        }
+
         boardName.updateValueAndValidity();
         schoolName.updateValueAndValidity();
         monthAppeared.updateValueAndValidity();
@@ -5451,10 +5451,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           maths.clearValidators();
           physics.clearValidators();
           chemistry.clearValidators();
-          
+
           if (details.fields.showYear) {
             this.showEntranceExamYear = true;
-            if (this.formData.educationInfo.enteranceDetails.year.required) {                    
+            if (this.formData.educationInfo.enteranceDetails.year.required) {
               year.setValidators([Validators.required]);
             }
           }
@@ -5510,14 +5510,14 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
           if (details.fields.showScore) {
             this.showScore = true;
-            if (this.formData.educationInfo.enteranceDetails.score.required) {                    
+            if (this.formData.educationInfo.enteranceDetails.score.required) {
               score.setValidators([Validators.required]);
             }
           }
 
           if (details.fields.showPercentile) {
             this.showPercentile = true;
-            if (this.formData.educationInfo.enteranceDetails.percentile.required) {                    
+            if (this.formData.educationInfo.enteranceDetails.percentile.required) {
               percentile.setValidators([Validators.required]);
             }
           }
@@ -5579,7 +5579,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     allIndiaRank.updateValueAndValidity();
     score.updateValueAndValidity();
     percentile.updateValueAndValidity();
-  
+
     maths.updateValueAndValidity();
     physics.updateValueAndValidity();
     chemistry.updateValueAndValidity();
@@ -5595,7 +5595,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       if (this.educationInfoForm.controls.enteranceDetails.get('enteranceExam').value == details.key) {
 
-        this.showEnteranceSubjects = false;        
+        this.showEnteranceSubjects = false;
         if (details.fields.showSubjectInfo && appearedFor.showSubjectInfo) {
 
           this.appearedForArray.forEach((value, key) => {
@@ -5614,7 +5614,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
           maths.clearValidators();
           physics.clearValidators();
-          chemistry.clearValidators();          
+          chemistry.clearValidators();
         }
       }
     });
@@ -5631,88 +5631,88 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
     if (!globalFunctions.isEmpty(formData) && formData.constructor === Array) {
 
-      let testHeaders:any;
+      let testHeaders: any;
       if (mode == 'underGraduate') {
         testHeaders = this.formData.educationInfo.educationHeaders.underGraduate;
       } else if (mode == 'graduate') {
         testHeaders = this.formData.educationInfo.educationHeaders.graduate;
       } else if (mode == 'postGraduate') {
         testHeaders = this.formData.educationInfo.educationHeaders.postGraduate;
-      }else if (mode == 'masterGraduate') {
+      } else if (mode == 'masterGraduate') {
         testHeaders = this.formData.educationInfo.educationHeaders.masterGraduate;
       }
 
       formData.forEach((itemRow, index) => {
-        let boardNameRequired:any;
+        let boardNameRequired: any;
         if (testHeaders.boardName && itemRow.boardNameRequired) {
           boardNameRequired = Validators.required;
         }
-        let minPassGradeRequired:any;
+        let minPassGradeRequired: any;
         if (!globalFunctions.isEmpty(testHeaders.minPassGradeRequired)) {
           if (testHeaders.minPassGradeRequired && itemRow.minPassGradeRequired) {
             minPassGradeRequired = Validators.required;
           }
         }
-        let studyDurationRequired:any;
-          if (!globalFunctions.isEmpty(testHeaders.studyDurationRequired)) {
-            if (testHeaders.studyDurationRequired && itemRow.studyDurationRequired) {
-              studyDurationRequired = Validators.required;
-            }
+        let studyDurationRequired: any;
+        if (!globalFunctions.isEmpty(testHeaders.studyDurationRequired)) {
+          if (testHeaders.studyDurationRequired && itemRow.studyDurationRequired) {
+            studyDurationRequired = Validators.required;
           }
-        let maxPassGradeRequired:any;
+        }
+        let maxPassGradeRequired: any;
         if (!globalFunctions.isEmpty(testHeaders.maxPassGradeRequired)) {
           if (testHeaders.maxPassGradeRequired && itemRow.maxPassGradeRequired) {
             maxPassGradeRequired = Validators.required;
           }
         }
-        let schoolNameRequired:any;
+        let schoolNameRequired: any;
         if (testHeaders.schoolName && itemRow.schoolNameRequired) {
           schoolNameRequired = Validators.required;
         }
-        let monthAppearedRequired:any;
+        let monthAppearedRequired: any;
         if (testHeaders.monthAppeared && itemRow.monthAppearedRequired) {
           monthAppearedRequired = Validators.required;
         }
-        let yearAppearedRequired:any;
+        let yearAppearedRequired: any;
         if (testHeaders.yearAppeared && itemRow.yearAppearedRequired) {
           yearAppearedRequired = Validators.required;
         }
-        let creditsEarnedRequired:any;
+        let creditsEarnedRequired: any;
         if (testHeaders.creditsEarned && itemRow.creditsEarnedRequired) {
           creditsEarnedRequired = Validators.required;
         }
-     
-        let creditPointsReq:any;
+
+        let creditPointsReq: any;
         if (testHeaders.creditPoints && itemRow.creditPointsRequired) {
           creditPointsReq = Validators.required;
         }
-        let creditGradeReq:any;
+        let creditGradeReq: any;
         if (testHeaders.creditGrade && itemRow.creditGradeRequired) {
           creditGradeReq = Validators.required;
         }
-        let sgpaReq:any;
+        let sgpaReq: any;
         if (testHeaders.sgpa && itemRow.sgpaRequired) {
           sgpaReq = Validators.required;
         }
-     
-        let seatNoRequired:any;
+
+        let seatNoRequired: any;
         if (testHeaders.seatNo && itemRow.seatNoRequired) {
           seatNoRequired = Validators.required;
         }
-        let gradeRequired:any;
+        let gradeRequired: any;
         if (testHeaders.grade && itemRow.gradeRequired) {
           gradeRequired = Validators.required;
         }
-        let liveAtktRequired:any;
+        let liveAtktRequired: any;
         if (testHeaders.liveAtkt && itemRow.liveAtktRequired) {
           liveAtktRequired = Validators.required;
         }
 
-        let percentageOrSgpaRequired:any;
+        let percentageOrSgpaRequired: any;
         if (testHeaders.percentageOrSgpa && itemRow.percentageOrSgpaRequired) {
           percentageOrSgpaRequired = Validators.required;
         }
-        let percentageOrCgpaRequired:any;
+        let percentageOrCgpaRequired: any;
         if (testHeaders.percentageOrCgpa && itemRow.percentageOrCgpaRequired) {
           percentageOrCgpaRequired = Validators.required;
         }
@@ -5723,88 +5723,88 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         let documentUploadObj = null;
         if (mode == 'underGraduate') {
 
-        	itemRow.confNamesArray.forEach((conf, confIndex) => {
+          itemRow.confNamesArray.forEach((conf, confIndex) => {
 
-        		if ( (conf.ssc.checkCondition && conf.ssc.display) && itemRow.confNameSelected == conf.confName ) {
+            if ((conf.ssc.checkCondition && conf.ssc.display) && itemRow.confNameSelected == conf.confName) {
 
-        			this.showSscBlk = true;
+              this.showSscBlk = true;
 
-        			if (this.formData.educationInfo.enggInfo.ssc.subjectInfoReq) {
+              if (this.formData.educationInfo.enggInfo.ssc.subjectInfoReq) {
 
-        				const maths = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].ssc.controls.subjectInfo.controls.maths;
+                const maths = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].ssc.controls.subjectInfo.controls.maths;
 
-        				maths.get('marksObtained').setValidators([Validators.required]);
-        				maths.get('marksOutof').setValidators([Validators.required]);
-        				maths.get('totalPercentage').setValidators([Validators.required]);
+                maths.get('marksObtained').setValidators([Validators.required]);
+                maths.get('marksOutof').setValidators([Validators.required]);
+                maths.get('totalPercentage').setValidators([Validators.required]);
 
-        				maths.get('marksObtained').updateValueAndValidity();
-        				maths.get('marksOutof').updateValueAndValidity();
-        				maths.get('totalPercentage').updateValueAndValidity();                
-        			}
-        		}
+                maths.get('marksObtained').updateValueAndValidity();
+                maths.get('marksOutof').updateValueAndValidity();
+                maths.get('totalPercentage').updateValueAndValidity();
+              }
+            }
 
-        		if ( (conf.hsc.checkCondition && conf.hsc.display) && itemRow.confNameSelected == conf.confName ) {
+            if ((conf.hsc.checkCondition && conf.hsc.display) && itemRow.confNameSelected == conf.confName) {
 
-        			this.showHscBlk = true;
+              this.showHscBlk = true;
 
-        			if (conf.enggHscTotal.checkCondition && conf.enggHscTotal.display && this.formData.educationInfo.enggInfo.hsc.subjectInfo.totalMarks.display) {
+              if (conf.enggHscTotal.checkCondition && conf.enggHscTotal.display && this.formData.educationInfo.enggInfo.hsc.subjectInfo.totalMarks.display) {
 
-        				this.showAggregateRow = true;
-        			}
+                this.showAggregateRow = true;
+              }
 
-        			// if (this.formData.educationInfo.enggInfo.hsc.subjectInfoReq) {
+              // if (this.formData.educationInfo.enggInfo.hsc.subjectInfoReq) {
 
-        			// 	const subject1 = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.subject1;
-        			// 	const subject2 = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.subject2;
-        			// 	const subject3 = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.subject3;
-        			// 	const optionalSubject = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.optionalSubject;
+              // 	const subject1 = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.subject1;
+              // 	const subject2 = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.subject2;
+              // 	const subject3 = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.subject3;
+              // 	const optionalSubject = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.optionalSubject;
 
-        			// 	if (this.formData.educationInfo.enggInfo.hsc.subjectInfo.subject1.display) {
+              // 	if (this.formData.educationInfo.enggInfo.hsc.subjectInfo.subject1.display) {
 
-        			// 		subject1.get('marksObtained').setValidators([Validators.required]);
-        			// 		subject1.get('marksOutof').setValidators([Validators.required]);
-        			// 		subject1.get('totalPercentage').setValidators([Validators.required]);
-        			// 	}
+              // 		subject1.get('marksObtained').setValidators([Validators.required]);
+              // 		subject1.get('marksOutof').setValidators([Validators.required]);
+              // 		subject1.get('totalPercentage').setValidators([Validators.required]);
+              // 	}
 
-        			// 	if (this.formData.educationInfo.enggInfo.hsc.subjectInfo.subject2.display) {
+              // 	if (this.formData.educationInfo.enggInfo.hsc.subjectInfo.subject2.display) {
 
-        			// 		subject2.get('marksObtained').setValidators([Validators.required]);
-        			// 		subject2.get('marksOutof').setValidators([Validators.required]);
-        			// 		subject2.get('totalPercentage').setValidators([Validators.required]);
-        			// 	}
+              // 		subject2.get('marksObtained').setValidators([Validators.required]);
+              // 		subject2.get('marksOutof').setValidators([Validators.required]);
+              // 		subject2.get('totalPercentage').setValidators([Validators.required]);
+              // 	}
 
-        			// 	if (this.formData.educationInfo.enggInfo.hsc.subjectInfo.subject3.display) {
+              // 	if (this.formData.educationInfo.enggInfo.hsc.subjectInfo.subject3.display) {
 
-        			// 		subject3.get('marksObtained').setValidators([Validators.required]);
-        			// 		subject3.get('marksOutof').setValidators([Validators.required]);
-        			// 		subject3.get('totalPercentage').setValidators([Validators.required]);
-        			// 	}
+              // 		subject3.get('marksObtained').setValidators([Validators.required]);
+              // 		subject3.get('marksOutof').setValidators([Validators.required]);
+              // 		subject3.get('totalPercentage').setValidators([Validators.required]);
+              // 	}
 
-        			// 	if (this.formData.educationInfo.enggInfo.hsc.subjectInfo.optionalSubject.display) {
+              // 	if (this.formData.educationInfo.enggInfo.hsc.subjectInfo.optionalSubject.display) {
 
-        			// 		optionalSubject.get('value').setValidators([Validators.required]);
-        			// 		optionalSubject.get('marksObtained').setValidators([Validators.required]);
-        			// 		optionalSubject.get('marksOutof').setValidators([Validators.required]);
-        			// 		optionalSubject.get('totalPercentage').setValidators([Validators.required]);
-        			// 	}
+              // 		optionalSubject.get('value').setValidators([Validators.required]);
+              // 		optionalSubject.get('marksObtained').setValidators([Validators.required]);
+              // 		optionalSubject.get('marksOutof').setValidators([Validators.required]);
+              // 		optionalSubject.get('totalPercentage').setValidators([Validators.required]);
+              // 	}
 
-        			// 	subject1.get('marksObtained').updateValueAndValidity();
-        			// 	subject1.get('marksOutof').updateValueAndValidity();
-        			// 	subject1.get('totalPercentage').updateValueAndValidity();
+              // 	subject1.get('marksObtained').updateValueAndValidity();
+              // 	subject1.get('marksOutof').updateValueAndValidity();
+              // 	subject1.get('totalPercentage').updateValueAndValidity();
 
-        			// 	subject2.get('marksObtained').updateValueAndValidity();
-        			// 	subject2.get('marksOutof').updateValueAndValidity();
-        			// 	subject2.get('totalPercentage').updateValueAndValidity();
+              // 	subject2.get('marksObtained').updateValueAndValidity();
+              // 	subject2.get('marksOutof').updateValueAndValidity();
+              // 	subject2.get('totalPercentage').updateValueAndValidity();
 
-        			// 	subject3.get('marksObtained').updateValueAndValidity();
-        			// 	subject3.get('marksOutof').updateValueAndValidity();
-        			// 	subject3.get('totalPercentage').updateValueAndValidity();
+              // 	subject3.get('marksObtained').updateValueAndValidity();
+              // 	subject3.get('marksOutof').updateValueAndValidity();
+              // 	subject3.get('totalPercentage').updateValueAndValidity();
 
-        			// 	optionalSubject.get('value').updateValueAndValidity();
-        			// 	optionalSubject.get('marksObtained').updateValueAndValidity();
-        			// 	optionalSubject.get('marksOutof').updateValueAndValidity();
-        			// 	optionalSubject.get('totalPercentage').updateValueAndValidity();
-        			// }
+              // 	optionalSubject.get('value').updateValueAndValidity();
+              // 	optionalSubject.get('marksObtained').updateValueAndValidity();
+              // 	optionalSubject.get('marksOutof').updateValueAndValidity();
+              // 	optionalSubject.get('totalPercentage').updateValueAndValidity();
+              // }
 
               if (this.formData.educationInfo.enggInfo.showHsc) {
                 if (this.formData.educationInfo.enggInfo.hsc.subjectInfo.subject1.required) {
@@ -5856,38 +5856,38 @@ export class ApplicationPreviewDialogComponent implements OnInit {
                   optionalSubject3.get('totalPercentage').setValidators([Validators.required]);
                 }
               }
-        		}
-        	});
+            }
+          });
         }
 
         if (!globalFunctions.isEmpty(itemRow.confNamesArray)) {
 
-        	itemRow.confNamesArray.forEach((conf, confIndex) => {
+          itemRow.confNamesArray.forEach((conf, confIndex) => {
 
-        		if ( (conf.documentUpload.checkCondition && conf.documentUpload.display) && itemRow.confNameSelected == conf.confName ) {
+            if ((conf.documentUpload.checkCondition && conf.documentUpload.display) && itemRow.confNameSelected == conf.confName) {
 
-        			showDocumentUpload = true;
-        			documentUploadObj = conf.documentUpload;
+              showDocumentUpload = true;
+              documentUploadObj = conf.documentUpload;
 
               if (conf.documentUpload.required) {
                 docReq = true;
               }
-        		}
-        	});
+            }
+          });
 
           if (!globalFunctions.isEmpty(itemRow.documentUrl)) {
             hasUploadedDoc = true;
           }
-      	}
+        }
 
-        let gradingSystemReq:any;
-        let marksObtainedRequired:any;
-        let marksOutofRequired:any;
-        let percentageRequired:any;
-        let cgpiReq:any;
-        let cgpiObtainedReq:any;
-        let cgpiOutofReq:any;
-        
+        let gradingSystemReq: any;
+        let marksObtainedRequired: any;
+        let marksOutofRequired: any;
+        let percentageRequired: any;
+        let cgpiReq: any;
+        let cgpiObtainedReq: any;
+        let cgpiOutofReq: any;
+
         if (mode == 'underGraduate' && testHeaders.gradingSystem) {
           if (itemRow.gradingSystemRequired) {
             gradingSystemReq = Validators.required;
@@ -5896,9 +5896,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           itemRow.showMarksBlk = false;
           itemRow.showCgpaBlk = false;
           if (itemRow.gradingSystem == 'percentage') {
-          
+
             itemRow.showMarksBlk = true;
-          
+
             cgpiObtainedReq = null;
             cgpiOutofReq = null;
             cgpiReq = null;
@@ -5936,25 +5936,25 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           }
         }
 
-        let collegeTransferQuestionAnsReq:any;
+        let collegeTransferQuestionAnsReq: any;
         if (itemRow.showCollegeTransferQuestion) {
           collegeTransferQuestionAnsReq = Validators.required;
         }
 
-        let semesterCompletedReq:any;
+        let semesterCompletedReq: any;
         if (itemRow.showSemesterCompleted && itemRow.semesterCompletedObj.required) {
           semesterCompletedReq = Validators.required;
         }
 
-        var studyDurationForm:any = [];
+        var studyDurationForm: any = [];
         if (!globalFunctions.isEmpty(itemRow.studyDuration)) {
           studyDurationForm = [itemRow.studyDuration.value, studyDurationRequired];
         }
-        var minPassGradeForm:any = [];
+        var minPassGradeForm: any = [];
         if (!globalFunctions.isEmpty(itemRow.minPassGrade)) {
           minPassGradeForm = [itemRow.minPassGrade.value, minPassGradeRequired];
         }
-        var maxPassGradeForm:any = [];
+        var maxPassGradeForm: any = [];
         if (!globalFunctions.isEmpty(itemRow.maxPassGrade)) {
           maxPassGradeForm = [itemRow.maxPassGrade.value, maxPassGradeRequired];
         }
@@ -5965,8 +5965,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           fieldsLabel: [itemRow.fieldsLabel],
           reqConfId: [itemRow.reqConfId],
           confNamesArray: [itemRow.confNamesArray],
-          note: [itemRow.note], 
-          confNameSelected: [itemRow.confNameSelected],          
+          note: [itemRow.note],
+          confNameSelected: [itemRow.confNameSelected],
           confName: [itemRow.confName],
           stream: [itemRow.stream],
           boardName: [itemRow.boardName, boardNameRequired],
@@ -6011,8 +6011,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           showDocResetBtn: [false],
           docError: [false],
           docBrowsed: [false],
-          docUploadPercent: [null],          
-          docUploading: [false],          
+          docUploadPercent: [null],
+          docUploading: [false],
           docToUpload: [null],
         });
 
@@ -6040,11 +6040,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.workExperienceForm.disable();
   }
 
-  jobDescriptionRows() : UntypedFormGroup {
+  jobDescriptionRows(): UntypedFormGroup {
 
-    let jobDescriptionReq:any;
+    let jobDescriptionReq: any;
     if (!globalFunctions.isEmpty(this.formData)) {
-      if (this.formData.workExpDetails.experienceDetails.display) {      
+      if (this.formData.workExpDetails.experienceDetails.display) {
         if (this.formData.workExpDetails.experienceDetails.jobDescription.display && this.formData.workExpDetails.experienceDetails.jobDescription.required) {
           jobDescriptionReq = Validators.required;
         }
@@ -6052,43 +6052,43 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
 
     return this._formBuilder.group({
-      description : [null, jobDescriptionReq]
+      description: [null, jobDescriptionReq]
     });
   }
 
-  openTimePicker(mode:string, value) {    
+  openTimePicker(mode: string, value) {
     const amazingTimePicker = this.atp.open({
       time: value,
     });
     amazingTimePicker.afterClose().subscribe(time => {
       this.workExperienceForm.get('companyDetails')['controls'].forEach((itemRow) => {
-        itemRow.controls[mode].setValue(time, {emitEvent: false});
+        itemRow.controls[mode].setValue(time, { emitEvent: false });
       });
     });
   }
 
-  companyDetailsRows() : UntypedFormGroup {
+  companyDetailsRows(): UntypedFormGroup {
     return this._formBuilder.group({
-      companyName : [null],
-      designation : [null],
-      durationFrom : [null],
-      durationTo : [null],
-      shiftTimeFrom : [null],
-      shiftTimeTo : [null],
-      salary : [null]
+      companyName: [null],
+      designation: [null],
+      durationFrom: [null],
+      durationTo: [null],
+      shiftTimeFrom: [null],
+      shiftTimeTo: [null],
+      salary: [null]
     });
-  }  
+  }
 
-  setWorkExpDetailsValues(formData:any) {
+  setWorkExpDetailsValues(formData: any) {
 
-    let companyTypeReq:any;
-    if (formData.workExpDetails.oldStructure.display) {    
+    let companyTypeReq: any;
+    if (formData.workExpDetails.oldStructure.display) {
       if (formData.workExpDetails.oldStructure.companyType.display && formData.workExpDetails.oldStructure.companyType.required) {
         companyTypeReq = Validators.required;
       }
     }
 
-    let workExpTypeReq:any;
+    let workExpTypeReq: any;
     if (formData.workExpDetails.experienceDetails.display) {
       if (formData.workExpDetails.experienceDetails.workExpType.display && formData.workExpDetails.experienceDetails.workExpType.required) {
         workExpTypeReq = Validators.required;
@@ -6101,7 +6101,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         jobDescription: this._formBuilder.array([
           this.jobDescriptionRows()
         ])
-      }), 
+      }),
       workExp: [formData.workExpDetails.oldStructure.workExp],
       expAfterGraduation: [formData.workExpDetails.oldStructure.expAfterGraduation],
       companyType: [formData.workExpDetails.oldStructure.companyType.value, companyTypeReq],
@@ -6120,7 +6120,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         const jobDescription = <UntypedFormArray>this.workExperienceForm.controls.experienceDetails['controls'].jobDescription;
 
         let row = this._formBuilder.group({
-          description : [itemRow.description]
+          description: [itemRow.description]
         });
 
         jobDescription.push(row);
@@ -6137,13 +6137,13 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         const companyDetails = <UntypedFormArray>this.workExperienceForm.controls.companyDetails;
 
         let row = this._formBuilder.group({
-          companyName : [itemRow.companyName],
-          designation : [itemRow.designation],
-          durationFrom : [moment(itemRow.durationFrom)],
-          durationTo : [itemRow.durationTo],
-          shiftTimeFrom : [itemRow.shiftTimeFrom],
-          shiftTimeTo : [itemRow.shiftTimeTo],
-          salary : [itemRow.salary]
+          companyName: [itemRow.companyName],
+          designation: [itemRow.designation],
+          durationFrom: [moment(itemRow.durationFrom)],
+          durationTo: [itemRow.durationTo],
+          shiftTimeFrom: [itemRow.shiftTimeFrom],
+          shiftTimeTo: [itemRow.shiftTimeTo],
+          salary: [itemRow.salary]
         });
 
         companyDetails.push(row);
@@ -6156,7 +6156,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   }
 
   workExperienceFormValueChanged() {
-   
+
     this.workExperienceForm.get('workExp').valueChanges.subscribe((mode: string) => {
       this.setWorkExpDetailsValidations();
     });
@@ -6177,13 +6177,13 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     const jobDescription = <UntypedFormArray>this.workExperienceForm.controls.experienceDetails.get('jobDescription');
     jobDescription.removeAt(i);
     let rowCnt = this.workExperienceForm.controls.experienceDetails.get('jobDescription')['controls'].length;
-    this.jobDescAddMaxReached = false;    
+    this.jobDescAddMaxReached = false;
     if (rowCnt == this.formData.workExpDetails.experienceDetails.addMoreInfo.maxUpto) {
       this.jobDescAddMaxReached = true;
     }
-  }  
+  }
 
-  setSoftwareKnowledgeValues(formData:any) {
+  setSoftwareKnowledgeValues(formData: any) {
 
     if (!globalFunctions.isEmpty(formData.softwareKnowledge)) {
       this.softwareInfoForm = this._formBuilder.group({
@@ -6209,7 +6209,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this.onlineLearningPreparednessRows()
       ])
     });
-  }  
+  }
 
   additionalCertificationFormControls() {
 
@@ -6220,21 +6220,21 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  setExtraCurriculumActivitiesValues(formData:any) {
+  setExtraCurriculumActivitiesValues(formData: any) {
 
     this.otherActivitiesList = formData.extraCurriculumActivities.otherActivitiesHeaders;
     if (!globalFunctions.isEmpty(formData.extraCurriculumActivities)) {
 
-      let participationLevelsReq:any;
+      let participationLevelsReq: any;
       if (formData.extraCurriculumActivities.participationLevels.display && formData.extraCurriculumActivities.participationLevels.required) {
         participationLevelsReq = Validators.required;
       }
 
-      let participationDetailsReq:any;
+      let participationDetailsReq: any;
       if (formData.extraCurriculumActivities.participationDetails.display && formData.extraCurriculumActivities.participationDetails.required) {
         participationDetailsReq = Validators.required;
       }
-      
+
       let extraCurriculularActivityReq: any;
       if (formData.extraCurriculumActivities.extraCurriculularActivityRequired && formData.extraCurriculumActivities.showExtraCurriculularActivity) {
         extraCurriculularActivityReq = Validators.required;
@@ -6304,17 +6304,17 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.extraCurriculumForm.disable();
   }
 
-  onlineLearningPreparednessRows() : UntypedFormGroup {
+  onlineLearningPreparednessRows(): UntypedFormGroup {
     return this._formBuilder.group({
-      label : [null],
-      checkCondition : [false],
-      condition : [false],
-      options : [null],
-      input : [null],
-      inputVal : [null],
-      chkBox : [null],
-      chkBoxErr : [false],
-      value : [null],
+      label: [null],
+      checkCondition: [false],
+      condition: [false],
+      options: [null],
+      input: [null],
+      inputVal: [null],
+      chkBox: [null],
+      chkBoxErr: [false],
+      value: [null],
     });
   }
 
@@ -6327,11 +6327,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       isCompulsory: [false],
       checkCondition: [false],
       condition: [false],
-      input :[false]
+      input: [false]
     });
   }
 
-  setOnlineLearningPreparednessRows(questionsList:any) {
+  setOnlineLearningPreparednessRows(questionsList: any) {
 
     if (!globalFunctions.isEmpty(questionsList)) {
 
@@ -6340,12 +6340,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       questionsList.forEach((itemRow) => {
 
-        let isRequired:any;
+        let isRequired: any;
         if (itemRow.required) {
           isRequired = Validators.required;
         }
 
-        let inputReq:any;
+        let inputReq: any;
         if (itemRow.input.required) {
           inputReq = Validators.required;
         }
@@ -6369,24 +6369,24 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  onChangeOnlineLearningPreparedness(listIndex:number):void {
+  onChangeOnlineLearningPreparedness(listIndex: number): void {
 
-    const control:any = <UntypedFormArray>this.extraCurriculumForm.controls.onlineLearningPreparedness['controls'][listIndex];
+    const control: any = <UntypedFormArray>this.extraCurriculumForm.controls.onlineLearningPreparedness['controls'][listIndex];
 
     const inputVal = control.controls.inputVal;
     inputVal.clearValidators();
     if (control.get('checkCondition').value) {
-     if ( (control.get('condition').value).conditionOn ==  control.get('value').value && 
-          (control.get('condition').value).show == "input" && (control.get('input').value).required ) {
+      if ((control.get('condition').value).conditionOn == control.get('value').value &&
+        (control.get('condition').value).show == "input" && (control.get('input').value).required) {
         inputVal.setValidators([Validators.required]);
-     }
+      }
     }
     inputVal.updateValueAndValidity();
   }
 
-  onSelectOnlineLearningChkbx(listIndex:number, chkbx: any, checked: boolean) {
+  onSelectOnlineLearningChkbx(listIndex: number, chkbx: any, checked: boolean) {
 
-    const control:any = <UntypedFormArray>this.extraCurriculumForm.controls.onlineLearningPreparedness['controls'][listIndex];
+    const control: any = <UntypedFormArray>this.extraCurriculumForm.controls.onlineLearningPreparedness['controls'][listIndex];
 
     (control.get('chkBox').value).options.forEach((details) => {
       if (details.value == chkbx.value) {
@@ -6396,22 +6396,56 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   }
 
   setExtraCertificateValues(formData: any, mode) {
-  if (!globalFunctions.isEmpty(formData.extraCertificate)) {
-    this.additionalCertificationForm = this._formBuilder.group({
-      additionalCertificationFields: this._formBuilder.array([])
-    });
+    if (!globalFunctions.isEmpty(formData.extraCertificate)) {
+      this.additionalCertificationForm = this._formBuilder.group({
+        additionalCertificationFields: this._formBuilder.array([])
+      });
 
-    const control = <UntypedFormArray>this.additionalCertificationForm.controls.additionalCertificationFields;
+      const control = <UntypedFormArray>this.additionalCertificationForm.controls.additionalCertificationFields;
 
-    formData.extraCertificate.forEach((itemRow1) => {
+      formData.extraCertificate.forEach((itemRow1) => {
+        const formGroupArray: FormGroup[] = [];
+
+        itemRow1.forEach((itemRow) => {
+          let isRequired: any;
+          if (itemRow.isCompulsory) {
+            isRequired = Validators.required;
+          }
+
+          const row = this._formBuilder.group({
+            fieldType: [itemRow.fieldType],
+            options: [itemRow.options],
+            fieldObj: [itemRow],
+            answer: [itemRow.answer, isRequired],
+            question: [itemRow.question],
+            isCompulsory: [itemRow.isCompulsory],
+            checkCondition: [itemRow.checkCondition],
+            condition: [itemRow.condition],
+            input: [itemRow.input],
+          });
+
+          formGroupArray.push(row);
+        });
+
+        // Add the form group array to the form array
+        control.push(this._formBuilder.group({
+          groupArray: this._formBuilder.array(formGroupArray)
+        }));
+      });
+      this.additionalCertificationForm.disable();
+    }
+  }
+
+  addNewRow1() {
+    if (!globalFunctions.isEmpty(this.formData.extraCertificate[0])) {
+      const control = <UntypedFormArray>this.additionalCertificationForm.controls.additionalCertificationFields;
+
       const formGroupArray: FormGroup[] = [];
-
-      itemRow1.forEach((itemRow) => {
+      this.formData.extraCertificate[0].forEach((itemRow) => {
         let isRequired: any;
         if (itemRow.isCompulsory) {
           isRequired = Validators.required;
         }
-
         const row = this._formBuilder.group({
           fieldType: [itemRow.fieldType],
           options: [itemRow.options],
@@ -6420,53 +6454,19 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           question: [itemRow.question],
           isCompulsory: [itemRow.isCompulsory],
           checkCondition: [itemRow.checkCondition],
-          condition:[itemRow.condition],
-          input :[itemRow.input],
+          condition: [itemRow.condition],
+          input: [itemRow.input],
+          inputVal: [itemRow.inputVal],
         });
-
         formGroupArray.push(row);
       });
-
-      // Add the form group array to the form array
       control.push(this._formBuilder.group({
         groupArray: this._formBuilder.array(formGroupArray)
       }));
-    });
-    this.additionalCertificationForm.disable();
+    }
   }
-}
 
- addNewRow1() {
-  if (!globalFunctions.isEmpty(this.formData.extraCertificate[0])) {
-    const control = <UntypedFormArray>this.additionalCertificationForm.controls.additionalCertificationFields;
-
-    const formGroupArray: FormGroup[] = [];
-    this.formData.extraCertificate[0].forEach((itemRow) => {
-      let isRequired: any;
-      if (itemRow.isCompulsory) {
-        isRequired = Validators.required;
-      }
-      const row = this._formBuilder.group({
-        fieldType: [itemRow.fieldType],
-        options: [itemRow.options],
-        fieldObj: [itemRow],
-        answer: [itemRow.answer, isRequired],
-        question: [itemRow.question],
-        isCompulsory: [itemRow.isCompulsory],
-        checkCondition: [itemRow.checkCondition],
-        condition:[itemRow.condition],
-        input :[itemRow.input],
-        inputVal: [itemRow.inputVal],
-      });
-      formGroupArray.push(row);
-    });
-    control.push(this._formBuilder.group({
-      groupArray: this._formBuilder.array(formGroupArray)
-    }));
-  }
-}
-
-  setQuestionnaireValues(formData:any) {
+  setQuestionnaireValues(formData: any) {
 
     if (!globalFunctions.isEmpty(formData.questionnaire)) {
 
@@ -6481,7 +6481,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       formData.questionnaire.forEach((itemRow) => {
 
-        let isRequired:any;
+        let isRequired: any;
         if (itemRow.isCompulsory) {
           isRequired = Validators.required;
         }
@@ -6497,8 +6497,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           questionId: [itemRow.questionId],
           isCompulsory: [itemRow.isCompulsory],
           checkCondition: [itemRow.checkCondition],
-          condition:[itemRow.condition],
-          input :[itemRow.input],
+          condition: [itemRow.condition],
+          input: [itemRow.input],
           inputVal: [itemRow.inputVal],
         });
 
@@ -6508,7 +6508,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.questionnaireForm.disable();
   }
 
-  setDocumentsValues(formData:any) {
+  setDocumentsValues(formData: any) {
 
     if (!globalFunctions.isEmpty(formData.documents)) {
 
@@ -6529,7 +6529,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
         const documents = <UntypedFormArray>this.documentsForm.controls.documents;
 
-        let isRequired:any;
+        let isRequired: any;
         if (itemRow.required) {
           isRequired = Validators.required;
         }
@@ -6569,10 +6569,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  setDeclarationInfoValues(formData:any) {
+  setDeclarationInfoValues(formData: any) {
 
     if (!globalFunctions.isEmpty(formData.declarationInfo)) {
-   
+
       if (!globalFunctions.isEmpty(formData.declarationInfo.uploadedPassportSizePhoto)) {
         this.isUploadedPassportSizePhoto = true;
         this.uploadedPassportSizePhoto = formData.declarationInfo.uploadedPassportSizePhoto;
@@ -6591,16 +6591,16 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this.hasParentSignatureImage = formData.declarationInfo.parentsSignatureImage.value;
       }
 
-      let declarationPlaceReq:any;
+      let declarationPlaceReq: any;
       if (formData.declarationInfo.declarationPlace.display && formData.declarationInfo.declarationPlace.required) {
         declarationPlaceReq = Validators.required;
       }
 
-      let studentDeclarationReq:any;
+      let studentDeclarationReq: any;
       if (formData.declarationInfo.showStudentDeclaration) {
         studentDeclarationReq = Validators.required;
       }
-      let parentsDeclarationReq:any;
+      let parentsDeclarationReq: any;
       if (formData.declarationInfo.showParentsDeclaration) {
         parentsDeclarationReq = Validators.required;
       }
@@ -6641,7 +6641,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     let catDocumentUploadObj = null;
     let catDocumentUrl = null;
     this.formData.categories.admissionCategories.groups.forEach((catGrp) => {
-      
+
       catGrp.list.forEach((details) => {
 
         details.isSelected = false;
@@ -6652,10 +6652,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           this.selectedCatName = details.admissionCategoryName;
 
           if (details.documentUpload.display) {
-            
+
             showCatDocumentUpload = true;
             catDocumentUploadObj = details.documentUpload;
-            
+
             if (details.documentUpload.required) {
               catDocReq = true;
             }
@@ -6680,18 +6680,18 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           }
         }
       });
-     });
-  
+    });
+
     otherCategory.updateValueAndValidity();
 
     this.categoryError = false;
-    this.categoryForm.controls['applyingCategories'].setValue(selectedCatId, {emitEvent: false});
-    this.categoryForm.controls['showCatDocumentUpload'].setValue(showCatDocumentUpload, {emitEvent: false});
-    this.categoryForm.controls['catDocError'].setValue(catDocError, {emitEvent: false});
-    this.categoryForm.controls['catDocReq'].setValue(catDocReq, {emitEvent: false});
-    this.categoryForm.controls['catHasUploadedDoc'].setValue(catHasUploadedDoc, {emitEvent: false});
-    this.categoryForm.controls['catDocumentUploadObj'].setValue(catDocumentUploadObj, {emitEvent: false});
-    this.categoryForm.controls['catDocumentUrl'].setValue(catDocumentUrl, {emitEvent: false});
+    this.categoryForm.controls['applyingCategories'].setValue(selectedCatId, { emitEvent: false });
+    this.categoryForm.controls['showCatDocumentUpload'].setValue(showCatDocumentUpload, { emitEvent: false });
+    this.categoryForm.controls['catDocError'].setValue(catDocError, { emitEvent: false });
+    this.categoryForm.controls['catDocReq'].setValue(catDocReq, { emitEvent: false });
+    this.categoryForm.controls['catHasUploadedDoc'].setValue(catHasUploadedDoc, { emitEvent: false });
+    this.categoryForm.controls['catDocumentUploadObj'].setValue(catDocumentUploadObj, { emitEvent: false });
+    this.categoryForm.controls['catDocumentUrl'].setValue(catDocumentUrl, { emitEvent: false });
   }
 
   onSelectSubCategory(optn: any, checked: boolean) {
@@ -6701,13 +6701,13 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.subCategoryReverseArray[optn.admissionSubCategoryId].isSelected = checked;
 
     if (this.subCategoryReverseArray[optn.admissionSubCategoryId].documentUpload.display) {
-  
+
       this.subCategoryReverseArray[optn.admissionSubCategoryId].showSubCatDocumentUpload = checked;
-      
+
       if (this.subCategoryReverseArray[optn.admissionSubCategoryId].documentUpload.required) {
         this.subCategoryReverseArray[optn.admissionSubCategoryId].subCatDocReq = checked;
       }
- 
+
       if (!globalFunctions.isEmpty(this.subCategoryReverseArray[optn.admissionSubCategoryId].documentUpload.documentUrl)) {
         this.subCategoryReverseArray[optn.admissionSubCategoryId].subCatHasUploadedDoc = checked;
       }
@@ -6771,14 +6771,14 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
 
     return {
-     err: err, 
-     minReqPreference: minReqPreference,
-     doublePreference: doublePreference,
-     firstPrefNotSeltd: firstPrefNotSeltd,
+      err: err,
+      minReqPreference: minReqPreference,
+      doublePreference: doublePreference,
+      firstPrefNotSeltd: firstPrefNotSeltd,
     }
   }
 
-  onCourseSelectionSubmit(stepper: MatStepper, tab:any):void {
+  onCourseSelectionSubmit(stepper: MatStepper, tab: any): void {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -6792,7 +6792,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  onCourseSubmit(stepper: MatStepper, tab:any):void {
+  onCourseSubmit(stepper: MatStepper, tab: any): void {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -6820,7 +6820,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
     if (values.showCatDocumentUpload && values.catDocReq && globalFunctions.isEmpty(values.catDocToUpload) && values.catHasUploadedDoc == false) {
 
-      this.categoryForm.controls['catDocError'].setValue(true, {emitEvent: false});
+      this.categoryForm.controls['catDocError'].setValue(true, { emitEvent: false });
       uploadErr = true;
     }
 
@@ -6831,7 +6831,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     if (this.showSubCategories) {
 
       this.subCategoryList.forEach((details) => {
-        
+
         if (details.isSelected && details.showSubCatDocumentUpload && details.subCatDocReq && globalFunctions.isEmpty(details.subCatDocToUpload) && details.subCatHasUploadedDoc == false) {
           details.subCatDocError = true;
           uploadErr = true;
@@ -6853,7 +6853,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  onCategoryFormSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onCategoryFormSubmit(values: any, stepper: MatStepper, tab: any): void {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -6863,12 +6863,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       }
     } else {
       this.validateCategoryForm();
-      this.validateAllFormFields(this.categoryForm);      
+      this.validateAllFormFields(this.categoryForm);
       this._snackBarMsgComponent.openSnackBar(allMsgs.REQUIRED_ALL_FIELDS, 'x', 'error-snackbar', 5000);
     }
   }
 
-  onPersonalInfoSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onPersonalInfoSubmit(values: any, stepper: MatStepper, tab: any): void {
     this._snackBarMsgComponent.closeSnackBar();
 
     let validate = this.validatePersonalInfoForm();
@@ -6891,7 +6891,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         if (itemRow.get('chkBox').value) {
 
           let optSelected = false;
-          itemRow.controls['chkBoxErr'].setValue(false, {emitEvent: false});
+          itemRow.controls['chkBoxErr'].setValue(false, { emitEvent: false });
 
           itemRow.get('options').value.forEach((optnRow, optIndx) => {
             if (optnRow.isSelected) {
@@ -6900,7 +6900,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           });
 
           if (!optSelected && itemRow.get('requiredRow').value) {
-            itemRow.controls['chkBoxErr'].setValue(true, {emitEvent: false});
+            itemRow.controls['chkBoxErr'].setValue(true, { emitEvent: false });
             error = true;
           }
         }
@@ -6913,7 +6913,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         if (itemRow.get('chkBox').value) {
 
           let optSelected = false;
-          itemRow.controls['chkBoxErr'].setValue(false, {emitEvent: false});
+          itemRow.controls['chkBoxErr'].setValue(false, { emitEvent: false });
 
           itemRow.get('options').value.forEach((optnRow, optIndx) => {
             if (optnRow.isSelected) {
@@ -6922,14 +6922,14 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           });
 
           if (!optSelected && itemRow.get('requiredRow').value) {
-            itemRow.controls['chkBoxErr'].setValue(true, {emitEvent: false});
+            itemRow.controls['chkBoxErr'].setValue(true, { emitEvent: false });
             error = true;
           }
 
         }
       })
     }
-   
+
     if (this.personalInfoForm.controls['disability']['controls'].disabilityDoc.value == true && this.personalInfoForm.controls['disability']['controls'].disabilityHasUploadedDoc.value == false) {
       error = true;
     }
@@ -6939,8 +6939,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
 
     return {
-     err: error
-    }    
+      err: error
+    }
   }
 
   onChangeDob(eve) {
@@ -6948,9 +6948,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     let calculatedAge = globalFunctions.calculate_age(globalFunctions.format(new Date(eve._d), 'input'));
 
     if (!globalFunctions.isEmpty(calculatedAge) && (calculatedAge.status == 1) && (!globalFunctions.isEmpty(calculatedAge.years))) {
-      this.personalInfoForm.controls['age'].setValue(calculatedAge.years, {emitEvent: false});
+      this.personalInfoForm.controls['age'].setValue(calculatedAge.years, { emitEvent: false });
     } else {
-      this.personalInfoForm.controls['age'].setValue('', {emitEvent: false});
+      this.personalInfoForm.controls['age'].setValue('', { emitEvent: false });
     }
   }
 
@@ -6959,13 +6959,13 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     let calculatedAge = globalFunctions.calculate_age(globalFunctions.format(new Date(eve._d), 'input'));
 
     if (!globalFunctions.isEmpty(calculatedAge) && (calculatedAge.status == 1) && (!globalFunctions.isEmpty(calculatedAge.years))) {
-      this.personalInfoForm.controls['aadharAge'].setValue(calculatedAge.years, {emitEvent: false});
+      this.personalInfoForm.controls['aadharAge'].setValue(calculatedAge.years, { emitEvent: false });
     } else {
-      this.personalInfoForm.controls['aadharAge'].setValue('', {emitEvent: false});
+      this.personalInfoForm.controls['aadharAge'].setValue('', { emitEvent: false });
     }
   }
 
-  onAddressInfoFormSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onAddressInfoFormSubmit(values: any, stepper: MatStepper, tab: any): void {
     if (this.formData.personalInfo.addressInfo.display == false) {
       this.personalInfoForm.controls.residentialAddress['controls'].address.setValue(this.addressInfoForm.controls.residentialAddress['controls'].address.value);
       this.personalInfoForm.controls.residentialAddress['controls'].city.setValue(this.addressInfoForm.controls.residentialAddress['controls'].city.value);
@@ -6989,13 +6989,13 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     if (this.addressInfoForm.valid) {
       this.goToNextStep(stepper, tab);
     } else {
-      this.validateAllFormFields(this.addressInfoForm);      
+      this.validateAllFormFields(this.addressInfoForm);
       this._snackBarMsgComponent.openSnackBar(allMsgs.REQUIRED_ALL_FIELDS, 'x', 'error-snackbar', 5000);
     }
   }
 
-  onGuardianInfoFormSubmit(values:any, stepper: MatStepper, tab:any):void {
-  
+  onGuardianInfoFormSubmit(values: any, stepper: MatStepper, tab: any): void {
+
     this._snackBarMsgComponent.closeSnackBar();
 
     if (this.guardianInfoForm.controls.membersInfo.get('guardian').value == 'no') {
@@ -7004,122 +7004,122 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       if (this.formData.guardianInfo.membersInfo.fatherDetails.fatherPhotoRequired && !this.isFatherBrowsedPassportSizePhoto && !this.isFatherUploadedPassportSizePhoto) {
         this.fatherPassportSizePhotoError = true;
       }
-  
+
       this.fatherSignaturePhotoError = false;
       if (this.formData.guardianInfo.membersInfo.fatherDetails.fatherSignatureRequired && !this.isFatherBrowsedSignaturePhoto && !this.isFatherUploadedSignaturePhoto) {
         this.fatherSignaturePhotoError = true;
       }
-  
+
       this.motherPassportSizePhotoError = false;
       if (this.formData.guardianInfo.membersInfo.motherDetails.motherPhotoRequired && !this.isMotherBrowsedPassportSizePhoto && !this.isMotherUploadedPassportSizePhoto) {
         this.motherPassportSizePhotoError = true;
       }
-  
+
       this.motherSignaturePhotoError = false;
       if (this.formData.guardianInfo.membersInfo.motherDetails.motherSignatureRequired && !this.isMotherBrowsedSignaturePhoto && !this.isMotherUploadedSignaturePhoto) {
         this.motherSignaturePhotoError = true;
       }
-  
+
       this.brotherPassportSizePhotoError = false;
       if (this.formData.guardianInfo.membersInfo.brotherDetails.brotherPhotoRequired && !this.isBrotherBrowsedPassportSizePhoto && !this.isBrotherUploadedPassportSizePhoto) {
         this.brotherPassportSizePhotoError = true;
       }
-  
+
       this.brotherSignaturePhotoError = false;
       if (this.formData.guardianInfo.membersInfo.brotherDetails.brotherSignatureRequired && !this.isBrotherBrowsedSignaturePhoto && !this.isBrotherUploadedSignaturePhoto) {
         this.brotherSignaturePhotoError = true;
       }
-  
+
       this.sisterPassportSizePhotoError = false;
       if (this.formData.guardianInfo.membersInfo.sisterDetails.sisterPhotoRequired && !this.isSisterBrowsedPassportSizePhoto && !this.isSisterUploadedPassportSizePhoto) {
         this.sisterPassportSizePhotoError = true;
       }
-  
+
       this.sisterSignaturePhotoError = false;
       if (this.formData.guardianInfo.membersInfo.sisterDetails.sisterSignatureRequired && !this.isSisterBrowsedSignaturePhoto && !this.isSisterUploadedSignaturePhoto) {
         this.sisterSignaturePhotoError = true;
       }
-  
+
       if (!this.motherPassportSizePhotoError && !this.motherSignaturePhotoError) {
-  
+
         this.uploadsInfoFormValues['motherPassportSizePhoto'] = '';
         if (this.isMotherBrowsedPassportSizePhoto) {
           this.uploadsInfoFormValues['motherPassportSizePhoto'] = this.motherPassportSizePhotoToUpload;
         }
-  
+
         this.uploadsInfoFormValues['motherSignaturePhoto'] = '';
         if (this.isMotherBrowsedSignaturePhoto) {
           this.uploadsInfoFormValues['motherSignaturePhoto'] = this.motherSignaturePhotoToUpload;
         }
       }
-      
+
       if (!this.fatherPassportSizePhotoError && !this.fatherSignaturePhotoError) {
-  
+
         this.uploadsInfoFormValues['fatherPassportSizePhoto'] = '';
         if (this.isFatherBrowsedPassportSizePhoto) {
           this.uploadsInfoFormValues['fatherPassportSizePhoto'] = this.fatherPassportSizePhotoToUpload;
         }
-  
+
         this.uploadsInfoFormValues['fatherSignaturePhoto'] = '';
         if (this.isFatherBrowsedSignaturePhoto) {
           this.uploadsInfoFormValues['fatherSignaturePhoto'] = this.fatherSignaturePhotoToUpload;
         }
       }
-  
+
       if (!this.brotherPassportSizePhotoError && !this.brotherSignaturePhotoError) {
-  
+
         this.uploadsInfoFormValues['brotherPassportSizePhoto'] = '';
         if (this.isBrotherBrowsedPassportSizePhoto) {
           this.uploadsInfoFormValues['brotherPassportSizePhoto'] = this.brotherPassportSizePhotoToUpload;
         }
-  
+
         this.uploadsInfoFormValues['brotherSignaturePhoto'] = '';
         if (this.isBrotherBrowsedSignaturePhoto) {
           this.uploadsInfoFormValues['brotherSignaturePhoto'] = this.brotherSignaturePhotoToUpload;
         }
       }
-  
+
       if (!this.sisterPassportSizePhotoError && !this.sisterSignaturePhotoError) {
-  
+
         this.uploadsInfoFormValues['sisterPassportSizePhoto'] = '';
         if (this.isSisterBrowsedPassportSizePhoto) {
           this.uploadsInfoFormValues['sisterPassportSizePhoto'] = this.sisterPassportSizePhotoToUpload;
         }
-  
+
         this.uploadsInfoFormValues['sisterSignaturePhoto'] = '';
         if (this.isSisterBrowsedSignaturePhoto) {
           this.uploadsInfoFormValues['sisterSignaturePhoto'] = this.sisterSignaturePhotoToUpload;
         }
-  
+
         this.guardianPassportSizePhotoError = false;
         this.guardianSignaturePhotoError = false;
-  
+
       }
     } else {
-  
+
       this.guardianPassportSizePhotoError = false;
       if (this.formData.guardianInfo.membersInfo.guardianDetails.guardianPhotoRequired && !this.isGuardianBrowsedPassportSizePhoto && !this.isGuardianUploadedPassportSizePhoto) {
         this.guardianPassportSizePhotoError = true;
       }
-  
+
       this.guardianSignaturePhotoError = false;
       if (this.formData.guardianInfo.membersInfo.guardianDetails.guardianSignatureRequired && !this.isGuardianBrowsedSignaturePhoto && !this.isGuardianUploadedSignaturePhoto) {
         this.guardianSignaturePhotoError = true;
       }
-  
+
       if (!this.guardianPassportSizePhotoError && !this.guardianSignaturePhotoError) {
-  
+
         this.uploadsInfoFormValues['guardianPassportSizePhoto'] = '';
         if (this.isGuardianBrowsedPassportSizePhoto) {
           this.uploadsInfoFormValues['guardianPassportSizePhoto'] = this.guardianPassportSizePhotoToUpload;
         }
-  
+
         this.uploadsInfoFormValues['guardianSignaturePhoto'] = '';
         if (this.isGuardianBrowsedSignaturePhoto) {
           this.uploadsInfoFormValues['guardianSignaturePhoto'] = this.guardianSignaturePhotoToUpload;
         }
       }
-  
+
       this.fatherPassportSizePhotoError = false;
       this.fatherSignaturePhotoError = false;
       this.motherPassportSizePhotoError = false;
@@ -7128,11 +7128,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       this.brotherSignaturePhotoError = false;
       this.sisterPassportSizePhotoError = false;
       this.sisterSignaturePhotoError = false;
-  
+
     }
 
     this.passportSizePhotoError = false;
-    
+
     if (this.formData.uploadsInfo.passportSizePhotoRequired && !this.isBrowsedPassportSizePhoto && !this.isUploadedPassportSizePhoto) {
       this.passportSizePhotoError = true;
     }
@@ -7155,11 +7155,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       }
     }
 
-  
+
     if (this.guardianInfoForm.valid && !this.motherPassportSizePhotoError && !this.motherSignaturePhotoError && !this.fatherPassportSizePhotoError && !this.fatherSignaturePhotoError && !this.sisterPassportSizePhotoError && !this.sisterSignaturePhotoError && !this.brotherPassportSizePhotoError && !this.brotherSignaturePhotoError && !this.guardianPassportSizePhotoError && !this.guardianSignaturePhotoError) {
       if (this.validateGuardianInfoForm()) {
         this.goToNextStep(stepper, tab);
-      }      
+      }
     } else {
       this.validateAllFormFields(this.guardianInfoForm);
       this._snackBarMsgComponent.openSnackBar(allMsgs.REQUIRED_ALL_FIELDS, 'x', 'error-snackbar', 5000);
@@ -7186,7 +7186,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   validateEduForm() {
     let wrongMarksErr = false;
     let stopFormSubmitErr = false;
-    let uploadErr = false;    
+    let uploadErr = false;
     let alertMsg = '';
 
     if (this.showUnderGraduate) {
@@ -7198,7 +7198,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         }
 
         if (itemRow.showCollegeTransferQuestion) {
-          if (itemRow.collegeTransferQuestionObj.stopFormSubmit && (itemRow.collegeTransferQuestionObj.stopFormSubmitIf == itemRow.collegeTransferQuestionAns) ) {
+          if (itemRow.collegeTransferQuestionObj.stopFormSubmit && (itemRow.collegeTransferQuestionObj.stopFormSubmitIf == itemRow.collegeTransferQuestionAns)) {
             stopFormSubmitErr = true;
             alertMsg = itemRow.collegeTransferQuestionObj.alertMsg;
           }
@@ -7206,9 +7206,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
         if (itemRow.showDocumentUpload && itemRow.docReq && globalFunctions.isEmpty(itemRow.docToUpload) && itemRow.hasUploadedDoc == false) {
 
-          const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls']['underGraduate'].controls.list.controls[index];
+          const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls']['underGraduate'].controls.list.controls[index];
 
-          control.controls.docError.setValue(true, {emitEvent: false});
+          control.controls.docError.setValue(true, { emitEvent: false });
           uploadErr = true;
         }
       });
@@ -7224,9 +7224,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
         if (itemRow.showDocumentUpload && itemRow.docReq && globalFunctions.isEmpty(itemRow.docToUpload) && itemRow.hasUploadedDoc == false) {
 
-          const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls']['graduate'].controls.list.controls[index];
+          const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls']['graduate'].controls.list.controls[index];
 
-          control.controls.docError.setValue(true, {emitEvent: false});
+          control.controls.docError.setValue(true, { emitEvent: false });
           uploadErr = true;
         }
       });
@@ -7242,11 +7242,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
         if (itemRow.showDocumentUpload && itemRow.docReq && globalFunctions.isEmpty(itemRow.docToUpload) && itemRow.hasUploadedDoc == false) {
 
-          const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls']['postGraduate'].controls.list.controls[index];
+          const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls']['postGraduate'].controls.list.controls[index];
 
-          control.controls.docError.setValue(true, {emitEvent: false});
+          control.controls.docError.setValue(true, { emitEvent: false });
           uploadErr = true;
-        }        
+        }
       });
     }
 
@@ -7282,19 +7282,19 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  onEducationInfoFormSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onEducationInfoFormSubmit(values: any, stepper: MatStepper, tab: any): void {
     this._snackBarMsgComponent.closeSnackBar();
     if (this.educationInfoForm.valid) {
       if (this.validateEduForm()) {
         this.goToNextStep(stepper, tab);
       }
     } else {
-      this.validateAllFormFields(this.educationInfoForm);      
+      this.validateAllFormFields(this.educationInfoForm);
       this._snackBarMsgComponent.openSnackBar(allMsgs.REQUIRED_ALL_FIELDS, 'x', 'error-snackbar', 5000);
     }
   }
 
-  onAdditionalQualificationFormSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onAdditionalQualificationFormSubmit(values: any, stepper: MatStepper, tab: any): void {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -7318,7 +7318,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  onExtraCurriculumFormSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onExtraCurriculumFormSubmit(values: any, stepper: MatStepper, tab: any): void {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -7332,7 +7332,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       }
 
     } else {
-      this.validateAllFormFields(this.extraCurriculumForm);      
+      this.validateAllFormFields(this.extraCurriculumForm);
       this._snackBarMsgComponent.openSnackBar(allMsgs.REQUIRED_ALL_FIELDS, 'x', 'error-snackbar', 5000);
     }
   }
@@ -7341,16 +7341,16 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
     let error = false;
 
-    const controls:any = <UntypedFormArray>this.extraCurriculumForm.controls.onlineLearningPreparedness['controls'];
+    const controls: any = <UntypedFormArray>this.extraCurriculumForm.controls.onlineLearningPreparedness['controls'];
 
     controls.forEach((details) => {
 
       details.controls.chkBoxErr.setValue(false);
       let chkBoxChecked = false;
       if (details.get('checkCondition').value) {
-       if ( (details.get('condition').value).conditionOn ==  details.get('value').value && 
-            (details.get('condition').value).show == "chkBox" && (details.get('chkBox').value).required ) {
-      
+        if ((details.get('condition').value).conditionOn == details.get('value').value &&
+          (details.get('condition').value).show == "chkBox" && (details.get('chkBox').value).required) {
+
           (details.get('chkBox').value).options.forEach((details) => {
             if (details.isSelected) {
               chkBoxChecked = true;
@@ -7366,23 +7366,23 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
 
     return {
-     err: error
+      err: error
     }
-  }  
+  }
 
-  onQuestionnaireFormSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onQuestionnaireFormSubmit(values: any, stepper: MatStepper, tab: any): void {
 
     this._snackBarMsgComponent.closeSnackBar();
 
     if (this.questionnaireForm.valid) {
       this.goToNextStep(stepper, tab);
     } else {
-      this.validateAllFormFields(this.questionnaireForm);      
+      this.validateAllFormFields(this.questionnaireForm);
       this._snackBarMsgComponent.openSnackBar(allMsgs.REQUIRED_ALL_FIELDS, 'x', 'error-snackbar', 5000);
     }
   }
 
-  onSoftwareInfoFormSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onSoftwareInfoFormSubmit(values: any, stepper: MatStepper, tab: any): void {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -7394,35 +7394,35 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  onWorkExperienceSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onWorkExperienceSubmit(values: any, stepper: MatStepper, tab: any): void {
 
     this._snackBarMsgComponent.closeSnackBar();
 
     if (this.workExperienceForm.valid) {
       this.goToNextStep(stepper, tab);
     } else {
-      this.validateAllFormFields(this.workExperienceForm);      
+      this.validateAllFormFields(this.workExperienceForm);
       this._snackBarMsgComponent.openSnackBar(allMsgs.REQUIRED_ALL_FIELDS, 'x', 'error-snackbar', 5000);
     }
   }
 
-  onBankInfoFormSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onBankInfoFormSubmit(values: any, stepper: MatStepper, tab: any): void {
 
     this._snackBarMsgComponent.closeSnackBar();
 
     if (this.bankInfoForm.valid) {
       this.goToNextStep(stepper, tab);
     } else {
-      this.validateAllFormFields(this.bankInfoForm);      
+      this.validateAllFormFields(this.bankInfoForm);
       this._snackBarMsgComponent.openSnackBar(allMsgs.REQUIRED_ALL_FIELDS, 'x', 'error-snackbar', 5000);
     }
   }
 
-  onDocumentsFormSubmit(values:any, stepper: MatStepper, tab:any):void {
+  onDocumentsFormSubmit(values: any, stepper: MatStepper, tab: any): void {
 
     let err = false;
     this.documentsForm.controls.documents.value.forEach((itemRow, index) => {
-      if ( itemRow.required && globalFunctions.isEmpty(itemRow.docToUpload) && globalFunctions.isEmpty(itemRow.uploadedFile)) {
+      if (itemRow.required && globalFunctions.isEmpty(itemRow.docToUpload) && globalFunctions.isEmpty(itemRow.uploadedFile)) {
         const documents = (<UntypedFormArray>this.documentsForm.controls['documents']).at(index);
         documents['controls'].docError.setValue(true);
         err = true;
@@ -7436,10 +7436,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  onDeclarationFormSubmit(values:any, stepper: MatStepper):void {
+  onDeclarationFormSubmit(values: any, stepper: MatStepper): void {
     this.saveForm('finalSave');
     this.dialogRef.close();
-   // this.openConfirmDialog();
+    // this.openConfirmDialog();
 
   }
 
@@ -7461,9 +7461,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this.saveForm('finalSave');
       }
     });
-  }  
+  }
 
-  readUrl(event:any, mode='') {
+  readUrl(event: any, mode = '') {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -7524,7 +7524,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  docBunchUrl(event:any, docIndex=0, bunchIndex=0) {
+  docBunchUrl(event: any, docIndex = 0, bunchIndex = 0) {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -7532,7 +7532,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       let file = event.target.files[0];
       let ext = file.name.toUpperCase().split('.').pop() || file.name;
-      
+
       const documents = this.documentsBunch[docIndex][bunchIndex];
 
       if (!globalFunctions.isValidFileExtension(file, this.docFileExt)) {
@@ -7578,7 +7578,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       docId: documents['controls'].docId.value,
       docValue: data
     }
-    
+
     if (ext == 'PDF') {
       documents['controls'].hasPhoto.setValue(this.defaultPdfImage);
       this.uploadPdf(postData);
@@ -7588,7 +7588,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  uploadPdf(values:any) {
+  uploadPdf(values: any) {
 
     this.allEventEmitters.showLoader.emit(true);
     this._admissionService.uploadPdf(values.docValue, values.docId).subscribe(data => {
@@ -7597,7 +7597,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       if (data.status != undefined) {
         if (data.status == 1) {
-          this.uploadedFileNames.push(data.dataJson.fileName); 
+          this.uploadedFileNames.push(data.dataJson.fileName);
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
         } else if (data.status == 0) {
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
@@ -7606,12 +7606,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
       }
     }, err => {
-      this.allEventEmitters.showLoader.emit(false);        
+      this.allEventEmitters.showLoader.emit(false);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
   }
 
-  uploadDocImage(values:any) {
+  uploadDocImage(values: any) {
 
     this.allEventEmitters.showLoader.emit(true);
     this._admissionService.uploadDocImage(values).subscribe(data => {
@@ -7620,7 +7620,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       if (data.status != undefined) {
         if (data.status == 1) {
-          this.uploadedFileNames.push(data.dataJson.fileName); 
+          this.uploadedFileNames.push(data.dataJson.fileName);
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
         } else if (data.status == 0) {
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
@@ -7629,12 +7629,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
       }
     }, err => {
-      this.allEventEmitters.showLoader.emit(false);        
+      this.allEventEmitters.showLoader.emit(false);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
   }
 
-  openImageCropperDialog(imageEvent, postParam:any) {
+  openImageCropperDialog(imageEvent, postParam: any) {
 
     let dialogRef = this.dialog.open(ImageCropperDialogComponent, {
       height: '550px',
@@ -7677,15 +7677,15 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       modalTitle = 'Crop Document';
     } else if (postParam.mode == 'subCatDocuments') {
       modalTitle = 'Crop Document';
-    }else if (postParam.mode == 'DisabilityDocuments') {
+    } else if (postParam.mode == 'DisabilityDocuments') {
       modalTitle = 'Crop Document';
     }
 
-    dialogRef.componentInstance.mode       = postParam.mode;
+    dialogRef.componentInstance.mode = postParam.mode;
     dialogRef.componentInstance.modalTitle = modalTitle;
     dialogRef.componentInstance.imageEvent = imageEvent;
 
-    const sub = dialogRef.componentInstance.onOk.subscribe((data:any) => {
+    const sub = dialogRef.componentInstance.onOk.subscribe((data: any) => {
 
       if (postParam.mode == 'passportSizePhoto') {
 
@@ -7702,7 +7702,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this.signatureImageToUpload = data.base64;
         this.hasSignatureImage = data.base64;
         this.isBrowsedSignatureImage = true;
-      
+
       } else if (postParam.mode == 'parentSignatureImage') {
 
         this.parentSignatureImageError = false;
@@ -7713,120 +7713,120 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       } else if (postParam.mode == 'fatherPassportSizePhoto') {
 
         this.fatherPassportSizePhotoError = false;
-        
-        this.fatherPassportSizePhotoToUpload = data.base64;       
+
+        this.fatherPassportSizePhotoToUpload = data.base64;
         this.hasFatherPassportSizePhoto = data.base64;
         this.isFatherBrowsedPassportSizePhoto = true;
 
       } else if (postParam.mode == 'fatherSignaturePhoto') {
 
         this.fatherSignaturePhotoError = false;
-        
-        this.fatherSignaturePhotoToUpload = data.base64;       
+
+        this.fatherSignaturePhotoToUpload = data.base64;
         this.hasFatherSignaturePhoto = data.base64;
         this.isFatherBrowsedSignaturePhoto = true;
 
       } else if (postParam.mode == 'motherPassportSizePhoto') {
 
         this.motherPassportSizePhotoError = false;
-        
-        this.motherPassportSizePhotoToUpload = data.base64;       
+
+        this.motherPassportSizePhotoToUpload = data.base64;
         this.hasMotherPassportSizePhoto = data.base64;
         this.isMotherBrowsedPassportSizePhoto = true;
 
       } else if (postParam.mode == 'motherSignaturePhoto') {
 
         this.motherSignaturePhotoError = false;
-        
-        this.motherSignaturePhotoToUpload = data.base64;       
+
+        this.motherSignaturePhotoToUpload = data.base64;
         this.hasMotherSignaturePhoto = data.base64;
         this.isMotherBrowsedSignaturePhoto = true;
 
       } else if (postParam.mode == 'brotherPassportSizePhoto') {
 
         this.brotherPassportSizePhotoError = false;
-        
-        this.brotherPassportSizePhotoToUpload = data.base64;       
+
+        this.brotherPassportSizePhotoToUpload = data.base64;
         this.hasBrotherPassportSizePhoto = data.base64;
         this.isBrotherBrowsedPassportSizePhoto = true;
 
       } else if (postParam.mode == 'brotherSignaturePhoto') {
 
         this.brotherSignaturePhotoError = false;
-        
-        this.brotherSignaturePhotoToUpload = data.base64;       
+
+        this.brotherSignaturePhotoToUpload = data.base64;
         this.hasBrotherSignaturePhoto = data.base64;
         this.isBrotherBrowsedSignaturePhoto = true;
 
       } else if (postParam.mode == 'sisterPassportSizePhoto') {
 
         this.sisterPassportSizePhotoError = false;
-        
-        this.sisterPassportSizePhotoToUpload = data.base64;       
+
+        this.sisterPassportSizePhotoToUpload = data.base64;
         this.hasSisterPassportSizePhoto = data.base64;
         this.isSisterBrowsedPassportSizePhoto = true;
 
       } else if (postParam.mode == 'sisterSignaturePhoto') {
 
         this.sisterSignaturePhotoError = false;
-        
-        this.sisterSignaturePhotoToUpload = data.base64;       
+
+        this.sisterSignaturePhotoToUpload = data.base64;
         this.hasSisterSignaturePhoto = data.base64;
         this.isSisterBrowsedSignaturePhoto = true;
 
       } else if (postParam.mode == 'guardianPassportSizePhoto') {
 
         this.guardianPassportSizePhotoError = false;
-        
-        this.guardianPassportSizePhotoToUpload = data.base64;       
+
+        this.guardianPassportSizePhotoToUpload = data.base64;
         this.hasGuardianPassportSizePhoto = data.base64;
         this.isGuardianBrowsedPassportSizePhoto = true;
 
       } else if (postParam.mode == 'guardianSignaturePhoto') {
 
         this.guardianSignaturePhotoError = false;
-        
-        this.guardianSignaturePhotoToUpload = data.base64;       
+
+        this.guardianSignaturePhotoToUpload = data.base64;
         this.hasGuardianSignaturePhoto = data.base64;
         this.isGuardianBrowsedSignaturePhoto = true;
-      
+
       } else if (postParam.mode == 'documents') {
-        
+
         this.browsedDocData(data.base64, postParam.docIndex, postParam.bunchIndex);
 
       } else if (postParam.mode == 'eduDocuments') {
-        
+
         let file = imageEvent.target.files[0];
 
         let _this = this;
-        this.urltoFile(data.base64, file.name, 'image/png').then(function(file) {
+        this.urltoFile(data.base64, file.name, 'image/png').then(function (file) {
           _this.browsedEduDocData(file, postParam.eduMode, postParam.docIndex);
         });
 
       } else if (postParam.mode == 'catDocuments') {
-        
+
         let file = imageEvent.target.files[0];
 
         let _this = this;
-        this.urltoFile(data.base64, file.name, 'image/png').then(function(file) {
-          _this.browsedCatDocData(file);          
+        this.urltoFile(data.base64, file.name, 'image/png').then(function (file) {
+          _this.browsedCatDocData(file);
         });
 
       } else if (postParam.mode == 'subCatDocuments') {
-        
+
         let file = imageEvent.target.files[0];
 
         let _this = this;
-        this.urltoFile(data.base64, file.name, 'image/png').then(function(file) {
-          _this.browsedSubCatDocData(file, postParam.optn);          
+        this.urltoFile(data.base64, file.name, 'image/png').then(function (file) {
+          _this.browsedSubCatDocData(file, postParam.optn);
         });
-      }else if (postParam.mode == 'DisabilityDocuments') {
-        
+      } else if (postParam.mode == 'DisabilityDocuments') {
+
         let file = imageEvent.target.files[0];
-        
+
         let _this = this;
-        this.urltoFile(data.base64, file.name, 'image/png').then(function(file) {
-          _this.browsedDisabilityDocData(file);          
+        this.urltoFile(data.base64, file.name, 'image/png').then(function (file) {
+          _this.browsedDisabilityDocData(file);
         });
       }
 
@@ -7837,15 +7837,15 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  urltoFile(url, filename, mimeType){
-  
-    return (fetch(url)
-      .then(function(res){return res.arrayBuffer();})
-      .then(function(buf){return new File([buf], filename, {type:mimeType});})
-    );
-  }  
+  urltoFile(url, filename, mimeType) {
 
-  removeImage(mode='') {
+    return (fetch(url)
+      .then(function (res) { return res.arrayBuffer(); })
+      .then(function (buf) { return new File([buf], filename, { type: mimeType }); })
+    );
+  }
+
+  removeImage(mode = '') {
     if (mode == 'passportSizePhoto') {
       this.hasPassportSizePhoto = null;
       this.passportSizePhotoToUpload = null;
@@ -7927,58 +7927,58 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  resetImage(mode='') {
+  resetImage(mode = '') {
     if (mode == 'passportSizePhoto') {
       this.isBrowsedPassportSizePhoto = false;
-      this.passportSizePhotoToUpload = null;      
+      this.passportSizePhotoToUpload = null;
       this.hasPassportSizePhoto = this.uploadedPassportSizePhoto;
     } else if (mode == 'signatureImage') {
       this.isBrowsedSignatureImage = false;
-      this.signatureImageToUpload = null;      
+      this.signatureImageToUpload = null;
       this.hasSignatureImage = this.uploadedSignatureImage;
     } else if (mode == 'parentSignatureImage') {
       this.isBrowsedParentSignatureImage = false;
-      this.parentSignatureImageToUpload = null;      
+      this.parentSignatureImageToUpload = null;
       this.hasParentSignatureImage = this.uploadedSignatureImage;
     } else if (mode == 'fatherPassportSizePhoto') {
       this.isFatherBrowsedPassportSizePhoto = false;
-      this.fatherPassportSizePhotoToUpload = null;      
+      this.fatherPassportSizePhotoToUpload = null;
       this.hasFatherPassportSizePhoto = this.uploadedFatherPassportSizePhoto;
     } else if (mode == 'fatherSignaturePhoto') {
       this.isFatherBrowsedSignaturePhoto = false;
-      this.fatherSignaturePhotoToUpload = null;      
+      this.fatherSignaturePhotoToUpload = null;
       this.hasFatherSignaturePhoto = this.uploadedFatherSignaturePhoto;
     } else if (mode == 'motherPassportSizePhoto') {
       this.isMotherBrowsedPassportSizePhoto = false;
-      this.motherPassportSizePhotoToUpload = null;      
+      this.motherPassportSizePhotoToUpload = null;
       this.hasMotherPassportSizePhoto = this.uploadedMotherPassportSizePhoto;
     } else if (mode == 'motherSignaturePhoto') {
       this.isMotherBrowsedSignaturePhoto = false;
-      this.motherSignaturePhotoToUpload = null;      
+      this.motherSignaturePhotoToUpload = null;
       this.hasMotherSignaturePhoto = this.uploadedMotherSignaturePhoto;
     } else if (mode == 'brotherPassportSizePhoto') {
       this.isBrotherBrowsedPassportSizePhoto = false;
-      this.brotherPassportSizePhotoToUpload = null;      
+      this.brotherPassportSizePhotoToUpload = null;
       this.hasMotherPassportSizePhoto = this.uploadedMotherPassportSizePhoto;
     } else if (mode == 'brotherSignaturePhoto') {
       this.isBrotherBrowsedSignaturePhoto = false;
-      this.brotherSignaturePhotoToUpload = null;      
+      this.brotherSignaturePhotoToUpload = null;
       this.hasMotherSignaturePhoto = this.uploadedMotherSignaturePhoto;
     } else if (mode == 'sisterPassportSizePhoto') {
       this.isSisterBrowsedPassportSizePhoto = false;
-      this.sisterPassportSizePhotoToUpload = null;      
+      this.sisterPassportSizePhotoToUpload = null;
       this.hasSisterPassportSizePhoto = this.uploadedSisterPassportSizePhoto;
     } else if (mode == 'sisterSignaturePhoto') {
       this.isSisterBrowsedSignaturePhoto = false;
-      this.sisterSignaturePhotoToUpload = null;      
+      this.sisterSignaturePhotoToUpload = null;
       this.hasSisterSignaturePhoto = this.uploadedSisterSignaturePhoto;
     } else if (mode == 'guardianPassportSizePhoto') {
       this.isGuardianBrowsedPassportSizePhoto = false;
-      this.guardianPassportSizePhotoToUpload = null;      
+      this.guardianPassportSizePhotoToUpload = null;
       this.hasGuardianPassportSizePhoto = this.uploadedGuardianPassportSizePhoto;
     } else if (mode == 'guardianSignaturePhoto') {
       this.isGuardianBrowsedSignaturePhoto = false;
-      this.guardianSignaturePhotoToUpload = null;      
+      this.guardianSignaturePhotoToUpload = null;
       this.hasGuardianSignaturePhoto = this.uploadedGuardianSignaturePhoto;
     }
   }
@@ -7991,24 +7991,24 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
         let residentialAddress = this.personalInfoForm.getRawValue().residentialAddress;
         this.personalInfoForm.controls.nativeAddress.patchValue({
-          address: residentialAddress.address, 
-          state: residentialAddress.state, 
-          city: residentialAddress.city, 
-          pincode: residentialAddress.pincode, 
+          address: residentialAddress.address,
+          state: residentialAddress.state,
+          city: residentialAddress.city,
+          pincode: residentialAddress.pincode,
         });
 
       } else {
-  
+
         let residentialAddress = this.addressInfoForm.getRawValue().residentialAddress;
         this.addressInfoForm.controls.nativeAddress.patchValue({
-          address: residentialAddress.address, 
-          street: residentialAddress.street, 
-          area: residentialAddress.area, 
-          state: residentialAddress.state, 
-          city: residentialAddress.city, 
-          district: residentialAddress.district,           
-          pincode: residentialAddress.pincode, 
-          nearByRailwayStation: residentialAddress.nearByRailwayStation, 
+          address: residentialAddress.address,
+          street: residentialAddress.street,
+          area: residentialAddress.area,
+          state: residentialAddress.state,
+          city: residentialAddress.city,
+          district: residentialAddress.district,
+          pincode: residentialAddress.pincode,
+          nearByRailwayStation: residentialAddress.nearByRailwayStation,
         });
       }
     }
@@ -8042,17 +8042,17 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   }
 
   onChangeCgpa(mode = '', index) {
-    
+
     const control = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.at(index);
-    
+
     if (!globalFunctions.isEmpty(control.get('cgpiObtained').value) && !globalFunctions.isEmpty(control.get('cgpiOutof').value)) {
 
       let perc = ((control.get('cgpiObtained').value / control.get('cgpiOutof').value) * 10).toFixed(2);
       control.controls['cgpi'].setValue(perc);
     }
-  }  
+  }
 
-  onChangeOtherActivities(otherActivity:string, checked: boolean) {
+  onChangeOtherActivities(otherActivity: string, checked: boolean) {
     this.otherActivitiesList.forEach((otherActivityList) => {
       if (otherActivityList.name.toString().toLowerCase() == otherActivity.toString().toLowerCase()) {
         otherActivityList.isSelected = checked;
@@ -8213,8 +8213,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         monhts = monhts + calcMonhts;
       }
     });
-    
-    this.workExperienceForm.controls.expAfterGraduation.setValue(monhts, {emitEvent: false});
+
+    this.workExperienceForm.controls.expAfterGraduation.setValue(monhts, { emitEvent: false });
   }
 
   addNewRow(): void {
@@ -8260,13 +8260,13 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       companyDetails.controls.forEach((itemRow) => {
         const companyName = itemRow.get('companyName');
         companyName.clearValidators();
-        companyName.updateValueAndValidity();        
+        companyName.updateValueAndValidity();
         const designation = itemRow.get('designation');
         designation.clearValidators();
-        designation.updateValueAndValidity();        
+        designation.updateValueAndValidity();
         const durationFrom = itemRow.get('durationFrom');
         durationFrom.clearValidators();
-        durationFrom.updateValueAndValidity();        
+        durationFrom.updateValueAndValidity();
         const durationTo = itemRow.get('durationTo');
         durationTo.clearValidators();
         durationTo.updateValueAndValidity();
@@ -8275,10 +8275,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         shiftTimeFrom.updateValueAndValidity();
         const shiftTimeTo = itemRow.get('shiftTimeTo');
         shiftTimeTo.clearValidators();
-        shiftTimeTo.updateValueAndValidity();        
+        shiftTimeTo.updateValueAndValidity();
         const salary = itemRow.get('salary');
         salary.clearValidators();
-        salary.updateValueAndValidity();        
+        salary.updateValueAndValidity();
       });
     }
 
@@ -8293,7 +8293,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.coursesBunch[bunchId][courseIndex]['sequence'] = preference;
   }
 
-  getFromPincode(event:any, mode, form = ''):void {
+  getFromPincode(event: any, mode, form = ''): void {
 
     let pincode = event.target.value;
     if (pincode.length == 6) {
@@ -8310,68 +8310,68 @@ export class ApplicationPreviewDialogComponent implements OnInit {
             if (form == 'personalInfo') {
 
               if (mode == 'residentialAddress') {
-                let residentialAddress = <UntypedFormGroup> this.personalInfoForm.controls.residentialAddress;
-                residentialAddress.controls.state.setValue(data.dataJson.stateName, {emitEvent: false});
-                residentialAddress.controls.state.disable();              
-                residentialAddress.controls.city.setValue(data.dataJson.cityName, {emitEvent: false});
+                let residentialAddress = <UntypedFormGroup>this.personalInfoForm.controls.residentialAddress;
+                residentialAddress.controls.state.setValue(data.dataJson.stateName, { emitEvent: false });
+                residentialAddress.controls.state.disable();
+                residentialAddress.controls.city.setValue(data.dataJson.cityName, { emitEvent: false });
                 residentialAddress.controls.city.disable();
               } else if (mode == 'nativeAddress') {
-                let nativeAddress = <UntypedFormGroup> this.personalInfoForm.controls.nativeAddress;
-                nativeAddress.controls.state.setValue(data.dataJson.stateName, {emitEvent: false});
+                let nativeAddress = <UntypedFormGroup>this.personalInfoForm.controls.nativeAddress;
+                nativeAddress.controls.state.setValue(data.dataJson.stateName, { emitEvent: false });
                 nativeAddress.controls.state.disable();
-                nativeAddress.controls.city.setValue(data.dataJson.cityName, {emitEvent: false});
+                nativeAddress.controls.city.setValue(data.dataJson.cityName, { emitEvent: false });
                 nativeAddress.controls.city.disable();
               }
 
             } else {
 
               if (mode == 'residentialAddress') {
-                let residentialAddress = <UntypedFormGroup> this.addressInfoForm.controls.residentialAddress;
-                residentialAddress.controls.state.setValue(data.dataJson.stateName, {emitEvent: false});
-                residentialAddress.controls.state.disable();              
-                residentialAddress.controls.city.setValue(data.dataJson.cityName, {emitEvent: false});
+                let residentialAddress = <UntypedFormGroup>this.addressInfoForm.controls.residentialAddress;
+                residentialAddress.controls.state.setValue(data.dataJson.stateName, { emitEvent: false });
+                residentialAddress.controls.state.disable();
+                residentialAddress.controls.city.setValue(data.dataJson.cityName, { emitEvent: false });
                 residentialAddress.controls.city.disable();
               } else if (mode == 'nativeAddress') {
-                let nativeAddress = <UntypedFormGroup> this.addressInfoForm.controls.nativeAddress;
-                nativeAddress.controls.state.setValue(data.dataJson.stateName, {emitEvent: false});
+                let nativeAddress = <UntypedFormGroup>this.addressInfoForm.controls.nativeAddress;
+                nativeAddress.controls.state.setValue(data.dataJson.stateName, { emitEvent: false });
                 nativeAddress.controls.state.disable();
-                nativeAddress.controls.city.setValue(data.dataJson.cityName, {emitEvent: false});
+                nativeAddress.controls.city.setValue(data.dataJson.cityName, { emitEvent: false });
                 nativeAddress.controls.city.disable();
               } else if (mode == 'aadharAddress') {
-                let aadharAddress = <UntypedFormGroup> this.addressInfoForm.controls.aadharAddress;
-                aadharAddress.controls.state.setValue(data.dataJson.stateName, {emitEvent: false});
+                let aadharAddress = <UntypedFormGroup>this.addressInfoForm.controls.aadharAddress;
+                aadharAddress.controls.state.setValue(data.dataJson.stateName, { emitEvent: false });
                 aadharAddress.controls.state.disable();
-                aadharAddress.controls.city.setValue(data.dataJson.cityName, {emitEvent: false});
+                aadharAddress.controls.city.setValue(data.dataJson.cityName, { emitEvent: false });
                 aadharAddress.controls.city.disable();
               } else if (mode == 'fatherDetails') {
-                let fatherDetails = <UntypedFormGroup> this.guardianInfoForm.controls.membersInfo['controls'].fatherDetails;
-                fatherDetails.controls.officeState.setValue(data.dataJson.stateName, {emitEvent: false});
+                let fatherDetails = <UntypedFormGroup>this.guardianInfoForm.controls.membersInfo['controls'].fatherDetails;
+                fatherDetails.controls.officeState.setValue(data.dataJson.stateName, { emitEvent: false });
                 fatherDetails.controls.officeState.disable();
-                fatherDetails.controls.officeCity.setValue(data.dataJson.cityName, {emitEvent: false});
+                fatherDetails.controls.officeCity.setValue(data.dataJson.cityName, { emitEvent: false });
                 fatherDetails.controls.officeCity.disable();
               } else if (mode == 'motherDetails') {
-                let motherDetails = <UntypedFormGroup> this.guardianInfoForm.controls.membersInfo['controls'].motherDetails;
-                motherDetails.controls.officeState.setValue(data.dataJson.stateName, {emitEvent: false});
+                let motherDetails = <UntypedFormGroup>this.guardianInfoForm.controls.membersInfo['controls'].motherDetails;
+                motherDetails.controls.officeState.setValue(data.dataJson.stateName, { emitEvent: false });
                 motherDetails.controls.officeState.disable();
-                motherDetails.controls.officeCity.setValue(data.dataJson.cityName, {emitEvent: false});
+                motherDetails.controls.officeCity.setValue(data.dataJson.cityName, { emitEvent: false });
                 motherDetails.controls.officeCity.disable();
               } else if (mode == 'sisterDetails') {
-                let sisterDetails = <UntypedFormGroup> this.guardianInfoForm.controls.membersInfo['controls'].sisterDetails;
-                sisterDetails.controls.officeState.setValue(data.dataJson.stateName, {emitEvent: false});
+                let sisterDetails = <UntypedFormGroup>this.guardianInfoForm.controls.membersInfo['controls'].sisterDetails;
+                sisterDetails.controls.officeState.setValue(data.dataJson.stateName, { emitEvent: false });
                 sisterDetails.controls.officeState.disable();
-                sisterDetails.controls.officeCity.setValue(data.dataJson.cityName, {emitEvent: false});
+                sisterDetails.controls.officeCity.setValue(data.dataJson.cityName, { emitEvent: false });
                 sisterDetails.controls.officeCity.disable();
               } else if (mode == 'brotherDetails') {
-                let brotherDetails = <UntypedFormGroup> this.guardianInfoForm.controls.membersInfo['controls'].brotherDetails;
-                brotherDetails.controls.officeState.setValue(data.dataJson.stateName, {emitEvent: false});
+                let brotherDetails = <UntypedFormGroup>this.guardianInfoForm.controls.membersInfo['controls'].brotherDetails;
+                brotherDetails.controls.officeState.setValue(data.dataJson.stateName, { emitEvent: false });
                 brotherDetails.controls.officeState.disable();
-                brotherDetails.controls.officeCity.setValue(data.dataJson.cityName, {emitEvent: false});
+                brotherDetails.controls.officeCity.setValue(data.dataJson.cityName, { emitEvent: false });
                 brotherDetails.controls.officeCity.disable();
-              }else if (mode == 'guardianDetails') {
-                let guardianDetails = <UntypedFormGroup> this.guardianInfoForm.controls.membersInfo['controls'].guardianDetails;
-                guardianDetails.controls.officeState.setValue(data.dataJson.stateName, {emitEvent: false});
+              } else if (mode == 'guardianDetails') {
+                let guardianDetails = <UntypedFormGroup>this.guardianInfoForm.controls.membersInfo['controls'].guardianDetails;
+                guardianDetails.controls.officeState.setValue(data.dataJson.stateName, { emitEvent: false });
                 guardianDetails.controls.officeState.disable();
-                guardianDetails.controls.officeCity.setValue(data.dataJson.cityName, {emitEvent: false});
+                guardianDetails.controls.officeCity.setValue(data.dataJson.cityName, { emitEvent: false });
                 guardianDetails.controls.officeCity.disable();
               }
             }
@@ -8381,11 +8381,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
             if (form == 'personalInfo') {
 
               if (mode == 'residentialAddress') {
-                let residentialAddress = <UntypedFormGroup> this.personalInfoForm.controls.residentialAddress;
+                let residentialAddress = <UntypedFormGroup>this.personalInfoForm.controls.residentialAddress;
                 residentialAddress.controls.state.enable();
                 residentialAddress.controls.city.enable();
               } else if (mode == 'nativeAddress') {
-                let nativeAddress = <UntypedFormGroup> this.personalInfoForm.controls.nativeAddress;
+                let nativeAddress = <UntypedFormGroup>this.personalInfoForm.controls.nativeAddress;
                 nativeAddress.controls.state.enable();
                 nativeAddress.controls.city.enable();
               }
@@ -8393,35 +8393,35 @@ export class ApplicationPreviewDialogComponent implements OnInit {
             } else {
 
               if (mode == 'residentialAddress') {
-                let residentialAddress = <UntypedFormGroup> this.addressInfoForm.controls.residentialAddress;
+                let residentialAddress = <UntypedFormGroup>this.addressInfoForm.controls.residentialAddress;
                 residentialAddress.controls.state.enable();
                 residentialAddress.controls.city.enable();
               } else if (mode == 'nativeAddress') {
-                let nativeAddress = <UntypedFormGroup> this.addressInfoForm.controls.nativeAddress;
+                let nativeAddress = <UntypedFormGroup>this.addressInfoForm.controls.nativeAddress;
                 nativeAddress.controls.state.enable();
                 nativeAddress.controls.city.enable();
               } else if (mode == 'aadharAddress') {
-                let aadharAddress = <UntypedFormGroup> this.addressInfoForm.controls.aadharAddress;
+                let aadharAddress = <UntypedFormGroup>this.addressInfoForm.controls.aadharAddress;
                 aadharAddress.controls.state.enable();
                 aadharAddress.controls.city.enable();
               } else if (mode == 'fatherDetails') {
-                let fatherDetails = <UntypedFormGroup> this.guardianInfoForm.controls.membersInfo['controls'].fatherDetails;              
+                let fatherDetails = <UntypedFormGroup>this.guardianInfoForm.controls.membersInfo['controls'].fatherDetails;
                 fatherDetails.controls.officeState.enable();
                 fatherDetails.controls.officeCity.enable();
               } else if (mode == 'motherDetails') {
-                let motherDetails = <UntypedFormGroup> this.guardianInfoForm.controls.membersInfo['controls'].motherDetails;
+                let motherDetails = <UntypedFormGroup>this.guardianInfoForm.controls.membersInfo['controls'].motherDetails;
                 motherDetails.controls.officeState.enable();
                 motherDetails.controls.officeCity.enable();
-              }else if (mode == 'sisterDetails') {
-                let sisterDetails = <UntypedFormGroup> this.guardianInfoForm.controls.membersInfo['controls'].sisterDetails;
+              } else if (mode == 'sisterDetails') {
+                let sisterDetails = <UntypedFormGroup>this.guardianInfoForm.controls.membersInfo['controls'].sisterDetails;
                 sisterDetails.controls.officeState.enable();
                 sisterDetails.controls.officeCity.enable();
               } else if (mode == 'brotherDetails') {
-                let brotherDetails = <UntypedFormGroup> this.guardianInfoForm.controls.membersInfo['controls'].brotherDetails;
+                let brotherDetails = <UntypedFormGroup>this.guardianInfoForm.controls.membersInfo['controls'].brotherDetails;
                 brotherDetails.controls.officeState.enable();
                 brotherDetails.controls.officeCity.enable();
               } else if (mode == 'guardianDetails') {
-                let guardianDetails = <UntypedFormGroup> this.guardianInfoForm.controls.membersInfo['controls'].guardianDetails;
+                let guardianDetails = <UntypedFormGroup>this.guardianInfoForm.controls.membersInfo['controls'].guardianDetails;
                 guardianDetails.controls.officeState.enable();
                 guardianDetails.controls.officeCity.enable();
               }
@@ -8437,15 +8437,15 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       });
     }
   }
-  
-  onChangeSemesterYear():void {
+
+  onChangeSemesterYear(): void {
 
     let yearSemesterWise = this.educationInfoForm.controls.eduInfo['controls'].graduate['controls'].filter.get('yearSemesterWise').value;
     let semesterNo = this.educationInfoForm.controls.eduInfo['controls'].graduate['controls'].filter.get('semesterNo').value;
     let yearNo = this.educationInfoForm.controls.eduInfo['controls'].graduate['controls'].filter.get('yearNo').value;
     let appearing = this.educationInfoForm.controls.eduInfo['controls'].graduate['controls'].filter.get('appearing').value;
 
-    if ( !globalFunctions.isEmpty(yearSemesterWise) && (!globalFunctions.isEmpty(semesterNo) || !globalFunctions.isEmpty(yearNo) )) {
+    if (!globalFunctions.isEmpty(yearSemesterWise) && (!globalFunctions.isEmpty(semesterNo) || !globalFunctions.isEmpty(yearNo))) {
 
       let postParam: any = {
         'yearSemesterWise': yearSemesterWise,
@@ -8455,7 +8455,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         'applicantId': this.formDetails.applicantId,
         'formPolicyId': this.formDetails.formPolicyId,
         'formId': this.formDetails.formId,
-        'page': this.panelMode, 
+        'page': this.panelMode,
       };
 
       this.allEventEmitters.showLoader.emit(true);
@@ -8486,7 +8486,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         'applicantId': this.formDetails.applicantId,
         'formPolicyId': this.formDetails.formPolicyId,
         'formId': this.formDetails.formId,
-        'page': this.panelMode, 
+        'page': this.panelMode,
       };
 
       this.allEventEmitters.showLoader.emit(true);
@@ -8512,30 +8512,30 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this.allEventEmitters.showLoader.emit(false);
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
       });
-    }    
+    }
   }
 
-  onChangeConfName(conf:any, mode, listIndex:number):void {
+  onChangeConfName(conf: any, mode, listIndex: number): void {
 
     let confName = conf.confName;
 
-    const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.controls[listIndex];
+    const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.controls[listIndex];
 
-    control.controls.documentUploadObj.setValue(conf.documentUpload, {emitEvent: false});
+    control.controls.documentUploadObj.setValue(conf.documentUpload, { emitEvent: false });
 
-    control.controls.showDocumentUpload.setValue(false, {emitEvent: false});
-    control.controls.docReq.setValue(false, {emitEvent: false});
+    control.controls.showDocumentUpload.setValue(false, { emitEvent: false });
+    control.controls.docReq.setValue(false, { emitEvent: false });
     if (conf.documentUpload.checkCondition) {
       if (conf.documentUpload.display) {
-        control.controls.showDocumentUpload.setValue(true, {emitEvent: false});
+        control.controls.showDocumentUpload.setValue(true, { emitEvent: false });
       }
       if (conf.documentUpload.required) {
-        control.controls.docReq.setValue(true, {emitEvent: false});
+        control.controls.docReq.setValue(true, { emitEvent: false });
       }
     }
 
     if (conf.hsc.checkCondition) {
-    
+
       const subject1 = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.subject1;
       const subject2 = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.subject2;
       const subject3 = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].hsc.controls.subjectInfo.controls.subject3;
@@ -8553,7 +8553,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         }
 
         if (this.formData.educationInfo.enggInfo.hsc.subjectInfoReq) {
-        
+
           if (this.formData.educationInfo.enggInfo.hsc.subjectInfo.subject1.display) {
 
             subject1.get('marksObtained').setValidators([Validators.required]);
@@ -8603,7 +8603,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         optionalSubject.get('marksOutof').clearValidators();
         optionalSubject.get('totalPercentage').clearValidators();
       }
-  
+
       subject1.get('marksObtained').updateValueAndValidity();
       subject1.get('marksOutof').updateValueAndValidity();
       subject1.get('totalPercentage').updateValueAndValidity();
@@ -8631,7 +8631,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       if (this.showSscBlk) {
 
         if (this.formData.educationInfo.enggInfo.ssc.subjectInfoReq) {
-        
+
           maths.get('marksObtained').setValidators([Validators.required]);
           maths.get('marksOutof').setValidators([Validators.required]);
           maths.get('totalPercentage').setValidators([Validators.required]);
@@ -8693,16 +8693,16 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
     if (conf.collegeTransfer.checkCondition) {
 
-      const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.controls[listIndex];
-      control.controls.showCollegeTransferQuestion.setValue(false, {emitEvent: false});
-      control.controls.showSemesterCompleted.setValue(false, {emitEvent: false});
+      const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.controls[listIndex];
+      control.controls.showCollegeTransferQuestion.setValue(false, { emitEvent: false });
+      control.controls.showSemesterCompleted.setValue(false, { emitEvent: false });
       if (conf.collegeTransfer.display) {
 
-        control.controls.showCollegeTransferQuestion.setValue(true, {emitEvent: false});
+        control.controls.showCollegeTransferQuestion.setValue(true, { emitEvent: false });
         control.get('collegeTransferQuestionAns').setValidators([Validators.required]);
-        
+
         if (control.get('semesterCompletedObj').value.display) {
-          control.controls.showSemesterCompleted.setValue(true, {emitEvent: false});          
+          control.controls.showSemesterCompleted.setValue(true, { emitEvent: false });
           if (control.get('semesterCompletedObj').value.required) {
             control.get('semesterCompleted').setValidators([Validators.required]);
           }
@@ -8740,25 +8740,25 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     if (gradingSystem == 'percentage') {
 
       control.controls.showMarksBlk.setValue(true, { emitEvent: false });
-     
-        if (this.formData.educationInfo.eduInfo[mode].list[listIndex].marksObtainedRequired) {
-          marksObtained.setValidators([Validators.required]);
-        }
-        if (this.formData.educationInfo.eduInfo[mode].list[listIndex].marksOutofRequired) {
-          marksOutof.setValidators([Validators.required]);
-        }
-        if (this.formData.educationInfo.eduInfo[mode].list[listIndex].percentageRequired) {
-          percentage.setValidators([Validators.required]);
-        }
-        if (this.formData.educationInfo.eduInfo[mode].list[listIndex].percentageOrCgpaRequired) {
-          percentageOrCgpa.setValidators([Validators.required]);
-        }
-        if (this.formData.educationInfo.eduInfo[mode].list[listIndex].percentageOrSgpaRequired) {
-          percentageOrSgpa.setValidators([Validators.required]);
-        }
-        if (control.controls.classObj.value.display && control.controls.classObj.value.required) {
-          className.setValidators([Validators.required]);
-        }
+
+      if (this.formData.educationInfo.eduInfo[mode].list[listIndex].marksObtainedRequired) {
+        marksObtained.setValidators([Validators.required]);
+      }
+      if (this.formData.educationInfo.eduInfo[mode].list[listIndex].marksOutofRequired) {
+        marksOutof.setValidators([Validators.required]);
+      }
+      if (this.formData.educationInfo.eduInfo[mode].list[listIndex].percentageRequired) {
+        percentage.setValidators([Validators.required]);
+      }
+      if (this.formData.educationInfo.eduInfo[mode].list[listIndex].percentageOrCgpaRequired) {
+        percentageOrCgpa.setValidators([Validators.required]);
+      }
+      if (this.formData.educationInfo.eduInfo[mode].list[listIndex].percentageOrSgpaRequired) {
+        percentageOrSgpa.setValidators([Validators.required]);
+      }
+      if (control.controls.classObj.value.display && control.controls.classObj.value.required) {
+        className.setValidators([Validators.required]);
+      }
 
       cgpiObtained.clearValidators();
       cgpiOutof.clearValidators();
@@ -8767,16 +8767,16 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     } else if (gradingSystem == 'cgpa') {
 
       control.controls.showCgpaBlk.setValue(true, { emitEvent: false });
-         
-        if (this.formData.educationInfo.eduInfo[mode].list[listIndex].cgpiObtainedRequired) {
-          cgpiObtained.setValidators([Validators.required]);
-        }
-        if (this.formData.educationInfo.eduInfo[mode].list[listIndex].cgpiOutofRequired) {
-          cgpiOutof.setValidators([Validators.required]);
-        }
-        if (this.formData.educationInfo.eduInfo[mode].list[listIndex].cgpiRequired) {
-          cgpi.setValidators([Validators.required]);
-        }
+
+      if (this.formData.educationInfo.eduInfo[mode].list[listIndex].cgpiObtainedRequired) {
+        cgpiObtained.setValidators([Validators.required]);
+      }
+      if (this.formData.educationInfo.eduInfo[mode].list[listIndex].cgpiOutofRequired) {
+        cgpiOutof.setValidators([Validators.required]);
+      }
+      if (this.formData.educationInfo.eduInfo[mode].list[listIndex].cgpiRequired) {
+        cgpi.setValidators([Validators.required]);
+      }
 
       marksObtained.clearValidators();
       marksOutof.clearValidators();
@@ -8798,7 +8798,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     cgpi.updateValueAndValidity();
   }
 
-  onChangeDegree(degree, mode):void {
+  onChangeDegree(degree, mode): void {
 
     this.formData.educationInfo.eduInfo[mode].filter.otherText.display = false;
     const otherText = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.filter.controls.otherText;
@@ -8820,7 +8820,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  openEditAlert(stepper, data:any = {}, mode = '') {
+  openEditAlert(stepper, data: any = {}, mode = '') {
 
     let dialogRef = this.dialog.open(ConfirmDialogComponent, {
       height: 'auto',
@@ -8854,8 +8854,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  saveForm(mode = '', tab:any = '') {
-       
+  saveForm(mode = '', tab: any = '') {
+
     if (this.formData.personalInfo.addressInfo.display == false) {
       this.personalInfoForm.controls.residentialAddress['controls'].address.setValue(this.addressInfoForm.controls.residentialAddress['controls'].address.value);
       this.personalInfoForm.controls.residentialAddress['controls'].city.setValue(this.addressInfoForm.controls.residentialAddress['controls'].city.value);
@@ -8887,7 +8887,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           });
         });
 
-        details.subjectsList = allSubjectsList;        
+        details.subjectsList = allSubjectsList;
       }
     });
 
@@ -8904,7 +8904,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         subCategoryValues.push(details);
       }
     });
-    this.categoryForm.controls['applyingSubCategories'].setValue(subCategoryValues, {emitEvent: false});
+    this.categoryForm.controls['applyingSubCategories'].setValue(subCategoryValues, { emitEvent: false });
 
     this.categoryFormValues = this.categoryForm.getRawValue();
 
@@ -8956,8 +8956,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       this.saveInstitutesForm(mode, tab);
     }
   }
-  
-  saveAdmissionForm(mode = '', tab:any = '') {
+
+  saveAdmissionForm(mode = '', tab: any = '') {
 
     let finalSave = false;
     if (mode == 'finalSave') {
@@ -8989,7 +8989,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       'page': this.panelMode,
     };
 
-    this._admissionService.saveForm(postParam,this.fatherPassportSizePhotoToUpload,this.motherPassportSizePhotoToUpload,this.sisterPassportSizePhotoToUpload,this.brotherPassportSizePhotoToUpload,this.guardianPassportSizePhotoToUpload, this.passportSizePhotoToUpload, this.signatureImageToUpload, this.parentSignatureImageToUpload,this.fatherSignaturePhotoToUpload, this.motherSignaturePhotoToUpload, this.sisterSignaturePhotoToUpload, this.brotherSignaturePhotoToUpload, this.guardianSignaturePhotoToUpload).subscribe(data => {
+    this._admissionService.saveForm(postParam, this.fatherPassportSizePhotoToUpload, this.motherPassportSizePhotoToUpload, this.sisterPassportSizePhotoToUpload, this.brotherPassportSizePhotoToUpload, this.guardianPassportSizePhotoToUpload, this.passportSizePhotoToUpload, this.signatureImageToUpload, this.parentSignatureImageToUpload, this.fatherSignaturePhotoToUpload, this.motherSignaturePhotoToUpload, this.sisterSignaturePhotoToUpload, this.brotherSignaturePhotoToUpload, this.guardianSignaturePhotoToUpload).subscribe(data => {
 
       if (mode == 'finalSave') {
         this.allEventEmitters.showLoader.emit(false);
@@ -9017,7 +9017,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
       }
     }, err => {
-      this.allEventEmitters.showLoader.emit(false);        
+      this.allEventEmitters.showLoader.emit(false);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
   }
@@ -9064,11 +9064,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
         } else if (data.status == 101) {
 
-            globalFunctions.setUserProf('applicantId', data.dataJson.newApplicantId);
+          globalFunctions.setUserProf('applicantId', data.dataJson.newApplicantId);
 
-            this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
+          this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
 
-            this.router.navigate(['/admissionForm']);
+          this.router.navigate(['/admissionForm']);
 
         } else if (data.status == 0) {
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
@@ -9077,12 +9077,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
       }
     }, err => {
-      this.allEventEmitters.showLoader.emit(false);          
+      this.allEventEmitters.showLoader.emit(false);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
   }
 
-  saveInstitutesForm(mode = '', tab:any = '') {
+  saveInstitutesForm(mode = '', tab: any = '') {
 
     let finalSave = false;
     if (mode == 'finalSave') {
@@ -9097,7 +9097,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       'addressInfo': this.addressInfoFormValues,
       'guardianInfo': this.guardianInfoFormValues,
       'educationInfo': this.educationInfoFormValues,
-      'additionalQualification': this.additionalQualificationFormValues,      
+      'additionalQualification': this.additionalQualificationFormValues,
       'extraCurriculumActivities': this.extraCurriculumFormValues,
       'bankInfo': this.bankInfoFormValues,
       'questionnaire': this.questionnaireFormValues,
@@ -9106,9 +9106,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       'softwareKnowledge': this.softwareInfoFormValues,
       'workExpDetails': this.workExperienceFormValues,
       'uploadedFileNames': this.uploadedFileNames,
-      'declarationFormValues': this.declarationFormValues, 
-      'courseSelectionValues': this.courseSelectionValues, 
-      'subjectSelectionValues': this.subjectSelectionList,      
+      'declarationFormValues': this.declarationFormValues,
+      'courseSelectionValues': this.courseSelectionValues,
+      'subjectSelectionValues': this.subjectSelectionList,
       'finalSave': finalSave,
       'stepName': tab.stepName,
       'page': this.panelMode,
@@ -9127,8 +9127,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         if (data.status == 1) {
 
           if (mode == 'finalSave') {
-            this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);            
-           // this.sharedDialogRef.close();
+            this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
+            // this.sharedDialogRef.close();
           }
 
         } else if (data.status == 0) {
@@ -9138,7 +9138,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
       }
     }, err => {
-      this.allEventEmitters.showLoader.emit(false);        
+      this.allEventEmitters.showLoader.emit(false);
       this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
     });
   }
@@ -9172,7 +9172,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     });
   }
 
-  onEduDocReadFile(event:any, eduMode, listIndex:number) {
+  onEduDocReadFile(event: any, eduMode, listIndex: number) {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -9180,13 +9180,13 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       let file = event.target.files[0];
       let ext = file.name.toLowerCase().split('.').pop() || file.name;
-      
-      const documents:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][eduMode].controls.list.controls[listIndex];
+
+      const documents: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][eduMode].controls.list.controls[listIndex];
 
       if (!globalFunctions.isValidFileExtension(file, this.attachmentFileExt)) {
 
         this._snackBarMsgComponent.openSnackBar(ext + " file extension is not valid, Valid extensions are: ( " + this.attachmentFileExt + " )", 'x', 'error-snackbar');
-     
+
         documents['controls'].docBrowsed.setValue(false);
 
       } else if (!globalFunctions.isValidFileSize(file, this.attachmentMaxFileSize)) {
@@ -9210,7 +9210,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           this.openImageCropperDialog(event, postParam);
 
         } else {
-  
+
           this.browsedEduDocData(file, eduMode, listIndex);
         }
       }
@@ -9218,42 +9218,42 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   }
 
   removeEduDocFile(mode, listIndex) {
- 
-    const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.controls[listIndex];
 
-    control.controls.docError.setValue(false, {emitEvent: false});
-    control.controls.docBrowsed.setValue(false, {emitEvent: false});
-    control.controls.docToUpload.setValue(null, {emitEvent: false});
+    const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.controls[listIndex];
+
+    control.controls.docError.setValue(false, { emitEvent: false });
+    control.controls.docBrowsed.setValue(false, { emitEvent: false });
+    control.controls.docToUpload.setValue(null, { emitEvent: false });
 
     if (!globalFunctions.isEmpty(control.get('documentUrl').value)) {
-      control.controls.showDocResetBtn.setValue(true, {emitEvent: false});      
+      control.controls.showDocResetBtn.setValue(true, { emitEvent: false });
     }
   }
 
   removeUploadedEduDocFile(mode, listIndex) {
- 
-    const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.controls[listIndex];
 
-    control.controls.hasUploadedDoc.setValue(false, {emitEvent: false});
-    control.controls.docBrowsed.setValue(false, {emitEvent: false});
-    control.controls.showDocResetBtn.setValue(true, {emitEvent: false});
+    const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.controls[listIndex];
+
+    control.controls.hasUploadedDoc.setValue(false, { emitEvent: false });
+    control.controls.docBrowsed.setValue(false, { emitEvent: false });
+    control.controls.showDocResetBtn.setValue(true, { emitEvent: false });
   }
 
   onResetEduDocFile(mode, listIndex) {
- 
-    const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.controls[listIndex];
 
-    control.controls.showDocResetBtn.setValue(false, {emitEvent: false});
-    control.controls.hasUploadedDoc.setValue(true, {emitEvent: false});
+    const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][mode].controls.list.controls[listIndex];
+
+    control.controls.showDocResetBtn.setValue(false, { emitEvent: false });
+    control.controls.hasUploadedDoc.setValue(true, { emitEvent: false });
   }
 
   browsedEduDocData(data, eduMode, listIndex) {
 
-    const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][eduMode].controls.list.controls[listIndex];
+    const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][eduMode].controls.list.controls[listIndex];
 
-    control.controls.docError.setValue(false, {emitEvent: false});
-    control.controls.docBrowsed.setValue(true, {emitEvent: false});
-    control.controls.showDocResetBtn.setValue(false, {emitEvent: false});
+    control.controls.docError.setValue(false, { emitEvent: false });
+    control.controls.docBrowsed.setValue(true, { emitEvent: false });
+    control.controls.showDocResetBtn.setValue(false, { emitEvent: false });
 
     let postParam = {
       'mode': 'eduDocuments',
@@ -9263,20 +9263,20 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.uploadFile(data, postParam);
   }
 
-  onDisabilityDocReadFile(event:any) {
-    
+  onDisabilityDocReadFile(event: any) {
+
     this._snackBarMsgComponent.closeSnackBar();
 
     if (event.target.files && event.target.files[0]) {
 
       let file = event.target.files[0];
       let ext = file.name.toLowerCase().split('.').pop() || file.name;
-      
+
       if (!globalFunctions.isValidFileExtension(file, this.attachmentFileExt)) {
 
         this._snackBarMsgComponent.openSnackBar(ext + " file extension is not valid, Valid extensions are: ( " + this.attachmentFileExt + " )", 'x', 'error-snackbar');
-     
-        this.personalInfoForm.controls['disability']['controls'].certificate.setValue(false, {emitEvent: false});
+
+        this.personalInfoForm.controls['disability']['controls'].certificate.setValue(false, { emitEvent: false });
 
       } else if (!globalFunctions.isValidFileSize(file, this.attachmentMaxFileSize)) {
 
@@ -9285,7 +9285,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
         this._snackBarMsgComponent.openSnackBar(file.name + ":exceed file size limit of " + this.attachmentMaxFileSize + "MB ( " + size + "MB )", 'x', 'error-snackbar');
 
-        this.personalInfoForm.controls['disability']['controls'].certificate.setValue(false, {emitEvent: false});
+        this.personalInfoForm.controls['disability']['controls'].certificate.setValue(false, { emitEvent: false });
 
       } else {
 
@@ -9297,7 +9297,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           this.openImageCropperDialog(event, postParam);
 
         } else {
-  
+
           this.browsedDisabilityDocData(file);
         }
       }
@@ -9305,9 +9305,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   }
 
   browsedDisabilityDocData(data) {
-    this.personalInfoForm.controls['disability']['controls'].disabilityDocError.setValue(false, {emitEvent: false});
-    this.personalInfoForm.controls['disability']['controls'].disabilityDocBrowsed.setValue(true, {emitEvent: false});
-   
+    this.personalInfoForm.controls['disability']['controls'].disabilityDocError.setValue(false, { emitEvent: false });
+    this.personalInfoForm.controls['disability']['controls'].disabilityDocBrowsed.setValue(true, { emitEvent: false });
+
     let postParam = {
       'mode': 'DisabilityDocuments',
     }
@@ -9315,25 +9315,25 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   }
 
   removeDisabilityDocFile() {
- 
-    this.personalInfoForm.controls['disability']['controls'].disabilityDocError.setValue(false, {emitEvent: false});
-    this.personalInfoForm.controls['disability']['controls'].disabilityDocBrowsed.setValue(false, {emitEvent: false});
+
+    this.personalInfoForm.controls['disability']['controls'].disabilityDocError.setValue(false, { emitEvent: false });
+    this.personalInfoForm.controls['disability']['controls'].disabilityDocBrowsed.setValue(false, { emitEvent: false });
   }
 
   removeUploadedDisabilityDocFile() {
 
-    this.personalInfoForm.controls['disability']['controls'].disabilityHasUploadedDoc.setValue(false, {emitEvent: false});
-    this.personalInfoForm.controls['disability']['controls'].disabilityDocBrowsed.setValue(false, {emitEvent: false});
-    this.personalInfoForm.controls['disability']['controls'].showDocResetBtn.setValue(true, {emitEvent: false});    
+    this.personalInfoForm.controls['disability']['controls'].disabilityHasUploadedDoc.setValue(false, { emitEvent: false });
+    this.personalInfoForm.controls['disability']['controls'].disabilityDocBrowsed.setValue(false, { emitEvent: false });
+    this.personalInfoForm.controls['disability']['controls'].showDocResetBtn.setValue(true, { emitEvent: false });
   }
 
   onResetDisabilityDocFile() {
 
-    this.personalInfoForm.controls['disability']['controls'].showDocResetBtn.setValue(false, {emitEvent: false});
-    this.personalInfoForm.controls['disability']['controls'].disabilityHasUploadedDoc.setValue(true, {emitEvent: false});
+    this.personalInfoForm.controls['disability']['controls'].showDocResetBtn.setValue(false, { emitEvent: false });
+    this.personalInfoForm.controls['disability']['controls'].disabilityHasUploadedDoc.setValue(true, { emitEvent: false });
   }
 
-    onScholarshipDocReadFile(event: any) {
+  onScholarshipDocReadFile(event: any) {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -9390,9 +9390,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
     this.personalInfoForm.controls['scholarship']['controls'].showDocResetBtn.setValue(false, { emitEvent: false });
     this.personalInfoForm.controls['scholarship']['controls'].scholarshipHasUploadedDoc.setValue(true, { emitEvent: false });
-  }  
+  }
 
-  onCatDocReadFile(event:any) {
+  onCatDocReadFile(event: any) {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -9400,12 +9400,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       let file = event.target.files[0];
       let ext = file.name.toLowerCase().split('.').pop() || file.name;
-      
+
       if (!globalFunctions.isValidFileExtension(file, this.attachmentFileExt)) {
 
         this._snackBarMsgComponent.openSnackBar(ext + " file extension is not valid, Valid extensions are: ( " + this.attachmentFileExt + " )", 'x', 'error-snackbar');
-     
-        this.categoryForm.controls['catDocBrowsed'].setValue(false, {emitEvent: false});
+
+        this.categoryForm.controls['catDocBrowsed'].setValue(false, { emitEvent: false });
 
       } else if (!globalFunctions.isValidFileSize(file, this.attachmentMaxFileSize)) {
 
@@ -9414,7 +9414,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
         this._snackBarMsgComponent.openSnackBar(file.name + ":exceed file size limit of " + this.attachmentMaxFileSize + "MB ( " + size + "MB )", 'x', 'error-snackbar');
 
-        this.categoryForm.controls['catDocBrowsed'].setValue(false, {emitEvent: false});
+        this.categoryForm.controls['catDocBrowsed'].setValue(false, { emitEvent: false });
 
       } else {
 
@@ -9426,7 +9426,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           this.openImageCropperDialog(event, postParam);
 
         } else {
-  
+
           this.browsedCatDocData(file);
         }
       }
@@ -9434,34 +9434,34 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   }
 
   removeCatDocFile() {
- 
-    this.categoryForm.controls['catDocError'].setValue(false, {emitEvent: false});
-    this.categoryForm.controls['catDocBrowsed'].setValue(false, {emitEvent: false});
-    this.categoryForm.controls['catDocToUpload'].setValue(null, {emitEvent: false});
-    
+
+    this.categoryForm.controls['catDocError'].setValue(false, { emitEvent: false });
+    this.categoryForm.controls['catDocBrowsed'].setValue(false, { emitEvent: false });
+    this.categoryForm.controls['catDocToUpload'].setValue(null, { emitEvent: false });
+
     if (!globalFunctions.isEmpty(this.categoryForm.get('catDocumentUploadObj').value.documentUrl)) {
-      this.categoryForm.controls['showDocResetBtn'].setValue(true, {emitEvent: false});      
+      this.categoryForm.controls['showDocResetBtn'].setValue(true, { emitEvent: false });
     }
   }
 
   removeUploadedCatDocFile() {
 
-    this.categoryForm.controls['catHasUploadedDoc'].setValue(false, {emitEvent: false});
-    this.categoryForm.controls['catDocBrowsed'].setValue(false, {emitEvent: false});
-    this.categoryForm.controls['showDocResetBtn'].setValue(true, {emitEvent: false});    
+    this.categoryForm.controls['catHasUploadedDoc'].setValue(false, { emitEvent: false });
+    this.categoryForm.controls['catDocBrowsed'].setValue(false, { emitEvent: false });
+    this.categoryForm.controls['showDocResetBtn'].setValue(true, { emitEvent: false });
   }
 
   onResetCatDocFile() {
 
-    this.categoryForm.controls['showDocResetBtn'].setValue(false, {emitEvent: false});
-    this.categoryForm.controls['catHasUploadedDoc'].setValue(true, {emitEvent: false});
+    this.categoryForm.controls['showDocResetBtn'].setValue(false, { emitEvent: false });
+    this.categoryForm.controls['catHasUploadedDoc'].setValue(true, { emitEvent: false });
   }
 
   browsedCatDocData(data) {
 
-    this.categoryForm.controls['catDocError'].setValue(false, {emitEvent: false});
-    this.categoryForm.controls['catDocBrowsed'].setValue(true, {emitEvent: false});
-    this.categoryForm.controls['showDocResetBtn'].setValue(false, {emitEvent: false});
+    this.categoryForm.controls['catDocError'].setValue(false, { emitEvent: false });
+    this.categoryForm.controls['catDocBrowsed'].setValue(true, { emitEvent: false });
+    this.categoryForm.controls['showDocResetBtn'].setValue(false, { emitEvent: false });
 
     let postParam = {
       'mode': 'catDocuments',
@@ -9469,7 +9469,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.uploadFile(data, postParam);
   }
 
-  onSubCatDocReadFile(event:any, optn:any) {
+  onSubCatDocReadFile(event: any, optn: any) {
 
     this._snackBarMsgComponent.closeSnackBar();
 
@@ -9477,11 +9477,11 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       let file = event.target.files[0];
       let ext = file.name.toLowerCase().split('.').pop() || file.name;
-      
+
       if (!globalFunctions.isValidFileExtension(file, this.attachmentFileExt)) {
 
         this._snackBarMsgComponent.openSnackBar(ext + " file extension is not valid, Valid extensions are: ( " + this.attachmentFileExt + " )", 'x', 'error-snackbar');
-     
+
         this.subCategoryReverseArray[optn.admissionSubCategoryId].subCatDocBrowsed = false;
 
       } else if (!globalFunctions.isValidFileSize(file, this.attachmentMaxFileSize)) {
@@ -9504,15 +9504,15 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           this.openImageCropperDialog(event, postParam);
 
         } else {
-  
+
           this.browsedSubCatDocData(file, optn);
         }
       }
     }
   }
 
-  removeSubCatDocFile(optn:any) {
- 
+  removeSubCatDocFile(optn: any) {
+
     this.subCategoryReverseArray[optn.admissionSubCategoryId].subCatDocError = false;
     this.subCategoryReverseArray[optn.admissionSubCategoryId].subCatDocBrowsed = false;
     this.subCategoryReverseArray[optn.admissionSubCategoryId].subCatDocToUpload = null;
@@ -9522,14 +9522,14 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     }
   }
 
-  removeUploadedSubCatDocFile(optn:any) {
+  removeUploadedSubCatDocFile(optn: any) {
 
     this.subCategoryReverseArray[optn.admissionSubCategoryId].subCatHasUploadedDoc = false;
     this.subCategoryReverseArray[optn.admissionSubCategoryId].subCatDocBrowsed = false;
     this.subCategoryReverseArray[optn.admissionSubCategoryId].showDocResetBtn = true;
   }
 
-  onResetSubCatDocFile(optn:any) {
+  onResetSubCatDocFile(optn: any) {
 
     this.subCategoryReverseArray[optn.admissionSubCategoryId].showDocResetBtn = false;
     this.subCategoryReverseArray[optn.admissionSubCategoryId].subCatHasUploadedDoc = true;
@@ -9548,16 +9548,16 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     this.uploadFile(data, postParam);
   }
 
-  uploadFile(file, postVal:any) {
+  uploadFile(file, postVal: any) {
 
-    if (postVal.mode == 'eduDocuments') {    
-    
-      const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][postVal.eduMode].controls.list.controls[postVal.listIndex];
-      control.controls.docUploading.setValue(true, {emitEvent: false});
-    
+    if (postVal.mode == 'eduDocuments') {
+
+      const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][postVal.eduMode].controls.list.controls[postVal.listIndex];
+      control.controls.docUploading.setValue(true, { emitEvent: false });
+
     } else if (postVal.mode == 'catDocuments') {
 
-      this.categoryForm.controls['catDocUploading'].setValue(true, {emitEvent: false});
+      this.categoryForm.controls['catDocUploading'].setValue(true, { emitEvent: false });
 
     } else if (postVal.mode == 'subCatDocuments') {
 
@@ -9576,13 +9576,13 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         let perc = Math.round(100 * event.loaded / event.total);
 
         if (postVal.mode == 'eduDocuments') {
-          
-          const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][postVal.eduMode].controls.list.controls[postVal.listIndex];
-          control.controls.docUploadPercent.setValue(perc, {emitEvent: false});
+
+          const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][postVal.eduMode].controls.list.controls[postVal.listIndex];
+          control.controls.docUploadPercent.setValue(perc, { emitEvent: false });
 
         } else if (postVal.mode == 'catDocuments') {
 
-          this.categoryForm.controls['catDocUploadPercent'].setValue(perc, {emitEvent: false});
+          this.categoryForm.controls['catDocUploadPercent'].setValue(perc, { emitEvent: false });
 
         } else if (postVal.mode == 'subCatDocuments') {
 
@@ -9593,62 +9593,62 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
         if (postVal.mode == 'eduDocuments') {
 
-          const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][postVal.eduMode].controls.list.controls[postVal.listIndex];
-          control.controls.docUploading.setValue(false, {emitEvent: false});
+          const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][postVal.eduMode].controls.list.controls[postVal.listIndex];
+          control.controls.docUploading.setValue(false, { emitEvent: false });
 
         } else if (postVal.mode == 'catDocuments') {
 
-          this.categoryForm.controls['catDocUploading'].setValue(false, {emitEvent: false});
+          this.categoryForm.controls['catDocUploading'].setValue(false, { emitEvent: false });
 
         } else if (postVal.mode == 'subCatDocuments') {
 
           this.subCategoryReverseArray[postVal.optn.admissionSubCategoryId].subCatDocUploading = false;
         }
-        
+
         let data = event.body;
 
         this.allEventEmitters.showLoader.emit(false);
 
         if (data.status != undefined) {
-          
+
           if ((data.status == 1) && (!globalFunctions.isEmpty(data.dataJson.fileNames))) {
 
             data.dataJson.fileNames.forEach((fileName) => {
-              
+
               if (postVal.mode == 'eduDocuments') {
-              
-                const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][postVal.eduMode].controls.list.controls[postVal.listIndex];
-                control.controls.docToUpload.setValue(fileName, {emitEvent: false});
-              
+
+                const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][postVal.eduMode].controls.list.controls[postVal.listIndex];
+                control.controls.docToUpload.setValue(fileName, { emitEvent: false });
+
               } else if (postVal.mode == 'catDocuments') {
 
-                this.categoryForm.controls['catDocToUpload'].setValue(fileName, {emitEvent: false});
+                this.categoryForm.controls['catDocToUpload'].setValue(fileName, { emitEvent: false });
 
               } else if (postVal.mode == 'subCatDocuments') {
 
                 this.subCategoryReverseArray[postVal.optn.admissionSubCategoryId].subCatDocToUpload = fileName;
               } else if (postVal.mode == 'DisabilityDocuments') {
-                this.personalInfoForm.controls['disability']['controls'].disabilityHasUploadedDoc.setValue(true, {emitEvent: false});
-                this.personalInfoForm.controls['disability']['controls'].certificate.setValue(fileName, {emitEvent: false});
-            } else if (postVal.mode == 'scholarshipDocuments') {
-              this.personalInfoForm.controls['scholarship']['controls'].scholarshipHasUploadedDoc.setValue(true, { emitEvent: false });
-              this.personalInfoForm.controls['scholarship']['controls'].certificate.setValue(fileName, { emitEvent: false });
-            }
+                this.personalInfoForm.controls['disability']['controls'].disabilityHasUploadedDoc.setValue(true, { emitEvent: false });
+                this.personalInfoForm.controls['disability']['controls'].certificate.setValue(fileName, { emitEvent: false });
+              } else if (postVal.mode == 'scholarshipDocuments') {
+                this.personalInfoForm.controls['scholarship']['controls'].scholarshipHasUploadedDoc.setValue(true, { emitEvent: false });
+                this.personalInfoForm.controls['scholarship']['controls'].certificate.setValue(fileName, { emitEvent: false });
+              }
             });
 
             this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
-         
+
           } else if (data.status == 0) {
 
             if (postVal.mode == 'eduDocuments') {
 
-              const control:any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][postVal.eduMode].controls.list.controls[postVal.listIndex];
+              const control: any = <UntypedFormArray>this.educationInfoForm.controls.eduInfo['controls'][postVal.eduMode].controls.list.controls[postVal.listIndex];
               control.controls.docBrowsed.setValue(false);
 
             } else if (postVal.mode == 'catDocuments') {
 
-              this.categoryForm.controls['catDocBrowsed'].setValue(false, {emitEvent: false});
-          
+              this.categoryForm.controls['catDocBrowsed'].setValue(false, { emitEvent: false });
+
             } else if (postVal.mode == 'subCatDocuments') {
 
               this.subCategoryReverseArray[postVal.optn.admissionSubCategoryId].subCatDocBrowsed = false;
@@ -9677,7 +9677,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
     } else {
       alert('Doc Url not found!');
     }
-  }  
+  }
 
   onCloseClick(): void {
     this.dialogRef.close();

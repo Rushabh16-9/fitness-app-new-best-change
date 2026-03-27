@@ -155,6 +155,7 @@ export class SharedAdmissionFormComponent implements OnInit {
   annualIncomeGroups = [];
   religionsList = [];
   castesList = [];
+  filteredCastesList = [];
   examinations = [];
 
   courseForm: UntypedFormGroup;
@@ -773,7 +774,7 @@ export class SharedAdmissionFormComponent implements OnInit {
       districtOfBirth: [null],
       religionId: [null],
       domicile: [null],
-      casteId: [null],
+      casteName: [null],
       subCaste: [null],
       weight: [null],
       height: [null],
@@ -2500,7 +2501,7 @@ export class SharedAdmissionFormComponent implements OnInit {
         age: [formData.personalInfo.age],
         aadharAge: [formData.personalInfo.aadharAge],
         religionId: [formData.personalInfo.religionId, religionReq],
-        casteId: [formData.personalInfo.casteId, casteReq],
+        casteName: [formData.personalInfo.casteName, casteReq],
         subCaste: [formData.personalInfo.subCaste, subCasteReq],
         weight: [formData.personalInfo.weight, weightReq],
         height: [formData.personalInfo.height, heightReq],
@@ -4876,10 +4877,10 @@ export class SharedAdmissionFormComponent implements OnInit {
       }
       let prnNoReq: any;
       if (formData.educationInfo.showPrnNo && formData.educationInfo.prnNoRequired) {
-        if(formData.educationInfo.prnNoLabel == "ERN / PRN No" || formData.educationInfo.prnNoLabel == "ERN No"){
-           prnNoReq = Validators.compose([Validators.required, Validators.minLength(16), Validators.maxLength(18)]);
+        if (formData.educationInfo.prnNoLabel == "ERN / PRN No" || formData.educationInfo.prnNoLabel == "ERN No") {
+          prnNoReq = Validators.compose([Validators.required, Validators.minLength(16), Validators.maxLength(18)]);
         } else {
-           prnNoReq = Validators.compose([Validators.required, Validators.minLength(16), Validators.maxLength(16)]);
+          prnNoReq = Validators.compose([Validators.required, Validators.minLength(16), Validators.maxLength(16)]);
         }
       }
 
@@ -6095,7 +6096,7 @@ export class SharedAdmissionFormComponent implements OnInit {
           note: [itemRow.note],
           confNameSelected: [itemRow.confNameSelected],
           confName: [itemRow.confName],
-          stream: [itemRow.stream,streamRequired],
+          stream: [itemRow.stream, streamRequired],
           boardName: [itemRow.boardName, boardNameRequired],
           schoolName: [itemRow.schoolName, schoolNameRequired],
           monthAppeared: [itemRow.monthAppeared, monthAppearedRequired],
@@ -8474,6 +8475,11 @@ export class SharedAdmissionFormComponent implements OnInit {
     this.filteredBoardList = this.boardList.filter(obj => obj.toLowerCase().indexOf(text.toString().toLowerCase()) === 0);
   }
 
+  filterCastes(event: any) {
+    let text: string = event.target.value;
+    this.filteredCastesList = this.castesList.filter(obj => obj.caste.toLowerCase().indexOf(text.toString().toLowerCase()) === 0);
+  }
+
   filterMotherTongues(event: any) {
     let text: string = event.target.value;
     this.filteredMotherTongues = this.motherTongueList.filter(obj => obj.motherTongueName.toLowerCase().indexOf(text.toString().toLowerCase()) === 0);
@@ -8548,6 +8554,7 @@ export class SharedAdmissionFormComponent implements OnInit {
       if (data.status != undefined) {
         if (data.status == 1) {
           this.castesList = data.dataJson;
+          this.filteredCastesList = data.dataJson;
         } else if (data.status == 0) {
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar');
         }
