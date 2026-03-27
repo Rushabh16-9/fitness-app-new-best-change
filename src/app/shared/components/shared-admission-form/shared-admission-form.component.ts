@@ -6492,18 +6492,57 @@ export class SharedAdmissionFormComponent implements OnInit {
     this.sportsQualificationCertUploading[entryIndex] = true;
     this.sportsQualificationCertProgress[entryIndex] = 0;
 
-    this._admissionService.uploadPdf(file, 'sportsQualificationCert_' + entryIndex, this.panelMode).subscribe(data => {
-      this.sportsQualificationCertUploading[entryIndex] = false;
-      if (data.status == 1) {
-        this.sportsQualificationEntries[entryIndex]['certificateUpload'] = data.dataJson.uploadedFile;
-        this._snackBarMsgComponent.openSnackBar('Certificate uploaded successfully', 'x', 'success-snackbar', 3000);
-      } else {
-        this._snackBarMsgComponent.openSnackBar(data.message || 'Upload failed', 'x', 'error-snackbar', 5000);
-      }
-    }, err => {
-      this.sportsQualificationCertUploading[entryIndex] = false;
-      this._snackBarMsgComponent.openSnackBar('Upload failed. Please try again.', 'x', 'error-snackbar', 5000);
-    });
+    if (fileExt === 'pdf') {
+      this.allEventEmitters.showLoader.emit(true);
+      this._admissionService.uploadPdf(file, '').subscribe(data => {
+        this.allEventEmitters.showLoader.emit(false);
+        this.sportsQualificationCertUploading[entryIndex] = false;
+        if (data.status != undefined) {
+          if (data.status == 1) {
+            this.sportsQualificationEntries[entryIndex]['certificateUpload'] = data.dataJson.uploadedFile;
+            this._snackBarMsgComponent.openSnackBar('Certificate uploaded successfully', 'x', 'success-snackbar', 3000);
+          } else {
+            this._snackBarMsgComponent.openSnackBar(data.message || 'Upload failed', 'x', 'error-snackbar', 5000);
+          }
+        } else {
+          this._snackBarMsgComponent.openSnackBar('Upload failed', 'x', 'error-snackbar', 5000);
+        }
+      }, err => {
+        this.allEventEmitters.showLoader.emit(false);
+        this.sportsQualificationCertUploading[entryIndex] = false;
+        this._snackBarMsgComponent.openSnackBar('Upload failed. Please try again.', 'x', 'error-snackbar', 5000);
+      });
+    } else {
+      // Image file - convert to base64 and use uploadDocImage
+      let reader = new FileReader();
+      reader.onload = (e: any) => {
+        let base64Data = e.target.result;
+        let postData = {
+          docId: '',
+          docValue: base64Data
+        };
+        this.allEventEmitters.showLoader.emit(true);
+        this._admissionService.uploadDocImage(postData).subscribe(data => {
+          this.allEventEmitters.showLoader.emit(false);
+          this.sportsQualificationCertUploading[entryIndex] = false;
+          if (data.status != undefined) {
+            if (data.status == 1) {
+              this.sportsQualificationEntries[entryIndex]['certificateUpload'] = data.dataJson.uploadedFile;
+              this._snackBarMsgComponent.openSnackBar('Certificate uploaded successfully', 'x', 'success-snackbar', 3000);
+            } else {
+              this._snackBarMsgComponent.openSnackBar(data.message || 'Upload failed', 'x', 'error-snackbar', 5000);
+            }
+          } else {
+            this._snackBarMsgComponent.openSnackBar('Upload failed', 'x', 'error-snackbar', 5000);
+          }
+        }, err => {
+          this.allEventEmitters.showLoader.emit(false);
+          this.sportsQualificationCertUploading[entryIndex] = false;
+          this._snackBarMsgComponent.openSnackBar('Upload failed. Please try again.', 'x', 'error-snackbar', 5000);
+        });
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   removeSportsQualificationCert(entryIndex: number) {
