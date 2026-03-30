@@ -155,6 +155,7 @@ export class SharedAdmissionFormComponent implements OnInit {
   annualIncomeGroups = [];
   religionsList = [];
   castesList = [];
+  filteredCastesList = [];
   examinations = [];
 
   courseForm: UntypedFormGroup;
@@ -201,6 +202,11 @@ export class SharedAdmissionFormComponent implements OnInit {
 
   extraCurriculumForm: UntypedFormGroup;
   extraCurriculumFormValues = [];
+
+  sportsQualificationConfig: any = { display: false, maxEntries: 3, fields: [], entries: [] };
+  sportsQualificationEntries: any[] = [];
+  sportsQualificationCertUploading: boolean[] = [];
+  sportsQualificationCertProgress: number[] = [];
 
   additionalCertificationForm: UntypedFormGroup;
   additionalCertificationFormValues = [];
@@ -768,7 +774,7 @@ export class SharedAdmissionFormComponent implements OnInit {
       districtOfBirth: [null],
       religionId: [null],
       domicile: [null],
-      casteId: [null],
+      casteName: [null],
       subCaste: [null],
       weight: [null],
       height: [null],
@@ -2495,7 +2501,7 @@ export class SharedAdmissionFormComponent implements OnInit {
         age: [formData.personalInfo.age],
         aadharAge: [formData.personalInfo.aadharAge],
         religionId: [formData.personalInfo.religionId, religionReq],
-        casteId: [formData.personalInfo.casteId, casteReq],
+        casteName: [formData.personalInfo.casteName, casteReq],
         subCaste: [formData.personalInfo.subCaste, subCasteReq],
         weight: [formData.personalInfo.weight, weightReq],
         height: [formData.personalInfo.height, heightReq],
@@ -4871,10 +4877,10 @@ export class SharedAdmissionFormComponent implements OnInit {
       }
       let prnNoReq: any;
       if (formData.educationInfo.showPrnNo && formData.educationInfo.prnNoRequired) {
-        if(formData.educationInfo.prnNoLabel == "ERN / PRN No" || formData.educationInfo.prnNoLabel == "ERN No"){
-           prnNoReq = Validators.compose([Validators.required, Validators.minLength(16), Validators.maxLength(18)]);
+        if (formData.educationInfo.prnNoLabel == "ERN / PRN No" || formData.educationInfo.prnNoLabel == "ERN No") {
+          prnNoReq = Validators.compose([Validators.required, Validators.minLength(16), Validators.maxLength(18)]);
         } else {
-           prnNoReq = Validators.compose([Validators.required, Validators.minLength(16), Validators.maxLength(16)]);
+          prnNoReq = Validators.compose([Validators.required, Validators.minLength(16), Validators.maxLength(16)]);
         }
       }
 
@@ -6090,7 +6096,7 @@ export class SharedAdmissionFormComponent implements OnInit {
           note: [itemRow.note],
           confNameSelected: [itemRow.confNameSelected],
           confName: [itemRow.confName],
-          stream: [itemRow.stream,streamRequired],
+          stream: [itemRow.stream, streamRequired],
           boardName: [itemRow.boardName, boardNameRequired],
           schoolName: [itemRow.schoolName, schoolNameRequired],
           monthAppeared: [itemRow.monthAppeared, monthAppearedRequired],
@@ -6396,6 +6402,39 @@ export class SharedAdmissionFormComponent implements OnInit {
       if (formData.extraCurriculumActivities.onlineLearningPreparedness.display && !globalFunctions.isEmpty(formData.extraCurriculumActivities.onlineLearningPreparedness.questionsList)) {
         this.setOnlineLearningPreparednessRows(formData.extraCurriculumActivities.onlineLearningPreparedness.questionsList);
       }
+
+      // Initialize Sports Qualification
+      if (formData.extraCurriculumActivities.sportsQualification) {
+        let sqData = formData.extraCurriculumActivities.sportsQualification;
+        // Handle when sportsQualification is a raw array (saved form data)
+        if (Array.isArray(sqData)) {
+          // Auto-generate fields from entry keys
+          let autoFields = [];
+          if (sqData.length > 0) {
+            Object.keys(sqData[0]).forEach(key => {
+              if (key === 'certificateUpload' || key === 'documentUrl') {
+                autoFields.push({ name: key, label: 'Upload Certificate', type: 'file' });
+              } else {
+                let label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                autoFields.push({ name: key, label: label, type: 'text' });
+              }
+            });
+          }
+          this.sportsQualificationConfig = { display: true, maxEntries: 10, fields: autoFields, entries: sqData };
+          this.sportsQualificationEntries = sqData;
+        } else {
+          this.sportsQualificationConfig = sqData;
+          if (this.sportsQualificationConfig.display && this.sportsQualificationConfig.entries && this.sportsQualificationConfig.entries.length > 0) {
+            this.sportsQualificationEntries = this.sportsQualificationConfig.entries;
+          } else if (this.sportsQualificationConfig.display) {
+            this.sportsQualificationEntries = [];
+            // Add one empty form by default on first load
+            this.addSportsQualificationEntry();
+          }
+        }
+        this.sportsQualificationCertUploading = new Array(this.sportsQualificationEntries.length).fill(false);
+        this.sportsQualificationCertProgress = new Array(this.sportsQualificationEntries.length).fill(0);
+      }
     }
   }
 
@@ -6411,6 +6450,115 @@ export class SharedAdmissionFormComponent implements OnInit {
       chkBoxErr: [false],
       value: [null],
     });
+  }
+
+  addSportsQualificationEntry() {
+    if (this.sportsQualificationEntries.length < this.sportsQualificationConfig.maxEntries) {
+      let newEntry: any = {};
+      this.sportsQualificationConfig.fields.forEach((field) => {
+        newEntry[field.name] = '';
+      });
+      this.sportsQualificationEntries.push(newEntry);
+      this.sportsQualificationCertUploading.push(false);
+      this.sportsQualificationCertProgress.push(0);
+    }
+  }
+
+  removeSportsQualificationEntry(index: number) {
+    this.sportsQualificationEntries.splice(index, 1);
+    this.sportsQualificationCertUploading.splice(index, 1);
+    this.sportsQualificationCertProgress.splice(index, 1);
+  }
+
+  onSportsQualificationFieldChange(entryIndex: number, fieldName: string, value: any) {
+    this.sportsQualificationEntries[entryIndex][fieldName] = value;
+  }
+
+  onSportsQualificationCertUpload(event: any, entryIndex: number) {
+    let file = event.target.files[0];
+    if (!file) return;
+
+    let fileExt = file.name.split('.').pop().toLowerCase();
+    let allowedExts = ['jpg', 'png', 'pdf', 'jpeg'];
+    if (!allowedExts.includes(fileExt)) {
+      this._snackBarMsgComponent.openSnackBar('Only JPG, PNG, PDF files allowed', 'x', 'error-snackbar', 5000);
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      this._snackBarMsgComponent.openSnackBar('File size should be less than 5 MB', 'x', 'error-snackbar', 5000);
+      return;
+    }
+
+    this.sportsQualificationCertUploading[entryIndex] = true;
+    this.sportsQualificationCertProgress[entryIndex] = 0;
+
+    if (fileExt === 'pdf') {
+      this.allEventEmitters.showLoader.emit(true);
+      this._admissionService.uploadPdf(file, '').subscribe(data => {
+        this.allEventEmitters.showLoader.emit(false);
+        this.sportsQualificationCertUploading[entryIndex] = false;
+        if (data.status != undefined) {
+          if (data.status == 1) {
+            this.sportsQualificationEntries[entryIndex]['certificateUpload'] = data.dataJson.uploadedFile;
+            this._snackBarMsgComponent.openSnackBar('Certificate uploaded successfully', 'x', 'success-snackbar', 3000);
+          } else {
+            this._snackBarMsgComponent.openSnackBar(data.message || 'Upload failed', 'x', 'error-snackbar', 5000);
+          }
+        } else {
+          this._snackBarMsgComponent.openSnackBar('Upload failed', 'x', 'error-snackbar', 5000);
+        }
+      }, err => {
+        this.allEventEmitters.showLoader.emit(false);
+        this.sportsQualificationCertUploading[entryIndex] = false;
+        this._snackBarMsgComponent.openSnackBar('Upload failed. Please try again.', 'x', 'error-snackbar', 5000);
+      });
+    } else {
+      // Image file - convert to base64 and use uploadDocImage
+      let reader = new FileReader();
+      reader.onload = (e: any) => {
+        let base64Data = e.target.result;
+        let postData = {
+          docId: '',
+          docValue: base64Data
+        };
+        this.allEventEmitters.showLoader.emit(true);
+        this._admissionService.uploadDocImage(postData).subscribe(data => {
+          this.allEventEmitters.showLoader.emit(false);
+          this.sportsQualificationCertUploading[entryIndex] = false;
+          if (data.status != undefined) {
+            if (data.status == 1) {
+              this.sportsQualificationEntries[entryIndex]['certificateUpload'] = data.dataJson.uploadedFile;
+              this._snackBarMsgComponent.openSnackBar('Certificate uploaded successfully', 'x', 'success-snackbar', 3000);
+            } else {
+              this._snackBarMsgComponent.openSnackBar(data.message || 'Upload failed', 'x', 'error-snackbar', 5000);
+            }
+          } else {
+            this._snackBarMsgComponent.openSnackBar('Upload failed', 'x', 'error-snackbar', 5000);
+          }
+        }, err => {
+          this.allEventEmitters.showLoader.emit(false);
+          this.sportsQualificationCertUploading[entryIndex] = false;
+          this._snackBarMsgComponent.openSnackBar('Upload failed. Please try again.', 'x', 'error-snackbar', 5000);
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeSportsQualificationCert(entryIndex: number) {
+    this.sportsQualificationEntries[entryIndex]['certificateUpload'] = '';
+  }
+
+  onSportsQualificationFormSubmit(stepper: any, tab: any): void {
+    this._snackBarMsgComponent.closeSnackBar();
+    this.goToNextStep(stepper, tab);
+  }
+
+  viewSportsQualificationCert(url: string) {
+    if (url) {
+      window.open(url, '_blank');
+    }
   }
 
   additionalCertificationFormRows(itemRow): UntypedFormGroup {
@@ -8327,6 +8475,11 @@ export class SharedAdmissionFormComponent implements OnInit {
     this.filteredBoardList = this.boardList.filter(obj => obj.toLowerCase().indexOf(text.toString().toLowerCase()) === 0);
   }
 
+  filterCastes(event: any) {
+    let text: string = event.target.value;
+    this.filteredCastesList = this.castesList.filter(obj => obj.caste.toLowerCase().indexOf(text.toString().toLowerCase()) === 0);
+  }
+
   filterMotherTongues(event: any) {
     let text: string = event.target.value;
     this.filteredMotherTongues = this.motherTongueList.filter(obj => obj.motherTongueName.toLowerCase().indexOf(text.toString().toLowerCase()) === 0);
@@ -8401,6 +8554,7 @@ export class SharedAdmissionFormComponent implements OnInit {
       if (data.status != undefined) {
         if (data.status == 1) {
           this.castesList = data.dataJson;
+          this.filteredCastesList = data.dataJson;
         } else if (data.status == 0) {
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar');
         }
@@ -9218,6 +9372,9 @@ export class SharedAdmissionFormComponent implements OnInit {
       }
     });
     this.extraCurriculumFormValues['otherActivities'] = this.otherActivities;
+    this.extraCurriculumFormValues['sportsQualification'] = this.sportsQualificationEntries.map(entry => {
+      return { ...entry, documentLink: entry.certificateUpload || '' };
+    });
     this.additionalCertificationFormValues = this.additionalCertificationForm.value;
 
     this.questionnaireFormValues = this.questionnaireForm.get('questionnaire').value;

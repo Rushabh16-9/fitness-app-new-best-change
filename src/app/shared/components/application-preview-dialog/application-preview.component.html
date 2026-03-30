@@ -55,7 +55,7 @@
             <div class="bord-page" *ngIf="formData.showAndrewesSubSelection">
 
               <div *ngFor="let subjSelectn of subjectSelectionList; let i = index">
-                <div  class="subj-selectn-blk">
+                <div class="subj-selectn-blk">
 
                   <div class="heading">
 
@@ -67,9 +67,12 @@
                       style="margin-top:5px;"></div>
 
                     <div *ngIf="subjSelectn.subjSelctnErr" class="error-msg">{{allMsgs.SUBJECT_NOT_SELECTED}}</div>
-                    <div *ngIf="subjSelectn.minReqPreference" class="error-msg">{{subjSelectn.minReqPreferenceMsg}}</div>
-                    <div *ngIf="subjSelectn.maxReqPreference" class="error-msg">{{subjSelectn.maxReqPreferenceMsg}}</div>
-                    <div *ngIf="subjSelectn.firstPrefNotSeltd" class="error-msg">{{allMsgs.FIRST_PREFERENCE_REQUIRED}}</div>
+                    <div *ngIf="subjSelectn.minReqPreference" class="error-msg">{{subjSelectn.minReqPreferenceMsg}}
+                    </div>
+                    <div *ngIf="subjSelectn.maxReqPreference" class="error-msg">{{subjSelectn.maxReqPreferenceMsg}}
+                    </div>
+                    <div *ngIf="subjSelectn.firstPrefNotSeltd" class="error-msg">{{allMsgs.FIRST_PREFERENCE_REQUIRED}}
+                    </div>
                     <div *ngIf="subjSelectn.doublePreference" class="error-msg">{{allMsgs.SUBJECT_PREFERENCE_REPEATED}}
                     </div>
 
@@ -112,24 +115,24 @@
 
                       <div *ngIf="subjSelectn.type == 'singleChoice'">
                         <div *ngIf="subjSelectn.subjectsListBunch" class="subj-blk">
-                            <mat-radio-group class="width-100 mb-adjust-form-field" style="width:100%">
-                              <div flex fxLayout="row"
-                                fxLayout.lt-sm="column" fxLayoutGap="10px">
-                                <mat-radio-button 
-                                  (change)="onSelectRadioSubject(i,0, k)" [value]="subj.name" [checked]="subj.isSelected"
-                                  style="display: block; margin-right: 10px; margin-bottom:10px;" class="subj-name" fxFlex>
-                                  {{subj.name}}
-                                </mat-radio-button>
-                              </div>
-                            </mat-radio-group>
-                          </div>
+                          <mat-radio-group class="width-100 mb-adjust-form-field" style="width:100%">
+                            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px">
+                              <mat-radio-button (change)="onSelectRadioSubject(i,0, k)" [value]="subj.name"
+                                [checked]="subj.isSelected"
+                                style="display: block; margin-right: 10px; margin-bottom:10px;" class="subj-name"
+                                fxFlex>
+                                {{subj.name}}
+                              </mat-radio-button>
+                            </div>
+                          </mat-radio-group>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-             <!--  <div *ngFor="let subjSelectn of subjectSelectionList; let i = index">
+              <!--  <div *ngFor="let subjSelectn of subjectSelectionList; let i = index">
 
                 <div *ngIf="subjSelectn.type == 'singleChoice'" class="subj-selectn-blk">
 
@@ -161,65 +164,68 @@
             <div class="bord-page" *ngIf="formData.showAndrewesSubSelection == false">
 
               <div *ngFor="let subjSelectn of subjectSelectionList; let i = index">
-                  <div *ngIf="subjSelectn.type != 'singleChoice'  "  class="subj-selectn-blk">
+                <div *ngIf="subjSelectn.type != 'singleChoice'  " class="subj-selectn-blk">
 
-                    <div class="heading">
+                  <div class="heading">
 
-                      <div [innerHTML]="subjSelectn.title"></div>
+                    <div [innerHTML]="subjSelectn.title"></div>
 
-                      <div *ngIf="subjSelectn.description" [innerHTML]="subjSelectn.description" class="info"
-                        style="margin-top:5px;"></div>
-                      <div *ngIf="subjSelectn.titleNote" [innerHTML]="subjSelectn.titleNote" class="info"
-                        style="margin-top:5px;"></div>
+                    <div *ngIf="subjSelectn.description" [innerHTML]="subjSelectn.description" class="info"
+                      style="margin-top:5px;"></div>
+                    <div *ngIf="subjSelectn.titleNote" [innerHTML]="subjSelectn.titleNote" class="info"
+                      style="margin-top:5px;"></div>
 
-                      <div *ngIf="subjSelectn.subjSelctnErr" class="error-msg">{{allMsgs.SUBJECT_NOT_SELECTED}}</div>
-                      <div *ngIf="subjSelectn.minReqPreference" class="error-msg">{{subjSelectn.minReqPreferenceMsg}}</div>
-                      <div *ngIf="subjSelectn.maxReqPreference" class="error-msg">{{subjSelectn.maxReqPreferenceMsg}}</div>
-                      <div *ngIf="subjSelectn.firstPrefNotSeltd" class="error-msg">{{allMsgs.FIRST_PREFERENCE_REQUIRED}}</div>
-                      <div *ngIf="subjSelectn.doublePreference" class="error-msg">{{allMsgs.SUBJECT_PREFERENCE_REPEATED}}
-                      </div>
-
-                      <div *ngIf="subjSelectn.maxChoices" class="error-msg">{{subjSelectn.maxChoicesMsg}}</div>
+                    <div *ngIf="subjSelectn.subjSelctnErr" class="error-msg">{{allMsgs.SUBJECT_NOT_SELECTED}}</div>
+                    <div *ngIf="subjSelectn.minReqPreference" class="error-msg">{{subjSelectn.minReqPreferenceMsg}}
+                    </div>
+                    <div *ngIf="subjSelectn.maxReqPreference" class="error-msg">{{subjSelectn.maxReqPreferenceMsg}}
+                    </div>
+                    <div *ngIf="subjSelectn.firstPrefNotSeltd" class="error-msg">{{allMsgs.FIRST_PREFERENCE_REQUIRED}}
+                    </div>
+                    <div *ngIf="subjSelectn.doublePreference" class="error-msg">{{allMsgs.SUBJECT_PREFERENCE_REPEATED}}
                     </div>
 
-                    <div *ngIf="subjSelectn.subjectsList" class="subj-blk">
+                    <div *ngIf="subjSelectn.maxChoices" class="error-msg">{{subjSelectn.maxChoicesMsg}}</div>
+                  </div>
 
-                      <div *ngFor="let subj of subjSelectn.subjectsList; let k = index">
+                  <div *ngIf="subjSelectn.subjectsList" class="subj-blk">
 
-                        <div *ngIf="subjSelectn.type == 'compulsory'">
-                          <div [innerHTML]="subj.name" class="subj-name"></div>
-                        </div>
+                    <div *ngFor="let subj of subjSelectn.subjectsList; let k = index">
 
-                        <div *ngIf="subjSelectn.type == 'multichoice'">
-                          <mat-checkbox (change)="onSelectSubject(i, k, $event.checked)" [checked]="subj.isSelected"
-                            style="font-size: 12px;" fxFlex class="p-1">
-                            {{subj.name}}
-                          </mat-checkbox>
-                        </div>
-
-                        <div *ngIf="subjSelectn.type == 'multichoicePreference'">
-
-                          <div fxFlex class="p-1">
-                            <mat-form-field style="max-width:100px;">
-                              <mat-select (selectionChange)="onSelectSubjectPreference($event.value, k, i)"
-                                placeholder="Preference" [(value)]="subj.preference">
-                                <mat-option *ngFor="let preference of subjSelectn.preferenceAray" [value]="preference">
-                                  {{preference}}
-                                </mat-option>
-                              </mat-select>
-                              <div class="field-error-msg" *ngIf="subj.subjectErr">{{allMsgs.REQUIRED_PREFERENCE}}</div>
-                            </mat-form-field>
-
-                            <span style="padding-left: 10px;">
-                              {{subj.name}}
-                            </span>
-                          </div>
-                        </div>
-
-                        
+                      <div *ngIf="subjSelectn.type == 'compulsory'">
+                        <div [innerHTML]="subj.name" class="subj-name"></div>
                       </div>
+
+                      <div *ngIf="subjSelectn.type == 'multichoice'">
+                        <mat-checkbox (change)="onSelectSubject(i, k, $event.checked)" [checked]="subj.isSelected"
+                          style="font-size: 12px;" fxFlex class="p-1">
+                          {{subj.name}}
+                        </mat-checkbox>
+                      </div>
+
+                      <div *ngIf="subjSelectn.type == 'multichoicePreference'">
+
+                        <div fxFlex class="p-1">
+                          <mat-form-field style="max-width:100px;">
+                            <mat-select (selectionChange)="onSelectSubjectPreference($event.value, k, i)"
+                              placeholder="Preference" [(value)]="subj.preference">
+                              <mat-option *ngFor="let preference of subjSelectn.preferenceAray" [value]="preference">
+                                {{preference}}
+                              </mat-option>
+                            </mat-select>
+                            <div class="field-error-msg" *ngIf="subj.subjectErr">{{allMsgs.REQUIRED_PREFERENCE}}</div>
+                          </mat-form-field>
+
+                          <span style="padding-left: 10px;">
+                            {{subj.name}}
+                          </span>
+                        </div>
+                      </div>
+
+
                     </div>
                   </div>
+                </div>
               </div>
 
               <div *ngFor="let subjSelectn of subjectSelectionList; let i = index">
@@ -248,7 +254,7 @@
                     </mat-radio-group>
                   </div>
                 </div>
-              </div> 
+              </div>
             </div>
 
             <div class="flex-p">
@@ -524,7 +530,7 @@
 
             <div class="bord-page">
 
-               <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px" class="marg-top-5">
+              <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px" class="marg-top-5">
                 <mat-form-field *ngIf="formData.personalInfo.abcIdShow" fxFlex>
                   <input formControlName="abcId" placeholder="{{formData.personalInfo.abcIdLabel}}" maxlength="12"
                     (keypress)="globalFunctions.onlyNumberKey($event)" [required]="formData.personalInfo.abcIdRequired"
@@ -538,10 +544,14 @@
               <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
                 <mat-form-field *ngIf="formData.personalInfo.showGrNo" fxFlex>
                   <input formControlName="grNo" placeholder="{{formData.personalInfo.grNoLabel}}"
-                    (keydown.space)="$event.preventDefault()" (keypress)="formData.personalInfo.grNoOnlyNumber ? globalFunctions.onlyNumberKey($event) : true" [maxlength]="formData.personalInfo.grNoMaxLength"
-                    [required]="formData.personalInfo.grNoReq" matInput>
-                    <mat-error *ngIf="personalInfoForm.controls.grNo.hasError('minlength')">{{allMsgs.WRONG_GRNO}}</mat-error>
-                  <mat-error *ngIf="personalInfoForm.controls.grNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                    (keydown.space)="$event.preventDefault()"
+                    (keypress)="formData.personalInfo.grNoOnlyNumber ? globalFunctions.onlyNumberKey($event) : true"
+                    [maxlength]="formData.personalInfo.grNoMaxLength" [required]="formData.personalInfo.grNoReq"
+                    matInput>
+                  <mat-error
+                    *ngIf="personalInfoForm.controls.grNo.hasError('minlength')">{{allMsgs.WRONG_GRNO}}</mat-error>
+                  <mat-error
+                    *ngIf="personalInfoForm.controls.grNo.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
                   <mat-hint *ngIf="formData.personalInfo.grNoNote"> {{formData.personalInfo.grNoNote}}</mat-hint>
                 </mat-form-field>
 
@@ -921,11 +931,15 @@
                 <div *ngIf="formData.personalInfo.casteFieldType == 'selectBox'" flex fxLayout="row"
                   fxLayout.lt-sm="column">
                   <mat-form-field *ngIf="formData.personalInfo.showCaste" fxFlex>
-                    <mat-select formControlName="casteId" placeholder="{{formData.personalInfo.casteLabel}}"
-                      [required]="formData.personalInfo.casteRequired">
-                      <mat-option *ngFor="let cast of castesList" [value]="cast.casteId"> {{cast.caste}} </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="personalInfoForm.controls.casteId.errors?.required">{{allMsgs.REQUIRED_FIELD}}
+                    <input formControlName="casteName" placeholder="{{formData.personalInfo.casteLabel}}"
+                      (keyup)="filterCastes($event)" [matAutocomplete]="autoCaste"
+                      [required]="formData.personalInfo.casteRequired" maxlength="300" matInput>
+                    <mat-autocomplete #autoCaste="matAutocomplete">
+                      <mat-option *ngFor="let cast of filteredCastesList" [value]="cast.caste">
+                        {{cast.caste}}
+                      </mat-option>
+                    </mat-autocomplete>
+                    <mat-error *ngIf="personalInfoForm.controls.casteName.errors?.required">{{allMsgs.REQUIRED_FIELD}}
                     </mat-error>
                     <mat-hint *ngIf="formData.personalInfo.casteNote"> {{formData.personalInfo.casteNote}}</mat-hint>
                   </mat-form-field>
@@ -971,9 +985,13 @@
 
                 <mat-form-field *ngIf="formData.personalInfo.nadId.display" fxFlex>
                   <input formControlName="nadId" placeholder="{{formData.personalInfo.nadId.label}}" maxlength="16"
-                    [required]="formData.personalInfo.nadId.required" (keypress)="formData.personalInfo.nadId.onlyNumber ? globalFunctions.onlyNumberKey($event) : true" matInput>
-                  <mat-error *ngIf="personalInfoForm.controls.nadId.hasError('minlength')">{{allMsgs.WRONG_ABCID}}</mat-error>
-                  <mat-error *ngIf="personalInfoForm.controls.nadId.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                    [required]="formData.personalInfo.nadId.required"
+                    (keypress)="formData.personalInfo.nadId.onlyNumber ? globalFunctions.onlyNumberKey($event) : true"
+                    matInput>
+                  <mat-error
+                    *ngIf="personalInfoForm.controls.nadId.hasError('minlength')">{{allMsgs.WRONG_ABCID}}</mat-error>
+                  <mat-error
+                    *ngIf="personalInfoForm.controls.nadId.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
                   <mat-hint *ngIf="formData.personalInfo.nadId.note">{{formData.personalInfo.nadId.note}}</mat-hint>
                 </mat-form-field>
 
@@ -1362,38 +1380,38 @@
                         *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.address.note">{{formData.personalInfo.addressInfo.fields.nativeAddress.fields.address.note}}</mat-hint>
                     </mat-form-field>
                     <mat-form-field *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.area.display"
-                    fxFlex>
-                    <input formControlName="area"
-                      placeholder="{{formData.personalInfo.addressInfo.fields.nativeAddress.fields.area.label}}"
-                      matInput
-                      [maxlength]="formData.personalInfo.addressInfo.fields.nativeAddress.fields.area.addressMaxLength">
-                    <mat-error *ngIf="personalInfoForm.get('nativeAddress.area').errors?.required">
-                      {{allMsgs.REQUIRED_FIELD}}</mat-error>
-                    <mat-hint *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.area.note">
-                      {{formData.personalInfo.addressInfo.fields.nativeAddress.fields.area.note}}</mat-hint>
-                  </mat-form-field>
-                  <mat-form-field *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.street.display"
-                    fxFlex>
-                    <input formControlName="street"
-                      placeholder="{{formData.personalInfo.addressInfo.fields.nativeAddress.fields.street.label}}"
-                      matInput
-                      [maxlength]="formData.personalInfo.addressInfo.fields.nativeAddress.fields.street.addressMaxLength">
-                    <mat-error *ngIf="personalInfoForm.get('nativeAddress.street').errors?.required">
-                      {{allMsgs.REQUIRED_FIELD}}</mat-error>
-                    <mat-hint *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.street.note">
-                      {{formData.personalInfo.addressInfo.fields.nativeAddress.fields.street.note}}</mat-hint>
-                  </mat-form-field>
-                  <mat-form-field *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.district.display"
-                    fxFlex>
-                    <input formControlName="district"
-                      placeholder="{{formData.personalInfo.addressInfo.fields.nativeAddress.fields.district.label}}"
-                      matInput
-                      [maxlength]="formData.personalInfo.addressInfo.fields.nativeAddress.fields.district.addressMaxLength">
-                    <mat-error *ngIf="personalInfoForm.get('nativeAddress.district').errors?.required">
-                      {{allMsgs.REQUIRED_FIELD}}</mat-error>
-                    <mat-hint *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.district.note">
-                      {{formData.personalInfo.addressInfo.fields.nativeAddress.fields.district.note}}</mat-hint>
-                  </mat-form-field>
+                      fxFlex>
+                      <input formControlName="area"
+                        placeholder="{{formData.personalInfo.addressInfo.fields.nativeAddress.fields.area.label}}"
+                        matInput
+                        [maxlength]="formData.personalInfo.addressInfo.fields.nativeAddress.fields.area.addressMaxLength">
+                      <mat-error *ngIf="personalInfoForm.get('nativeAddress.area').errors?.required">
+                        {{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      <mat-hint *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.area.note">
+                        {{formData.personalInfo.addressInfo.fields.nativeAddress.fields.area.note}}</mat-hint>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.street.display"
+                      fxFlex>
+                      <input formControlName="street"
+                        placeholder="{{formData.personalInfo.addressInfo.fields.nativeAddress.fields.street.label}}"
+                        matInput
+                        [maxlength]="formData.personalInfo.addressInfo.fields.nativeAddress.fields.street.addressMaxLength">
+                      <mat-error *ngIf="personalInfoForm.get('nativeAddress.street').errors?.required">
+                        {{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      <mat-hint *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.street.note">
+                        {{formData.personalInfo.addressInfo.fields.nativeAddress.fields.street.note}}</mat-hint>
+                    </mat-form-field>
+                    <mat-form-field
+                      *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.district.display" fxFlex>
+                      <input formControlName="district"
+                        placeholder="{{formData.personalInfo.addressInfo.fields.nativeAddress.fields.district.label}}"
+                        matInput
+                        [maxlength]="formData.personalInfo.addressInfo.fields.nativeAddress.fields.district.addressMaxLength">
+                      <mat-error *ngIf="personalInfoForm.get('nativeAddress.district').errors?.required">
+                        {{allMsgs.REQUIRED_FIELD}}</mat-error>
+                      <mat-hint *ngIf="formData.personalInfo.addressInfo.fields.nativeAddress.fields.district.note">
+                        {{formData.personalInfo.addressInfo.fields.nativeAddress.fields.district.note}}</mat-hint>
+                    </mat-form-field>
                   </div>
                   <div formGroupName="nativeAddress" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px">
                     <mat-form-field
@@ -2958,7 +2976,9 @@
                 <div *ngIf="formData?.guardianInfo?.membersInfo?.guardianDetails?.showGuardianSelection"
                   style="margin-top: 10px; padding-bottom: 5px;">
                   <mat-radio-group formControlName="guardian" class="pad-top-10 mb-padng-btm-10 mb-padng-top-0">
-                    <b style="color: #3e3e3e;"> <span> {{ !globalFunctions.isEmpty(formData?.guardianInfo?.guardianLabel) ? formData?.guardianInfo?.guardianLabel : 'GUARDIAN' }} : </span></b>
+                    <b style="color: #3e3e3e;"> <span> {{
+                        !globalFunctions.isEmpty(formData?.guardianInfo?.guardianLabel) ?
+                        formData?.guardianInfo?.guardianLabel : 'GUARDIAN' }} : </span></b>
                     <mat-radio-button class="mb-displ-block marg-left-10 mb-marg-left-0 mb-marg-btm-10" value="yes">Yes
                     </mat-radio-button>
                     <mat-radio-button class="mb-displ-block" value="no">No</mat-radio-button>
@@ -4852,7 +4872,8 @@
                         <mat-form-field fxFlex
                           *ngIf="formData.educationInfo.eduInfo.postGraduate.filter.degree.display">
                           <mat-select (selectionChange)="onChangeDegree($event.value, 'postGraduate')"
-                            formControlName="degree" placeholder="{{formData.educationInfo.eduInfo.postGraduate.filter.degree.label}}">
+                            formControlName="degree"
+                            placeholder="{{formData.educationInfo.eduInfo.postGraduate.filter.degree.label}}">
                             <mat-option
                               *ngFor="let deg of formData.educationInfo.eduInfo.postGraduate.filter.degree.values"
                               [value]="deg">
@@ -6417,12 +6438,14 @@
                 </mat-form-field>
                 <mat-form-field *ngIf="formData.extraCurriculumActivities.showSports" fxFlex>
                   <input formControlName="sports" matInput placeholder="Sports" maxlength="35">
-                  <mat-error *ngIf="extraCurriculumForm.controls.sports.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                  <mat-error
+                    *ngIf="extraCurriculumForm.controls.sports.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
                 </mat-form-field>
                 <mat-form-field *ngIf="formData.extraCurriculumActivities.showExtraCurriculularActivity" fxFlex>
                   <input formControlName="extraCurriculularActivity" matInput placeholder="Extra-curricular Activity"
                     maxlength="35">
-                    <mat-error *ngIf="extraCurriculumForm.controls.extraCurriculularActivity.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
+                  <mat-error
+                    *ngIf="extraCurriculumForm.controls.extraCurriculularActivity.errors?.required">{{allMsgs.REQUIRED_FIELD}}</mat-error>
                 </mat-form-field>
               </div>
               <div *ngIf="formData.extraCurriculumActivities.showOtherActivities"
@@ -6496,6 +6519,32 @@
               <mat-divider></mat-divider>
             </div>
           </form>
+        </ng-template>
+
+        <ng-template #sportsQualification>
+          <div class="bord-page">
+            <div *ngIf="sportsQualificationConfig.display">
+              <div *ngFor="let entry of sportsQualificationEntries; let i = index"
+                style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 4px; background: #fafafa;">
+                <div style="margin-bottom: 10px;">
+                  <b>Sport Qualification {{i + 1}}</b>
+                </div>
+                <div *ngFor="let field of sportsQualificationConfig.fields">
+                  <div *ngIf="field.type == 'text' || field.type == 'select' || field.type == 'number'" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px" class="marg-top-5">
+                    <mat-form-field fxFlex>
+                      <input matInput [placeholder]="field.label" [value]="entry[field.name]" readonly>
+                    </mat-form-field>
+                  </div>
+                  <div *ngIf="field.type == 'file' && entry[field.name]" class="marg-top-5" style="margin-bottom: 10px;">
+                    <a class="dwn-link file-name" (click)="viewDoc(entry[field.name])">View Certificate</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex-p">
+            <mat-divider></mat-divider>
+          </div>
         </ng-template>
 
         <ng-template #additionalCertification>
@@ -6619,52 +6668,52 @@
           </form>
         </ng-template>
 
-        
-    <ng-template #branchingQuestion>
-      <form [formGroup]="branchingQuestionForm">
-        <div formArrayName="questions">
-          <div *ngFor="let question of branchingQuestionForm.get('questions').controls; let i = index"
-            [formGroupName]="i">
 
-            <label>{{ question.get('question').value }} ?</label>
+        <ng-template #branchingQuestion>
+          <form [formGroup]="branchingQuestionForm">
+            <div formArrayName="questions">
+              <div *ngFor="let question of branchingQuestionForm.get('questions').controls; let i = index"
+                [formGroupName]="i">
 
-            <mat-radio-group formControlName="answer" style="margin-bottom: 15px;">
-              <div formArrayName="options">
-                <div *ngFor="let option of question.get('options').controls; let j = index" [formGroupName]="j">
-                  <mat-radio-button style="margin-bottom: 5px;" [value]="option.get('key').value">{{
-                    option.get('label').value }}</mat-radio-button>
-                </div>
-              </div>
-            </mat-radio-group>
+                <label>{{ question.get('question').value }} ?</label>
 
-            <div formGroupName="subquestion">
-              <div *ngFor="let subGroupKey of objectKeys(question.get('subquestion').value)">
-                <div *ngIf="question.get('answer').value === subGroupKey" formArrayName="{{subGroupKey}}">
-                  <div *ngFor="let subQ of question.get('subquestion').get(subGroupKey).controls; let k = index"
-                    [formGroupName]="k">
-                    <mat-form-field appearance="fill" fxFlex>
-                      <mat-label>{{ subQ.get('question').value }}</mat-label>
-                      <input matInput formControlName="answer" placeholder="Type your answer here">
-                      <mat-error *ngIf="subQ.get('answer').hasError('required')" class="error-msg">
-                        {{allMsgs.REQUIRED_FIELD}}</mat-error>
-                    </mat-form-field>
+                <mat-radio-group formControlName="answer" style="margin-bottom: 15px;">
+                  <div formArrayName="options">
+                    <div *ngFor="let option of question.get('options').controls; let j = index" [formGroupName]="j">
+                      <mat-radio-button style="margin-bottom: 5px;" [value]="option.get('key').value">{{
+                        option.get('label').value }}</mat-radio-button>
+                    </div>
+                  </div>
+                </mat-radio-group>
+
+                <div formGroupName="subquestion">
+                  <div *ngFor="let subGroupKey of objectKeys(question.get('subquestion').value)">
+                    <div *ngIf="question.get('answer').value === subGroupKey" formArrayName="{{subGroupKey}}">
+                      <div *ngFor="let subQ of question.get('subquestion').get(subGroupKey).controls; let k = index"
+                        [formGroupName]="k">
+                        <mat-form-field appearance="fill" fxFlex>
+                          <mat-label>{{ subQ.get('question').value }}</mat-label>
+                          <input matInput formControlName="answer" placeholder="Type your answer here">
+                          <mat-error *ngIf="subQ.get('answer').hasError('required')" class="error-msg">
+                            {{allMsgs.REQUIRED_FIELD}}</mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </form>
-    </ng-template>
+          </form>
+        </ng-template>
 
         <ng-template #qrPayment>
           <div class="bord-page">
-            <div *ngIf="formData.qrPaymentDesc"  [innerHTML]="formData.qrPaymentDesc"></div>
+            <div *ngIf="formData.qrPaymentDesc" [innerHTML]="formData.qrPaymentDesc"></div>
           </div>
           <div class="flex-p">
             <mat-divider></mat-divider>
           </div>
-      </ng-template>
+        </ng-template>
 
 
         <ng-template #uploadDocuments>
@@ -6748,7 +6797,7 @@
 
                 <div *ngIf="formData.declarationInfo.showSignatureUpload" fxFlex class="mb-marg-top-10">
                   <div>
-                   {{formData.declarationInfo.signPhotoHeaderLable }}
+                    {{formData.declarationInfo.signPhotoHeaderLable }}
                     <div class="error-msg" *ngIf="signatureImageError">{{allMsgs.REQUIRED_SIGNATURE_IMAGE}}</div>
                   </div>
                   <div>
@@ -6872,7 +6921,7 @@
                 <div class="sub-div-blk" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="10px">
                   <mat-checkbox formControlName="declarationByGuardian"
                     class="pad-top-10 mb-padng-btm-10 mb-padng-top-0" fxFlex>
-                    <span class="sub-div-head" >{{formData.declarationInfo.showParentsDeclarationLable}} </span>
+                    <span class="sub-div-head">{{formData.declarationInfo.showParentsDeclarationLable}} </span>
                     <mat-error *ngIf="declarationForm.controls.declarationByGuardian.errors?.required"
                       style="font-size: 12px;">{{allMsgs.REQUIRED_DECLARATION_BY_GUARDIAN}}</mat-error>
                   </mat-checkbox>
@@ -6886,7 +6935,8 @@
                     </span>
                   </div>
                   <div style="margin-bottom: 10px;">
-                   <span style="font-weight: 500; margin-right: 5px;">{{formData.declarationInfo.showParentsDeclarationLable2}}</span>
+                    <span
+                      style="font-weight: 500; margin-right: 5px;">{{formData.declarationInfo.showParentsDeclarationLable2}}</span>
 
                     <div *ngIf="formData.personalInfo.showAllNames;then showAllNames else showFullNameMarksheet">here is
                       ignored</div>
@@ -6913,7 +6963,7 @@
                       style="font-size: 12px;">{{allMsgs.REQUIRED_DECLARATION_BY_GUARDIAN}}</mat-error>
                   </mat-checkbox>
                 </div>
-    
+
                 <div style="margin-left: 38px;">
                   <div style="margin-bottom: 10px;">
                     <span style="font-weight: 500; margin-right: 5px;">I, Mr./Ms.</span>
@@ -6927,7 +6977,8 @@
                       {{personalInfoForm.get('fullNameMarksheet').value}}
                     </ng-template>
                     <span>
-                     & My Parents / Guardian Mr./Mrs. {{guardianName}} <div [innerHTML]="formData.declarationInfo.studentParentDeclaration"></div>
+                      & My Parents / Guardian Mr./Mrs. {{guardianName}} <div
+                        [innerHTML]="formData.declarationInfo.studentParentDeclaration"></div>
                     </span>
                   </div>
                   <div style="margin-bottom: 10px;">
@@ -7311,6 +7362,14 @@
 
                 </span>
 
+                <span *ngIf="tab.stepName == 'sportQualification'">
+
+                  <ng-template matStepLabel>{{tab.stepTitle}}</ng-template>
+
+                  <ng-container *ngTemplateOutlet="sportsQualification"></ng-container>
+
+                </span>
+
                 <span *ngIf="tab.stepName == 'extraCertificate'">
 
                   <ng-template matStepLabel>{{tab.stepTitle}}</ng-template>
@@ -7345,11 +7404,11 @@
 
                 </span>
 
-                  <span *ngIf="tab.stepName == 'qrPayment'">
-                    <ng-template matStepLabel>{{tab.stepTitle}}</ng-template>
+                <span *ngIf="tab.stepName == 'qrPayment'">
+                  <ng-template matStepLabel>{{tab.stepTitle}}</ng-template>
 
-                    <ng-container *ngTemplateOutlet="qrPayment"></ng-container>
-                  </span>
+                  <ng-container *ngTemplateOutlet="qrPayment"></ng-container>
+                </span>
 
                 <span *ngIf="tab.stepName == 'declarationInfo'">
 
