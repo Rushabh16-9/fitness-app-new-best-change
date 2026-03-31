@@ -38,39 +38,6 @@ export class AuthenticationInterceptor implements HttpInterceptor {
 
     req = req.clone({ headers: req.headers.set('Accept', 'application/json') });
 
-    const reqUrl = (req.url || '').toLowerCase();
-    const reqBody: any = req.body || {};
-    const hasPersonalInfo = reqBody && typeof reqBody === 'object' && !Array.isArray(reqBody) && !!reqBody.personalInfo;
-    const isSaveRequest = reqUrl.indexOf('admission/saveform') !== -1 || reqUrl.indexOf('institute/saveadmissionform') !== -1;
-    const shouldTraceNameChange = req.method === 'POST' && (isSaveRequest || hasPersonalInfo);
-
-    if (shouldTraceNameChange) {
-      const body: any = reqBody;
-      const personalInfo: any = body.personalInfo || {};
-      const isNameChangeFromAi = Number(
-        body.is_name_change_from_ai !== undefined ? body.is_name_change_from_ai :
-          (body.isNameChangeFromAi !== undefined ? body.isNameChangeFromAi :
-            (personalInfo.is_name_change_from_ai !== undefined ? personalInfo.is_name_change_from_ai :
-              (personalInfo.isNameChangeFromAi !== undefined ? personalInfo.isNameChangeFromAi : 0)))
-      ) || 0;
-
-      // Force field into request body for all save paths so payload always contains it.
-      if (body && typeof body === 'object' && !Array.isArray(body)) {
-        const mergedPersonalInfo = (personalInfo && typeof personalInfo === 'object' && !Array.isArray(personalInfo))
-          ? Object.assign({}, personalInfo)
-          : {};
-        mergedPersonalInfo.isNameChangeFromAi = isNameChangeFromAi;
-        mergedPersonalInfo.is_name_change_from_ai = isNameChangeFromAi;
-
-        const mergedBody = Object.assign({}, body, {
-          isNameChangeFromAi: isNameChangeFromAi,
-          is_name_change_from_ai: isNameChangeFromAi,
-          personalInfo: mergedPersonalInfo
-        });
-
-        req = req.clone({ body: mergedBody });
-      }
-    }
 
     return next.handle(req).pipe(map((event: HttpEvent<any>) => {
 
