@@ -56,7 +56,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = '';
 
 // Helper function to convert PDF to image
 async function pdfToImage(pdfBuffer) {
-    console.log('Starting PDF to image conversion...');
     try {
         const loadingTask = pdfjsLib.getDocument({
             data: new Uint8Array(pdfBuffer),
@@ -198,9 +197,6 @@ CANDIDATE NAME EXTRACTION (CRITICAL RULES):
             });
 
             let content = response.text || '{}';
-            console.log('---- Raw Gemini Response ----');
-            console.log(content);
-            console.log('---------------------------');
 
             const parsed = JSON.parse(content);
 
@@ -246,12 +242,6 @@ CANDIDATE NAME EXTRACTION (CRITICAL RULES):
             }
 
             // DEBUG: Log name fields specifically
-            console.log('>>> candidateName from AI:', parsed.personalInfo?.candidateName);
-            console.log('>>> firstName:', parsed.personalInfo?.firstName);
-            console.log('>>> lastName:', parsed.personalInfo?.lastName);
-            console.log('>>> board:', parsed.academicInfo?.board);
-            console.log('>>> marksObtained:', parsed.academicInfo?.marksObtained);
-            console.log('>>> marksOutof:', parsed.academicInfo?.marksOutof);
             const fullName = (parsed.personalInfo?.candidateName || '').trim();
             if (fullName && !parsed.personalInfo.firstName) {
                 const parts = fullName.split(/\s+/);
@@ -270,7 +260,6 @@ CANDIDATE NAME EXTRACTION (CRITICAL RULES):
             return parsed;
         } catch (err) {
             lastErr = err;
-            console.warn(`Gemini attempt ${attempt}/${MAX_RETRIES} failed: ${err.message}`);
             if (attempt < MAX_RETRIES) {
                 await sleepMs(2000);
             } else {
@@ -291,28 +280,23 @@ app.post('/api/extract-marksheet', uploadMiddleware, async (req, res) => {
         }
 
         const expectedDocType = req.body.expectedDocType || req.body.document_name || 'SSC or HSC Marksheet';
-        console.log(`Processing marksheet extraction with Gemini (expected: ${expectedDocType})...`);
 
         let imageBuffer = req.file.buffer;
         let mimeType = req.file.mimetype;
 
         if (mimeType === 'application/pdf') {
-            console.log("Converting PDF to JPEG...");
             imageBuffer = await pdfToImage(req.file.buffer);
             mimeType = 'image/jpeg';
         }
 
-        console.log("Optimizing image for AI inference...");
         const optimizedImageBuffer = await sharp(imageBuffer)
             .resize(1600, 1600, { fit: 'inside', withoutEnlargement: true })
             .jpeg({ quality: 85 })
             .toBuffer();
 
-        console.log("Sending image to Gemini (verify + extract in one call)...");
         const extractedData = await extractWithGemini(optimizedImageBuffer, 'image/jpeg', expectedDocType);
 
         if (extractedData.notAMarksheet) {
-            console.warn('Gemini identified document as invalid:', extractedData.invalidReason);
             return res.status(400).json({
                 error: `Invalid document: ${extractedData.invalidReason || 'This does not appear to be a valid marksheet. Please upload the correct document.'}`
             });
@@ -321,7 +305,6 @@ app.post('/api/extract-marksheet', uploadMiddleware, async (req, res) => {
         delete extractedData.notAMarksheet;
         delete extractedData.invalidReason;
 
-        console.log('Extraction successful:', JSON.stringify(extractedData, null, 2));
         res.json({
             success: true,
             data: extractedData
@@ -342,14 +325,12 @@ app.post('/api/verify-document', uploadMiddleware, async (req, res) => {
             return res.status(400).json({ error: 'No file uploaded' });
         }
         const expectedType = req.body.expectedType || 'Document';
-        console.log(`Verifying document is a genuine: ${expectedType}...`);
 
         let imageBuffer = req.file.buffer;
         let mimeType = req.file.mimetype || 'image/jpeg';
 
         // If the uploaded file is a PDF, convert first page to image for AI vision
         if (mimeType === 'application/pdf') {
-            console.log('PDF detected for verify-document — converting to image...');
             imageBuffer = await pdfToImage(imageBuffer);
             mimeType = 'image/jpeg';
         }
@@ -398,7 +379,6 @@ Return ONLY a JSON object. Ensure you provide a clear reason if it is rejected:
         let responseText1 = response.text || '{}';
         const parsed1 = JSON.parse(responseText1);
 
-        console.log(`Document verification result for ${expectedType}:`, parsed1);
 
         // Enforce a confidence threshold: even if AI says isValid=true, reject if confidence is low
         const CONFIDENCE_THRESHOLD = 70;
@@ -407,7 +387,6 @@ Return ONLY a JSON object. Ensure you provide a clear reason if it is rejected:
         const reason = isValid ? (parsed1.reason || 'Valid') : (parsed1.reason || `Confidence too low (${confidence}%). Please upload a clearer image of ${expectedType}.`);
 
         if (!isValid) {
-            console.log(`Document REJECTED for ${expectedType}: confidence=${confidence}, isValid=${parsed1.isValid}, reason=${reason}`);
         }
 
         res.json({
@@ -435,7 +414,6 @@ app.post('/api/validate-signature', uploadMiddleware, async (req, res) => {
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        console.log('Validating signature with Groq AI...');
         const imageBuffer = req.file.buffer;
         const mimeType = req.file.mimetype || 'image/jpeg';
         const base64Image = imageBuffer.toString('base64');
@@ -476,7 +454,6 @@ Return ONLY a JSON object:
         let responseText2 = response.text || '{}';
         const parsed2 = JSON.parse(responseText2);
 
-        console.log('Signature validation result:', parsed2);
         res.json({
             success: true,
             validation: {
@@ -499,7 +476,6 @@ app.post('/api/validate-photo', uploadMiddleware, async (req, res) => {
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        console.log('Validating passport photo with Gemini AI...');
         const imageBuffer = req.file.buffer;
         const mimeType = req.file.mimetype || 'image/jpeg';
         const base64Image = imageBuffer.toString('base64');
@@ -543,7 +519,6 @@ Return ONLY a JSON object (no markdown, no explanation):
         let responseText3 = response.text || '{}';
         const parsed3 = JSON.parse(responseText3);
 
-        console.log('Photo validation result:', parsed3);
         res.json({
             success: true,
             validation: {
@@ -584,7 +559,6 @@ async function saveFileToDisk(buffer, originalName) {
         const filepath = path.join(uploadDir, filename);
 
         await fs.writeFile(filepath, buffer);
-        console.log(`File saved to ${filepath}`);
         return filename;
     } catch (error) {
         console.error('Error saving file:', error);
@@ -598,7 +572,6 @@ app.post('/api/Admission/uploadPdf', uploadMiddleware, async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
-        console.log('Uploading PDF:', req.file.originalname);
         const filename = await saveFileToDisk(req.file.buffer, req.file.originalname);
 
         res.json({
@@ -618,7 +591,6 @@ app.post('/api/Admission/uploadDocImage', uploadMiddleware, async (req, res) => 
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
-        console.log('Uploading Doc Image:', req.file.originalname);
         const filename = await saveFileToDisk(req.file.buffer, req.file.originalname);
 
         res.json({
@@ -634,14 +606,4 @@ app.post('/api/Admission/uploadDocImage', uploadMiddleware, async (req, res) => 
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`🚀 Document extraction backend running on port ${PORT}`);
-    console.log('📡 Configured for Gemini AI (gemini-2.5-flash-lite)');
-    console.log('🔍 Endpoints:');
-    console.log('   POST /api/extract-marksheet');
-    console.log('   POST /api/verify-document');
-    console.log('   POST /api/validate-signature');
-    console.log('   POST /api/validate-photo');
-    console.log('   POST /api/Admission/uploadPdf');
-    console.log('   POST /api/Admission/uploadDocImage');
-    console.log('   GET  /api/health');
 });
