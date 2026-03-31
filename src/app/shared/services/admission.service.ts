@@ -238,7 +238,6 @@ export class AdmissionService {
   syncNameOnConfirmation(values: any): Observable<any> {
 
     const url = admissionApiUrls.syncNameOnConfirmation;
-    const localUrl = 'http://localhost:8080/Admission/syncNameOnConfirmation';
     let commonPostValues = globalFunctions.getCommonPostValues();
 
     let postData = commonPostValues;
@@ -252,15 +251,12 @@ export class AdmissionService {
     if (!globalFunctions.isEmpty(values?.middleName)) postData['middleName'] = values.middleName;
     if (!globalFunctions.isEmpty(values?.lastName)) postData['lastName'] = values.lastName;
 
-    return this.http.post<any>(url, postData).pipe(
-      catchError(() => this.http.post<any>(localUrl, postData))
-    );
+    return this.http.post<any>(url, postData);
   }
 
   uploadDocImage(values: any, page = ''): Observable<any> {
 
-    // Use local Node server for uploads to ensure file saving and status updates work with AI features
-    const url = 'http://localhost:3000/api/Admission/uploadDocImage';
+    const url = admissionApiUrls.uploadDocImage;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
     const fd = new FormData();
@@ -272,18 +268,15 @@ export class AdmissionService {
 
     fd.append('page', page);
     fd.append('docId', values.docId);
-    // Append the file under the 'document' key which multer expects
-    const file = values.docValue;
-    fd.append('document', file, file.name || 'upload');
+    let file: File = values.docValue[0];
+    fd.append('document', file, file.name);
 
     return this.http.post<any>(url, fd).pipe(timeout(globalFunctions.timeoutSeconds()));
   }
 
   uploadPdf(file: any, docId = '', page = ''): Observable<any> {
 
-    // Use local Node server for uploads to ensure file saving and status updates work with AI features
-    const url = 'http://localhost:3000/api/Admission/uploadPdf';
-    // const url = admissionApiUrls.uploadPdf;
+    const url = admissionApiUrls.uploadPdf;
     let userProf = globalFunctions.getUserProf();
     let browserProf = globalFunctions.getBrowserProf();
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -460,52 +453,7 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
-  validatePassportPhoto(file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('document', file);
 
-    return this.http.post<any>('http://localhost:3000/api/validate-photo', formData)
-      .pipe(
-        timeout(globalFunctions.timeoutSeconds()),
-        map(response => {
-          return response;
-        }),
-        catchError(error => {
-          console.error('Photo validation error:', error);
-          throw error;
-        })
-      );
-  }
-
-  validateSignature(file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('document', file);
-
-    return this.http.post<any>('http://localhost:3000/api/validate-signature', formData)
-      .pipe(
-        timeout(globalFunctions.timeoutSeconds()),
-        map(response => response),
-        catchError(error => {
-          console.error('Signature validation error:', error);
-          throw error;
-        })
-      );
-  }
-
-  verifyDocument(file: File, expectedType: string): Observable<any> {
-    const formData = new FormData();
-    formData.append('document', file);
-    formData.append('expectedType', expectedType);
-
-    return this.http.post<any>('http://localhost:3000/api/verify-document', formData)
-      .pipe(
-        map(response => response),
-        catchError(error => {
-          console.error('Document verification error:', error);
-          throw error;
-        })
-      );
-  }
 
   getRequiredDocuments(): Observable<any> {
     return this.http.get<any>('assets/data/required-documents.json?t=' + new Date().getTime());

@@ -3,13 +3,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { ExtractionResponse, VerificationResponse } from '../models/document-extraction.model';
+import * as globalFunctions from 'app/global/globalFunctions';
+
+import { environment } from 'environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class DocumentExtractionService {
 
-    private readonly API_URL = 'http://localhost:3000/api';
+    private readonly API_URL = environment.API_ENDPOINT + 'api';
 
     constructor(private http: HttpClient) { }
 
@@ -58,10 +61,17 @@ export class DocumentExtractionService {
      * Upload a document image/PDF to the backend upload endpoint
      */
     uploadDocImage(file: File, docId: any): Observable<any> {
+        const url = environment.API_ENDPOINT + 'Admission/uploadDocImage';
+        let commonPostValues = globalFunctions.getCommonPostValues();
         const fd = new FormData();
+        for (var key in commonPostValues) {
+            if (commonPostValues.hasOwnProperty(key)) {
+                fd.append(key, commonPostValues[key]);
+            }
+        }
         fd.append('document', file, file.name || 'upload');
         fd.append('docId', String(docId || ''));
-        return this.http.post<any>(`${this.API_URL}/Admission/uploadDocImage`, fd).pipe(
+        return this.http.post<any>(url, fd).pipe(
             timeout(30000),
             catchError(error => throwError(() => error))
         );
