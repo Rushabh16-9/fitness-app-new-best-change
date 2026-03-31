@@ -19,6 +19,17 @@
     margin-top: 8px;
     font-size: 13px; 
 }
+.shared-admission-form .upload-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+}
+.shared-admission-form .uploaded-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2e7d32;
+}
 .shared-admission-form .sub-cat-optn {
     font-size: 12px; 
 }

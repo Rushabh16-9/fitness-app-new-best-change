@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { timeout } from 'rxjs/operators';
+import { timeout, map, catchError } from 'rxjs/operators';
 
 import { admissionApiUrls } from 'app/resta-api-urls';
 import * as globalFunctions from 'app/global/globalFunctions';
@@ -11,7 +11,7 @@ export class AdmissionService {
 
   constructor(
     private http: HttpClient
-  ) {}
+  ) { }
 
   getListOfInstitutes(): Observable<any> {
 
@@ -19,12 +19,11 @@ export class AdmissionService {
     let commonPostValues = globalFunctions.getCommonPostValues();
 
     let postData = commonPostValues;
-
     return this.http.post<any>(url, postData);
   }
 
-  addToCart(cartVal:any): Observable<any> {
-    
+  addToCart(cartVal: any): Observable<any> {
+
     const url = admissionApiUrls.addToCart;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
@@ -56,8 +55,8 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
-  sendOtp(values: any, preRegFormValues:any): Observable<any> {
-    
+  sendOtp(values: any, preRegFormValues: any): Observable<any> {
+
     const url = admissionApiUrls.sendOtp;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
@@ -77,7 +76,7 @@ export class AdmissionService {
   }
 
   otpConfirmation(values: any): Observable<any> {
-    
+
     const url = admissionApiUrls.otpConfirmation;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
@@ -96,7 +95,7 @@ export class AdmissionService {
   }
 
   getAdmissionFormDetails(): Observable<any> {
-    
+
     const url = admissionApiUrls.getAdmissionFormDetails;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
@@ -106,7 +105,7 @@ export class AdmissionService {
   }
 
   getAdmissionFormBDetails(): Observable<any> {
-    
+
     const url = admissionApiUrls.getAdmissionFormBDetails;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
@@ -115,15 +114,25 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
-  saveForm(values:any,fatherPassportSizePhotoToUpload,motherPassportSizePhotoToUpload,sisterPassportSizePhotoToUpload,brotherPassportSizePhotoToUpload,guardianPassportSizePhotoToUpload, passportSizePhoto, signatureImage, parentSignatureImage,fatherSignaturePhoto, motherSignaturePhoto, sisterSignaturePhoto, brotherSignaturePhoto,guardianSignaturePhoto): Observable<any> {
+  saveForm(values: any, fatherPassportSizePhotoToUpload, motherPassportSizePhotoToUpload, sisterPassportSizePhotoToUpload, brotherPassportSizePhotoToUpload, guardianPassportSizePhotoToUpload, passportSizePhoto, signatureImage, parentSignatureImage, fatherSignaturePhoto, motherSignaturePhoto, sisterSignaturePhoto, brotherSignaturePhoto, guardianSignaturePhoto): Observable<any> {
 
     const url = admissionApiUrls.saveForm;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
     let postData = commonPostValues;
+    const personalInfo = values.personalInfo ? values.personalInfo : {};
+    const isNameChangeFromAi = Number(
+      values.is_name_change_from_ai !== undefined ? values.is_name_change_from_ai :
+        (values.isNameChangeFromAi !== undefined ? values.isNameChangeFromAi :
+          (personalInfo.is_name_change_from_ai !== undefined ? personalInfo.is_name_change_from_ai :
+            (personalInfo.isNameChangeFromAi !== undefined ? personalInfo.isNameChangeFromAi : 0)))
+    ) || 0;
+
+    personalInfo.isNameChangeFromAi = isNameChangeFromAi;
+    personalInfo.is_name_change_from_ai = isNameChangeFromAi;
     postData['coursesList'] = values.coursesList;
     postData['categories'] = values.categories;
-    postData['personalInfo'] = values.personalInfo;
+    postData['personalInfo'] = personalInfo;
     postData['addressInfo'] = values.addressInfo;
     postData['guardianInfo'] = values.guardianInfo;
     postData['educationInfo'] = values.educationInfo;
@@ -142,6 +151,8 @@ export class AdmissionService {
     postData['finalSave'] = values.finalSave;
     postData['stepName'] = values.stepName;
     postData['page'] = values.page;
+    postData['isNameChangeFromAi'] = isNameChangeFromAi;
+    postData['is_name_change_from_ai'] = isNameChangeFromAi;
     postData['fatherPhoto'] = fatherPassportSizePhotoToUpload;
     postData['motherPhoto'] = motherPassportSizePhotoToUpload;
     postData['sisterPhoto'] = sisterPassportSizePhotoToUpload;
@@ -149,13 +160,13 @@ export class AdmissionService {
     postData['guardianPhoto'] = guardianPassportSizePhotoToUpload;
     postData['passportSizePhoto'] = passportSizePhoto;
     postData['signatureImage'] = signatureImage;
-    postData['parentSignatureImage'] = parentSignatureImage;   
-    postData['fatherSignature'] = fatherSignaturePhoto;   
-    postData['motherSignature'] = motherSignaturePhoto;   
-    postData['sisterSignature'] = sisterSignaturePhoto;   
-    postData['brotherSignature'] = brotherSignaturePhoto;   
-    postData['guardianSignature'] = guardianSignaturePhoto;   
-    postData['branchingQuestion'] = values.branchingQuestion;   
+    postData['parentSignatureImage'] = parentSignatureImage;
+    postData['fatherSignature'] = fatherSignaturePhoto;
+    postData['motherSignature'] = motherSignaturePhoto;
+    postData['sisterSignature'] = sisterSignaturePhoto;
+    postData['brotherSignature'] = brotherSignaturePhoto;
+    postData['guardianSignature'] = guardianSignaturePhoto;
+    postData['branchingQuestion'] = values.branchingQuestion;
 
     return this.http.post<any>(url, postData);
   }
@@ -193,7 +204,7 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
-  getPaymentStatus(pTrId:string): Observable<any> {
+  getPaymentStatus(pTrId: string): Observable<any> {
 
     const url = admissionApiUrls.getPaymentStatus;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -204,8 +215,8 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
-  identifierConfirmation(values:any): Observable<any> {
-    
+  identifierConfirmation(values: any): Observable<any> {
+
     const url = admissionApiUrls.identifierConfirmation;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
@@ -224,22 +235,55 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
-  uploadDocImage(values: any, page = ''): Observable<any> {
+  syncNameOnConfirmation(values: any): Observable<any> {
 
-    const url = admissionApiUrls.uploadDocImage;
+    const url = admissionApiUrls.syncNameOnConfirmation;
+    const localUrl = 'http://localhost:8080/Admission/syncNameOnConfirmation';
     let commonPostValues = globalFunctions.getCommonPostValues();
 
     let postData = commonPostValues;
-    postData['docId'] = values.docId;
-    postData['docValue'] = values.docValue;
-    postData['page'] = page;
 
-    return this.http.post<any>(url, postData);
+    if (!globalFunctions.isEmpty(values?.applicantId)) postData['applicantId'] = values.applicantId;
+    if (!globalFunctions.isEmpty(values?.studentConfId)) postData['studentConfId'] = values.studentConfId;
+    if (!globalFunctions.isEmpty(values?.formPolicyId)) postData['formPolicyId'] = values.formPolicyId;
+    if (!globalFunctions.isEmpty(values?.nameChange)) postData['nameChange'] = values.nameChange;
+    if (!globalFunctions.isEmpty(values?.fullNameMarksheet)) postData['fullNameMarksheet'] = values.fullNameMarksheet;
+    if (!globalFunctions.isEmpty(values?.firstName)) postData['firstName'] = values.firstName;
+    if (!globalFunctions.isEmpty(values?.middleName)) postData['middleName'] = values.middleName;
+    if (!globalFunctions.isEmpty(values?.lastName)) postData['lastName'] = values.lastName;
+
+    return this.http.post<any>(url, postData).pipe(
+      catchError(() => this.http.post<any>(localUrl, postData))
+    );
   }
 
-  uploadPdf(file:any, docId = '', page = '') : Observable<any> {
+  uploadDocImage(values: any, page = ''): Observable<any> {
 
-    const url = admissionApiUrls.uploadPdf;
+    // Use local Node server for uploads to ensure file saving and status updates work with AI features
+    const url = 'http://localhost:3000/api/Admission/uploadDocImage';
+    let commonPostValues = globalFunctions.getCommonPostValues();
+
+    const fd = new FormData();
+    for (var key in commonPostValues) {
+      if (commonPostValues.hasOwnProperty(key)) {
+        fd.append(key, commonPostValues[key]);
+      }
+    }
+
+    fd.append('page', page);
+    fd.append('docId', values.docId);
+    // Append the file under the 'document' key which multer expects
+    const file = values.docValue;
+    fd.append('document', file, file.name || 'upload');
+
+    return this.http.post<any>(url, fd).pipe(timeout(globalFunctions.timeoutSeconds()));
+  }
+
+  uploadPdf(file: any, docId = '', page = ''): Observable<any> {
+
+    // Use local Node server for uploads to ensure file saving and status updates work with AI features
+    const url = 'http://localhost:3000/api/Admission/uploadPdf';
+    // const url = admissionApiUrls.uploadPdf;
     let userProf = globalFunctions.getUserProf();
     let browserProf = globalFunctions.getBrowserProf();
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -254,8 +298,8 @@ export class AdmissionService {
     fd.append('page', page);
     fd.append('docId', docId);
     fd.append('document', file, file.name);
-    
-    return this.http.post<any>(url, fd).pipe(timeout(globalFunctions.timeoutSeconds()));    
+
+    return this.http.post<any>(url, fd).pipe(timeout(globalFunctions.timeoutSeconds()));
   }
 
   uploadImage(formData): Observable<any> {
@@ -269,7 +313,7 @@ export class AdmissionService {
     return this.http.post<any>(url, formData);
   }
 
-  getFilteredGraduationEducationInfo(values:any): Observable<any> {
+  getFilteredGraduationEducationInfo(values: any): Observable<any> {
 
     const url = admissionApiUrls.getFilteredGraduationEducationInfo;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -285,7 +329,7 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
-  directFormGenerate(cartVal:any, page = ''): Observable<any> {
+  directFormGenerate(cartVal: any, page = ''): Observable<any> {
 
     const url = admissionApiUrls.directFormGenerate;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -297,8 +341,8 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
-  allowLogin(phone:string, password:string, instituteId:string = '', formPolicyId: string = ''): Observable<any> {
-    
+  allowLogin(phone: string, password: string, instituteId: string = '', formPolicyId: string = ''): Observable<any> {
+
     const url = admissionApiUrls.allowLogin;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
@@ -333,7 +377,7 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
-  generateForm(values:any): Observable<any> {
+  generateForm(values: any): Observable<any> {
 
     const url = admissionApiUrls.generateForm;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -388,9 +432,9 @@ export class AdmissionService {
     postData['formPolicyId'] = formPolicyId;
 
     return this.http.post<any>(url, postData);
-  }  
+  }
 
-  getYearSemesterWiseDropdown(values:any): Observable<any> {
+  getYearSemesterWiseDropdown(values: any): Observable<any> {
 
     const url = admissionApiUrls.getYearSemesterWiseDropdown;
     let commonPostValues = globalFunctions.getCommonPostValues();
@@ -402,10 +446,10 @@ export class AdmissionService {
     postData['formId'] = values.formId;
 
     return this.http.post<any>(url, postData);
-  }  
+  }
 
-  getBranchingQuestionBifurcate(formPolicyId,branchingQuestionChange) : Observable<any> {
-    
+  getBranchingQuestionBifurcate(formPolicyId, branchingQuestionChange): Observable<any> {
+
     const url = admissionApiUrls.getBranchingQuestionBifurcate;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
@@ -414,5 +458,56 @@ export class AdmissionService {
     postData['branchingQuestionChange'] = branchingQuestionChange;
 
     return this.http.post<any>(url, postData);
-  } 
+  }
+
+  validatePassportPhoto(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('document', file);
+
+    return this.http.post<any>('http://localhost:3000/api/validate-photo', formData)
+      .pipe(
+        timeout(globalFunctions.timeoutSeconds()),
+        map(response => {
+          return response;
+        }),
+        catchError(error => {
+          console.error('Photo validation error:', error);
+          throw error;
+        })
+      );
+  }
+
+  validateSignature(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('document', file);
+
+    return this.http.post<any>('http://localhost:3000/api/validate-signature', formData)
+      .pipe(
+        timeout(globalFunctions.timeoutSeconds()),
+        map(response => response),
+        catchError(error => {
+          console.error('Signature validation error:', error);
+          throw error;
+        })
+      );
+  }
+
+  verifyDocument(file: File, expectedType: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('document', file);
+    formData.append('expectedType', expectedType);
+
+    return this.http.post<any>('http://localhost:3000/api/verify-document', formData)
+      .pipe(
+        map(response => response),
+        catchError(error => {
+          console.error('Document verification error:', error);
+          throw error;
+        })
+      );
+  }
+
+  getRequiredDocuments(): Observable<any> {
+    return this.http.get<any>('assets/data/required-documents.json?t=' + new Date().getTime());
+  }
 }

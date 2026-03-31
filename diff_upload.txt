@@ -1,0 +1,210 @@
+diff --git a/src/app/admin/pages/upload-documents/upload-documents.component.ts b/src/app/admin/pages/upload-documents/upload-documents.component.ts
+index 2ca2a15..ca72c43 100644
+--- a/src/app/admin/pages/upload-documents/upload-documents.component.ts
++++ b/src/app/admin/pages/upload-documents/upload-documents.component.ts
+@@ -7,6 +7,7 @@ import { ConfirmDialogComponent } from 'app-shared-components/confirm-dialog/con
+ 
+ import { ImageCropperDialogComponent } from 'app-shared-components/image-cropper-dialog/image-cropper-dialog.component';
+ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
++import { DocumentUploadDialogComponent } from 'app/shared/components/document-upload-dialog/document-upload-dialog.component';
+ 
+ import { AdmissionService } from 'app-shared-services/admission.service';
+ import { AtktService } from 'app-shared-services/atkt.service';
+@@ -51,6 +52,7 @@ export class UploadDocumentsComponent implements OnInit {
+   documentsUpload: any = true;
+   courseSelection: any = true;
+   optPayment: boolean = true;
++  aiDocumentVerificationEnabled: any = false;
+ 
+   constructor(
+     public dialog: MatDialog,
+@@ -101,6 +103,7 @@ export class UploadDocumentsComponent implements OnInit {
+ 
+       if (data.status != undefined) {
+         if (data.status == 1) {
++          this.aiDocumentVerificationEnabled = data?.aiDocumentVerification ?? data?.dataJson?.aiDocumentVerification ?? data?.personalInfo?.aiDocumentVerification ?? false;
+           this.setDocumentsValues(data.dataJson);
+         } else if (data.status == 102) {
+           this.router.navigate(['/cart']);
+@@ -126,6 +129,7 @@ export class UploadDocumentsComponent implements OnInit {
+ 
+       if (data.status != undefined) {
+         if (data.status == 1) {
++          this.aiDocumentVerificationEnabled = data?.aiDocumentVerification ?? data?.dataJson?.aiDocumentVerification ?? data?.personalInfo?.aiDocumentVerification ?? false;
+           this.setDocumentsValues(data.dataJson);
+         } else if (data.status == 102) {
+           this.router.navigate(['/cart']);
+@@ -262,14 +266,41 @@ export class UploadDocumentsComponent implements OnInit {
+ 
+       } else {
+ 
+-        if (ext.toUpperCase() == 'PDF') {
+-          let fileList: FileList = event.target.files;
+-          let file: File = fileList[0];
+-
+-          this.browsedDocData(fileList, docIndex, bunchIndex, ext);
+-        } else {
+-          this.openImageCropperDialog(event, 'documents', docIndex, bunchIndex);
++        const docTitle = this.allDocuments[docIndex]?.controls?.docTitle?.value || '';
++        const docId = this.allDocuments[docIndex]?.controls?.docId?.value;
++        const normalizedDocTitle = (docTitle || '').toLowerCase().replace(/\s+/g, ' ').trim();
++
++        if (this.aiDocumentVerificationEnabled) {
++          const aiArr = this.aiDocumentVerificationEnabled;
++          const docAiEnabled = Array.isArray(aiArr) ? aiArr.length > 0 : !!aiArr;
++
++          if (docAiEnabled) {
++            const dialogRef = this.dialog.open(DocumentUploadDialogComponent, {
++              width: '600px',
++              disableClose: true,
++              data: { document_name: docTitle, document_id: docId, file }
++            });
++
++            dialogRef.afterClosed().subscribe(result => {
++              if (result?.success) {
++                const verifiedFile = result.documents?.[0]?.file || file;
++                const resolvedExt = (verifiedFile?.name || '').toUpperCase().split('.').pop() || ext;
++                resolvedExt === 'PDF'
++                  ? this.browsedDocData(verifiedFile, docIndex, bunchIndex, 'PDF')
++                  : this.openImageCropperDialog(event, 'documents', docIndex, bunchIndex);
++              } else {
++                documents['controls'].isBrowsed.setValue(false);
++                event.target.value = '';
++              }
++            });
++            return;
++          }
+         }
++
++        // No AI dialog — direct upload
++        ext.toUpperCase() === 'PDF'
++          ? this.browsedDocData(file, docIndex, bunchIndex, 'PDF')
++          : this.openImageCropperDialog(event, 'documents', docIndex, bunchIndex);
+       }
+     }
+   }
+@@ -277,13 +308,14 @@ export class UploadDocumentsComponent implements OnInit {
+   browsedDocData(data, docIndex, bunchIndex, ext = '') {
+ 
+     const documents = this.allDocuments[docIndex];
++    const fileObj: any = (data && data[0]) ? data[0] : data;
+     documents['controls'].docError.setValue(false);
+     documents['controls'].isBrowsed.setValue(true);
+-    documents['controls'].docToUpload.setValue(data);
++    documents['controls'].docToUpload.setValue(fileObj);
+ 
+     let postData = {
+       docId: documents['controls'].docId.value,
+-      docValue: data
++      docValue: fileObj
+     }
+ 
+     if (ext == 'PDF') {
+@@ -310,7 +342,15 @@ export class UploadDocumentsComponent implements OnInit {
+ 
+   uploadPdf(values: any, docIndex = 0) {
+ 
+-    let file: File = values.docValue[0];
++    let file: File = values.docValue;
++    if (!file && values.docValue && values.docValue[0]) {
++      file = values.docValue[0];
++    }
++    if (!file) {
++      this.allEventEmitters.showLoader.emit(false);
++      this._snackBarMsgComponent.openSnackBar('Invalid file data. Please re-upload document.', 'x', 'error-snackbar', 5000);
++      return;
++    }
+ 
+     this.allEventEmitters.showLoader.emit(true);
+     this._admissionService.uploadPdf(file, values.docId, this.panelMode).subscribe(data => {
+@@ -319,7 +359,11 @@ export class UploadDocumentsComponent implements OnInit {
+ 
+       if (data.status != undefined) {
+         if (data.status == 1) {
+-          this.allDocuments[docIndex].controls.uploadedFile.setValue(data.dataJson.uploadedFile);
++          const uploadedDocRef = data?.dataJson?.uploadedFile || data?.dataJson?.fileUrl || data?.dataJson?.fileName || '';
++          this.allDocuments[docIndex].controls.uploadedFile.setValue(uploadedDocRef);
++          this.allDocuments[docIndex].controls.docToUpload.setValue(uploadedDocRef);
++          this.allDocuments[docIndex].controls.isUploaded.setValue(true);
++          this.allDocuments[docIndex].controls.docError.setValue(false);
+           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
+         } else if (data.status == 0) {
+           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
+@@ -335,7 +379,15 @@ export class UploadDocumentsComponent implements OnInit {
+ 
+   uploadAtktPdf(values: any, docIndex = 0) {
+ 
+-    let file: File = values.docValue[0];
++    let file: File = values.docValue;
++    if (!file && values.docValue && values.docValue[0]) {
++      file = values.docValue[0];
++    }
++    if (!file) {
++      this.allEventEmitters.showLoader.emit(false);
++      this._snackBarMsgComponent.openSnackBar('Invalid file data. Please re-upload document.', 'x', 'error-snackbar', 5000);
++      return;
++    }
+ 
+     this.allEventEmitters.showLoader.emit(true);
+     this._atktService.uploadPdf(file, values.docId, this.panelMode).subscribe(data => {
+@@ -344,7 +396,11 @@ export class UploadDocumentsComponent implements OnInit {
+ 
+       if (data.status != undefined) {
+         if (data.status == 1) {
+-          this.allDocuments[docIndex].controls.uploadedFile.setValue(data.dataJson.uploadedFile);
++          const uploadedDocRef = data?.dataJson?.uploadedFile || data?.dataJson?.fileUrl || data?.dataJson?.fileName || '';
++          this.allDocuments[docIndex].controls.uploadedFile.setValue(uploadedDocRef);
++          this.allDocuments[docIndex].controls.docToUpload.setValue(uploadedDocRef);
++          this.allDocuments[docIndex].controls.isUploaded.setValue(true);
++          this.allDocuments[docIndex].controls.docError.setValue(false);
+           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
+         } else if (data.status == 0) {
+           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
+@@ -367,7 +423,11 @@ export class UploadDocumentsComponent implements OnInit {
+ 
+       if (data.status != undefined) {
+         if (data.status == 1) {
+-          this.allDocuments[docIndex].controls.uploadedFile.setValue(data.dataJson.uploadedFile);
++          const uploadedDocRef = data?.dataJson?.uploadedFile || data?.dataJson?.fileUrl || data?.dataJson?.fileName || '';
++          this.allDocuments[docIndex].controls.uploadedFile.setValue(uploadedDocRef);
++          this.allDocuments[docIndex].controls.docToUpload.setValue(uploadedDocRef);
++          this.allDocuments[docIndex].controls.isUploaded.setValue(true);
++          this.allDocuments[docIndex].controls.docError.setValue(false);
+           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
+         } else if (data.status == 0) {
+           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
+@@ -390,7 +450,11 @@ export class UploadDocumentsComponent implements OnInit {
+ 
+       if (data.status != undefined) {
+         if (data.status == 1) {
+-          this.allDocuments[docIndex].controls.uploadedFile.setValue(data.dataJson.uploadedFile);
++          const uploadedDocRef = data?.dataJson?.uploadedFile || data?.dataJson?.fileUrl || data?.dataJson?.fileName || '';
++          this.allDocuments[docIndex].controls.uploadedFile.setValue(uploadedDocRef);
++          this.allDocuments[docIndex].controls.docToUpload.setValue(uploadedDocRef);
++          this.allDocuments[docIndex].controls.isUploaded.setValue(true);
++          this.allDocuments[docIndex].controls.docError.setValue(false);
+           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
+         } else if (data.status == 0) {
+           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
+@@ -459,6 +523,8 @@ export class UploadDocumentsComponent implements OnInit {
+ 
+   afterDocumentsFormSubmit() {
+ 
++    this.allEventEmitters.showLoader.emit(false);
++
+     let authUrl = globalFunctions.getLocalStorage('authUrl', 'JsonParse');
+     if (!globalFunctions.isEmpty(authUrl)) {
+       window.location.href = authUrl;
+@@ -507,7 +573,11 @@ export class UploadDocumentsComponent implements OnInit {
+   }
+ 
+   viewDoc(docUrl) {
+-    var win = window.open(docUrl, '_blank');
++    let resolvedUrl = docUrl;
++    if (docUrl && !/^https?:\/\//i.test(docUrl) && docUrl.indexOf('/') === -1 && docUrl.indexOf('\\') === -1) {
++      resolvedUrl = `http://localhost:3000/uploads/${docUrl}`;
++    }
++    var win = window.open(resolvedUrl, '_blank');
+     if (win) {
+       win.focus();
+     } else {

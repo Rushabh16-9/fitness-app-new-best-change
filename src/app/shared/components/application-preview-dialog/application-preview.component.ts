@@ -7437,10 +7437,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   }
 
   onDeclarationFormSubmit(values: any, stepper: MatStepper): void {
-    this.saveForm('finalSave');
+    this.declarationFormValues = this.declarationForm.getRawValue();
+    this.saveForm('finalSave', { stepName: 'declaration' });
     this.dialogRef.close();
     // this.openConfirmDialog();
-
   }
 
   openConfirmDialog() {
@@ -7516,10 +7516,35 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           this.isSisterBrowsedSignaturePhoto = false;
         }
       } else {
-        let postParam = {
-          'mode': mode,
+        if (mode === 'passportSizePhoto') {
+          this.allEventEmitters.showLoader.emit(true);
+          this._admissionService.validatePassportPhoto(file).subscribe((response) => {
+            this.allEventEmitters.showLoader.emit(false);
+
+            if (response.success && response.validation && response.validation.isValid) {
+              let postParam = {
+                'mode': mode,
+              }
+              this.openImageCropperDialog(event, postParam);
+            } else {
+              const errors = response.validation?.errors?.join(', ') || 'Invalid passport photo. Please upload a proper passport-size human photo.';
+              this._snackBarMsgComponent.openSnackBar(errors, 'x', 'error-snackbar', 6000);
+              this.isBrowsedPassportSizePhoto = false;
+              if (this.passportSizePhotoFileInput) this.passportSizePhotoFileInput.nativeElement.value = '';
+            }
+          }, (error) => {
+            this.allEventEmitters.showLoader.emit(false);
+            console.error(error);
+            this._snackBarMsgComponent.openSnackBar('Failed to validate photo. Please try again.', 'x', 'error-snackbar', 5000);
+            this.isBrowsedPassportSizePhoto = false;
+            if (this.passportSizePhotoFileInput) this.passportSizePhotoFileInput.nativeElement.value = '';
+          });
+        } else {
+          let postParam = {
+            'mode': mode,
+          }
+          this.openImageCropperDialog(event, postParam);
         }
-        this.openImageCropperDialog(event, postParam);
       }
     }
   }
@@ -8626,7 +8651,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       const maths = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].ssc.controls.subjectInfo.controls.maths;
 
-      this.showSscBlk = conf.ssc.display;
+      this.showSscBlk = false; // conf.ssc.display;
 
       if (this.showSscBlk) {
 
@@ -8965,10 +8990,17 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       this.allEventEmitters.showLoader.emit(true);
     }
 
+    const personalInfoValues: any = Array.isArray(this.personalInfoFormValues) ? {} : (this.personalInfoFormValues || {});
+    const isNameChangeFromAi = Number(
+      personalInfoValues.is_name_change_from_ai ?? personalInfoValues.isNameChangeFromAi ?? 0
+    ) || 0;
+    personalInfoValues['isNameChangeFromAi'] = isNameChangeFromAi;
+    personalInfoValues['is_name_change_from_ai'] = isNameChangeFromAi;
+
     let postParam: any = {
       'coursesList': this.coursesListValues,
       'categories': this.categoryFormValues,
-      'personalInfo': this.personalInfoFormValues,
+      'personalInfo': personalInfoValues,
       'addressInfo': this.addressInfoFormValues,
       'guardianInfo': this.guardianInfoFormValues,
       'educationInfo': this.educationInfoFormValues,
@@ -8987,6 +9019,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       'finalSave': finalSave,
       'stepName': tab.stepName,
       'page': this.panelMode,
+      'isNameChangeFromAi': isNameChangeFromAi,
+      'is_name_change_from_ai': isNameChangeFromAi,
     };
 
     this._admissionService.saveForm(postParam, this.fatherPassportSizePhotoToUpload, this.motherPassportSizePhotoToUpload, this.sisterPassportSizePhotoToUpload, this.brotherPassportSizePhotoToUpload, this.guardianPassportSizePhotoToUpload, this.passportSizePhotoToUpload, this.signatureImageToUpload, this.parentSignatureImageToUpload, this.fatherSignaturePhotoToUpload, this.motherSignaturePhotoToUpload, this.sisterSignaturePhotoToUpload, this.brotherSignaturePhotoToUpload, this.guardianSignaturePhotoToUpload).subscribe(data => {
@@ -9023,6 +9057,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   }
 
   afterAdmissionFormSave(data) {
+
+    this.allEventEmitters.showLoader.emit(false);
+    this.dialogRef.close();
 
     if (this.documentsUpload && data.documentsUpload) {
       globalFunctions.setLocalStorage('authUrl', data.authUrl);
@@ -9090,10 +9127,17 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       this.allEventEmitters.showLoader.emit(true);
     }
 
+    const personalInfoValues: any = Array.isArray(this.personalInfoFormValues) ? {} : (this.personalInfoFormValues || {});
+    const isNameChangeFromAi = Number(
+      personalInfoValues.is_name_change_from_ai ?? personalInfoValues.isNameChangeFromAi ?? 0
+    ) || 0;
+    personalInfoValues['isNameChangeFromAi'] = isNameChangeFromAi;
+    personalInfoValues['is_name_change_from_ai'] = isNameChangeFromAi;
+
     let postParam: any = {
       'coursesList': this.coursesListValues,
       'categories': this.categoryFormValues,
-      'personalInfo': this.personalInfoFormValues,
+      'personalInfo': personalInfoValues,
       'addressInfo': this.addressInfoFormValues,
       'guardianInfo': this.guardianInfoFormValues,
       'educationInfo': this.educationInfoFormValues,
@@ -9112,6 +9156,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       'finalSave': finalSave,
       'stepName': tab.stepName,
       'page': this.panelMode,
+      'isNameChangeFromAi': isNameChangeFromAi,
+      'is_name_change_from_ai': isNameChangeFromAi,
       'formId': this.formDetails.formId,
       'universityApplicationFormNo': this.universityApplicationFormNo.value,
     };

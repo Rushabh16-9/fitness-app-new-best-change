@@ -24,6 +24,8 @@
         "app/shared/components/*"
       ]
     },
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
     "useDefineForClassFields": false
   }
 }

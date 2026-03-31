@@ -10,6 +10,7 @@ import { SearchBlockComponent } from 'app-shared-components/search-block/search-
 import { UtrDialogComponent } from './components/utr-dialog/utr-dialog.component';
 import { ReceiptsDialogComponent } from './components/receipts-dialog/receipts-dialog.component';
 import { SubjectsInfoDialogComponent } from './components/subjects-info-dialog/subjects-info-dialog.component';
+import { DocumentUploadDialogComponent } from './components/document-upload-dialog/document-upload-dialog.component';
 
 @NgModule({
     imports: [
@@ -25,9 +26,11 @@ import { SubjectsInfoDialogComponent } from './components/subjects-info-dialog/s
         UtrDialogComponent,
         ReceiptsDialogComponent,
         SubjectsInfoDialogComponent,
+        DocumentUploadDialogComponent,
     ],
     exports: [
         SearchBlockComponent,
+        DocumentUploadDialogComponent,
     ]
 })
 export class SharedModule { }

@@ -15,3 +15,6 @@ interface Document {
     webkitCancelFullScreen(): void;  
 }
 declare var L:any;  //leaflet
+
+// Shim for NoInfer type introduced in TS 5.4, required by some dependencies
+type NoInfer<T> = T;

@@ -19,7 +19,6 @@ export class InstitutesService {
     let commonPostValues = globalFunctions.getCommonPostValues();
 
     let postData = commonPostValues;
-
     return this.http.post<any>(url, postData);
   }
 
@@ -538,9 +537,19 @@ export class InstitutesService {
     let commonPostValues = globalFunctions.getCommonPostValues();
 
     let postData = commonPostValues;
+    const personalInfo = values.personalInfo ? values.personalInfo : {};
+    const isNameChangeFromAi = Number(
+      values.is_name_change_from_ai !== undefined ? values.is_name_change_from_ai :
+        (values.isNameChangeFromAi !== undefined ? values.isNameChangeFromAi :
+          (personalInfo.is_name_change_from_ai !== undefined ? personalInfo.is_name_change_from_ai :
+            (personalInfo.isNameChangeFromAi !== undefined ? personalInfo.isNameChangeFromAi : 0)))
+    ) || 0;
+
+    personalInfo.isNameChangeFromAi = isNameChangeFromAi;
+    personalInfo.is_name_change_from_ai = isNameChangeFromAi;
     postData['coursesList'] = values.coursesList;
     postData['categories'] = values.categories;
-    postData['personalInfo'] = values.personalInfo;
+    postData['personalInfo'] = personalInfo;
     postData['addressInfo'] = values.addressInfo;
     postData['guardianInfo'] = values.guardianInfo;
     postData['educationInfo'] = values.educationInfo;
@@ -558,6 +567,8 @@ export class InstitutesService {
     postData['finalSave'] = values.finalSave;
     postData['stepName'] = values.stepName;
     postData['page'] = values.page;
+    postData['isNameChangeFromAi'] = isNameChangeFromAi;
+    postData['is_name_change_from_ai'] = isNameChangeFromAi;
     postData['passportSizePhoto'] = passportSizePhoto;
     postData['signatureImage'] = signatureImage;
     postData['formId'] = values.formId;

@@ -3414,6 +3414,11 @@
                     <div
                       *ngIf="itemrow.get('showDocumentUpload').value && itemrow.get('hasUploadedDoc').value == true && itemrow.get('docBrowsed').value == false"
                       class="marg-btm-10">
+                      <div *ngIf="isHscOrSscDoc(itemrow.get('confNameSelected').value || itemrow.get('documentUploadObj').value?.label)"
+                        class="upload-status">
+                        <span class="file-name">{{getUploadedFileName(itemrow)}}</span>
+                        <span class="uploaded-label">Uploaded</span>
+                      </div>
                       <a class="dwn-link file-name"
                         (click)="viewDoc(itemrow.get('documentUrl').value)">{{itemrow.get('documentUploadObj').value.docViewLabel}}</a>
                       <span (click)="removeUploadedEduDocFile('underGraduate', i)" class="actn-icons material-icons">
@@ -6700,6 +6705,10 @@
                     style="cursor: default;" alt="browsedDoc">
                   <input type="file" [hidden]="false" (change)="docBunchUrl($event, k, i)"
                     accept=".png, .jpg, .jpeg, .pdf" style="margin-top: 5px;">
+                  <div *ngIf="itemrow.get('isUploaded').value" class="upload-status">
+                    <span class="file-name">{{getUploadedFileName(itemrow)}}</span>
+                    <span class="uploaded-label">Uploaded</span>
+                  </div>
                 </div>
                 <br>
               </div>
