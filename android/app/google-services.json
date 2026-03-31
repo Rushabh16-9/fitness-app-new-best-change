@@ -1,0 +1,95 @@
+{
+  "project_info": {
+    "project_number": "464097960550",
+    "project_id": "smartfit-c0530",
+    "storage_bucket": "smartfit-c0530.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464097960550:android:5d130b5ee684f7f29fc3a7",
+        "android_client_info": {
+          "package_name": "com.example.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAly7tGM71x0Uo8yEWTG4hOhAenfvx9gKU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464097960550:android:1ec8d297ab2d6c009fc3a7",
+        "android_client_info": {
+          "package_name": "com.example.application_mai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAly7tGM71x0Uo8yEWTG4hOhAenfvx9gKU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464097960550:android:55bacfdc477af79a9fc3a7",
+        "android_client_info": {
+          "package_name": "com.example.application_main"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "464097960550-cu93vhtg813mvqciduv9eo5meuku365e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.application_main",
+            "certificate_hash": "40494dcb0ffa6e5c2b99bfa0a755344a956509ca"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAly7tGM71x0Uo8yEWTG4hOhAenfvx9gKU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464097960550:android:76d28b0b25a1f32d9fc3a7",
+        "android_client_info": {
+          "package_name": "com.example.smartfit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAly7tGM71x0Uo8yEWTG4hOhAenfvx9gKU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

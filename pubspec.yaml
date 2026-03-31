@@ -1,0 +1,214 @@
+name: application_main
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  audioplayers: ^6.5.1
+  firebase_core: ^4.0.0
+  firebase_auth: ^6.0.1
+  cloud_firestore: ^6.0.0
+  google_fonts: ^6.3.0  # Updated
+  fl_chart: ^1.0.0
+  percent_indicator: ^4.2.5  # Updated
+  intl: ^0.20.2
+  shared_preferences: ^2.5.3  # Updated
+  flutter_local_notifications: ^19.4.0
+  http: ^1.2.1
+  provider: ^6.1.2
+  in_app_purchase: ^3.1.11
+  image_picker: ^1.0.8
+  share_plus: ^10.0.2
+  camera: ^0.11.0+2
+  permission_handler: ^11.3.1
+  google_ml_kit: ^0.18.0
+  health: ^13.2.0
+  # Newly added dependencies referenced in code
+  google_sign_in: ^6.2.1
+  mobile_scanner: ^6.0.2
+  firebase_storage: ^13.0.0
+  url_launcher: ^6.3.0
+  youtube_player_flutter: ^9.0.1
+  connectivity_plus: ^6.0.3
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+  path_provider: ^2.1.4
+  lottie: ^2.7.0
+  uuid: ^3.0.7
+  google_mlkit_face_detection: ^0.11.1
+  # Additional direct deps used across the codebase
+  timezone: ^0.10.1
+  collection: ^1.18.0
+  google_mlkit_pose_detection: ^0.12.1
+  flutter_tts: ^3.8.3
+  shimmer: ^3.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4  # Updated
+  firebase_core_platform_interface: ^6.0.2
+
+
+
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.jpg"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/coach.jpg
+    - assets/challenges.json
+    - assets/icon.jpg
+    - assets/slide1.jpg
+    - assets/slide2.jpg
+    - assets/slide3.jpg
+    - assets/slide4.jpg
+    - assets/alarm.mp3
+    - assets/pushups.png
+    - assets/widepushup.png
+    - assets/absworkout.png
+    - assets/plank.png
+    - assets/Russian.png
+    - assets/random2.png
+    - assets/lower.png
+    - assets/abs.png
+    - assets/AI.txt
+    - assets/data/exercise_images/
+    - assets/data/free-exercise-db-main/exercises/
+    - assets/data/free-exercise-db-main/dist/exercises.json
+    - assets/data/exercise vidio/exercisedb-api-main/src/data/exercises.json
+    - assets/data/fitness app pictures/
+    - assets/data/music/
+    - assets/data/free-exercise-db-main/exercises/3_4_Sit-Up/
+    - assets/data/free-exercise-db-main/exercises/90_90_Hamstring/
+    - assets/data/free-exercise-db-main/exercises/Ab_Crunch_Machine/
+    - assets/data/free-exercise-db-main/exercises/Ab_Roller/
+    - assets/data/free-exercise-db-main/exercises/Adductor/
+    - assets/data/free-exercise-db-main/exercises/Adductor_Groin/
+    - assets/data/free-exercise-db-main/exercises/Advanced_Kettlebell_Windmill/
+    - assets/data/free-exercise-db-main/exercises/Air_Bike/
+    - assets/data/free-exercise-db-main/exercises/All_Fours_Quad_Stretch/
+    - assets/data/free-exercise-db-main/exercises/Alternate_Hammer_Curl/
+    - assets/data/free-exercise-db-main/exercises/Alternate_Heel_Touchers/
+    - assets/data/free-exercise-db-main/exercises/Alternate_Incline_Dumbbell_Curl/
+    - assets/data/free-exercise-db-main/exercises/Alternate_Leg_Diagonal_Bound/
+    - assets/data/free-exercise-db-main/exercises/Alternating_Cable_Shoulder_Press/
+    - assets/data/free-exercise-db-main/exercises/Alternating_Deltoid_Raise/
+    - assets/data/free-exercise-db-main/exercises/Alternating_Floor_Press/
+    - assets/data/free-exercise-db-main/exercises/Alternating_Hang_Clean/
+    - assets/data/free-exercise-db-main/exercises/Alternating_Kettlebell_Press/
+    - assets/data/free-exercise-db-main/exercises/Alternating_Kettlebell_Row/
+    - assets/data/free-exercise-db-main/exercises/Alternating_Renegade_Row/
+    - assets/data/free-exercise-db-main/exercises/Ankle_Circles/
+    - assets/data/free-exercise-db-main/exercises/Ankle_On_The_Knee/
+    - assets/data/free-exercise-db-main/exercises/Anterior_Tibialis-SMR/
+    - assets/data/free-exercise-db-main/exercises/Anti-Gravity_Press/
+    - assets/data/free-exercise-db-main/exercises/Arm_Circles/
+    - assets/data/free-exercise-db-main/exercises/Arnold_Dumbbell_Press/
+    - assets/data/free-exercise-db-main/exercises/Around_The_Worlds/
+    - assets/data/free-exercise-db-main/exercises/Atlas_Stones/
+    - assets/data/free-exercise-db-main/exercises/Atlas_Stone_Trainer/
+    - assets/data/free-exercise-db-main/exercises/Axle_Deadlift/
+    - assets/data/free-exercise-db-main/exercises/Backward_Drag/
+    - assets/data/free-exercise-db-main/exercises/Backward_Medicine_Ball_Throw/
+    - assets/data/free-exercise-db-main/exercises/Back_Flyes_-_With_Bands/
+    - assets/data/free-exercise-db-main/exercises/Balance_Board/
+    - assets/data/free-exercise-db-main/exercises/Ball_Leg_Curl/
+    - assets/data/free-exercise-db-main/exercises/Band_Assisted_Pull-Up/
+    - assets/data/free-exercise-db-main/exercises/Band_Good_Morning/
+    - assets/data/free-exercise-db-main/exercises/Band_Good_Morning_Pull_Through/
+    - assets/data/free-exercise-db-main/exercises/Band_Hip_Adductions/
+    - assets/data/free-exercise-db-main/exercises/Band_Pull_Apart/
+    - assets/data/free-exercise-db-main/exercises/Band_Skull_Crusher/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Ab_Rollout/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Ab_Rollout_-_On_Knees/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Bench_Press_-_Medium_Grip/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Curl/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Curls_Lying_Against_An_Incline/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Deadlift/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Full_Squat/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Glute_Bridge/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Guillotine_Bench_Press/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Hack_Squat/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Hip_Thrust/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Incline_Shoulder_Raise/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Lunge/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Rear_Delt_Row/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Rollout_from_Bench/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Seated_Calf_Raise/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Shoulder_Press/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Shrug/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Shrug_Behind_The_Back/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Side_Bend/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Side_Split_Squat/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Squat/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Squat_To_A_Bench/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Step_Ups/
+    - assets/data/free-exercise-db-main/exercises/Barbell_Walking_Lunge/
+    - assets/data/free-exercise-db-main/exercises/Battling_Ropes/
+    - assets/data/free-exercise-db-main/exercises/Bear_Crawl_Sled_Drags/
+    - assets/data/free-exercise-db-main/exercises/Behind_Head_Chest_Stretch/
+    - assets/data/free-exercise-db-main/exercises/Bench_Dips/
+    - assets/data/free-exercise-db-main/exercises/Bench_Jump/
+    - assets/data/free-exercise-db-main/exercises/Bench_Press_-_Powerlifting/
+    - assets/data/free-exercise-db-main/exercises/Bench_Press_-_With_Bands/
+    - assets/data/free-exercise-db-main/exercises/Bench_Press_with_Chains/
+    - assets/data/free-exercise-db-main/exercises/Bench_Sprint/
+    - assets/data/free-exercise-db-main/exercises/Bent-Arm_Barbell_Pullover/
+    - assets/data/free-exercise-db-main/exercises/Bent-Arm_Dumbbell_Pullover/
+    - assets/data/free-exercise-db-main/exercises/Bent-Knee_Hip_Raise/
+    - assets/data/free-exercise-db-main/exercises/Bent_Over_Barbell_Row/
+    - assets/data/free-exercise-db-main/exercises/Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench/
+    - assets/data/free-exercise-db-main/exercises/Bent_Over_Low-Pulley_Side_Lateral/
+    - assets/data/free-exercise-db-main/exercises/Bent_Over_One-Arm_Long_Bar_Row/
+    - assets/data/free-exercise-db-main/exercises/Bent_Over_Two-Arm_Long_Bar_Row/
+    - assets/data/free-exercise-db-main/exercises/Bent_Over_Two-Dumbbell_Row/
+    - assets/data/free-exercise-db-main/exercises/Bent_Over_Two-Dumbbell_Row_With_Palms_In/
+    - assets/data/free-exercise-db-main/exercises/Bent_Press/
+    - assets/data/free-exercise-db-main/exercises/Bicycling/
+    - assets/data/free-exercise-db-main/exercises/Bicycling_Stationary/
+    - assets/data/free-exercise-db-main/exercises/Board_Press/
+    - assets/data/free-exercise-db-main/exercises/Body-Up/
+    - assets/data/free-exercise-db-main/exercises/Bodyweight_Flyes/
+    - assets/data/free-exercise-db-main/exercises/Bodyweight_Mid_Row/
+    - assets/data/free-exercise-db-main/exercises/Bodyweight_Squat/
+    - assets/data/free-exercise-db-main/exercises/Bodyweight_Walking_Lunge/
+    - assets/data/free-exercise-db-main/exercises/Body_Tricep_Press/
+    - assets/data/free-exercise-db-main/exercises/Bosu_Ball_Cable_Crunch_With_Side_Bends/
+    - assets/data/free-exercise-db-main/exercises/Bottoms-Up_Clean_From_The_Hang_Position/
+    - assets/data/free-exercise-db-main/exercises/Bottoms_Up/
+    - assets/data/free-exercise-db-main/exercises/Box_Jump_Multiple_Response/
+    - assets/data/free-exercise-db-main/exercises/Box_Skip/
+    - assets/data/free-exercise-db-main/exercises/Box_Squat/
+    - assets/data/free-exercise-db-main/exercises/Box_Squat_with_Bands/
+    - assets/data/free-exercise-db-main/exercises/Box_Squat_with_Chains/
+    - assets/data/free-exercise-db-main/exercises/Brachialis-SMR/
+    - assets/data/free-exercise-db-main/exercises/Bradford_Rocky_Presses/
+    - assets/data/free-exercise-db-main/exercises/Butt-Ups/
+    - assets/data/free-exercise-db-main/exercises/Butterfly/
+    - assets/data/free-exercise-db-main/exercises/Butt_Lift_Bridge/
+    # ...continue for all folders
+
+  # Equipment marketplace assets
+    - assets/data/equipment/equipment_catalog.json
+    - assets/data/equipment/Gym Data/Dumbells/hex-d.png
+    - assets/data/equipment/Gym Data/Dumbells/dumbbell-gym-icon-black-sign-260nw-712370662.jpg
+    - assets/data/equipment/Gym Data/Dumbells/cast-hex-dumbbell-250x250.png
+    - assets/data/equipment/Gym Data/Dumbells/hexagon-dumbbells-500x500.png
+    # Legacy offline GIFs for exercisedb (used as fallback by image resolver)
+    - assets/data/exercise vidio/exercisedb-api-main/media/
+
+
+

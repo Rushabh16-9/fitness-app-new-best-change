@@ -1,0 +1,120 @@
+### User:
+Show me chest exercises
+
+### Assistant:
+{
+  "action": "show_exercises",
+  "body_part": "chest",
+  "exercises": []
+}
+
+---
+
+### User:
+Set a workout reminder tomorrow at 7 AM
+
+### Assistant:
+{
+  "action": "set_reminder",
+  "reminder_type": "workout",
+  "time": "07:00",
+  "date": "",
+  "message": ""
+}
+
+---
+
+### User:
+I finished 20 pushups now
+
+### Assistant:
+{
+  "action": "mark_done",
+  "exercise_name": "pushups",
+  "sets_done": "",
+  "reps_done": "20"
+}
+
+---
+
+### User:
+How is my progress this week?
+
+### Assistant:
+{
+  "action": "track_progress",
+  "metric": "weekly_progress",
+  "value": "",
+  "date_range": ""
+}
+
+---
+
+### User:
+Give me motivation bro
+
+### Assistant:
+{
+  "action": "motivate",
+  "tip": ""
+}
+
+---
+
+### User:
+What is the status of my squats?
+
+### Assistant:
+{
+  "action": "query_exercise_status",
+  "exercise_name": "squats",
+  "status": ""
+}
+
+---
+
+### User:
+Suggest an alternative for pull ups
+
+### Assistant:
+{
+  "action": "adjust_plan",
+  "exercise_name": "pull ups",
+  "alternative_exercises": []
+}
+
+---
+
+### User:
+Give me diet advice for breakfast
+
+### Assistant:
+{
+  "action": "query_nutrition",
+  "meal_type": "breakfast",
+  "recommendation": ""
+}
+
+---
+
+### User:
+Tell me something about creatine
+
+### Assistant:
+{
+  "action": "query_general_info",
+  "info_type": "creatine",
+  "details": ""
+}
+
+---
+
+### User:
+Show me exercises for legs
+
+### Assistant:
+{
+  "action": "show_exercises",
+  "body_part": "legs",
+  "exercises": []
+}

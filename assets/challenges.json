@@ -1,0 +1,138 @@
+[
+  {
+    "id": "pushup_challenge",
+    "title": "100 Push-Ups Challenge",
+    "description": "Complete 100 push-ups every day for 7 days.",
+    "difficulty": "Hard",
+    "duration": 7,
+    "reward": {
+      "points": 100,
+      "badge": "Strength Badge"
+    },
+    "type": "strength",
+    "category": "Fitness",
+    "image": "assets/pushups.png",
+    "longDescription": "Complete 100 push-ups every day for 7 consecutive days to build upper body strength.",
+    "requirements": ["Be able to do at least 20 push-ups", "No injuries to arms or shoulders"],
+    "tips": ["Maintain proper form", "Rest between sets"]
+  },
+  {
+    "id": "steps_challenge",
+    "title": "10,000 Steps Challenge",
+    "description": "Walk at least 10,000 steps daily for 14 days.",
+    "difficulty": "Medium",
+    "duration": 14,
+    "reward": {
+      "points": 80,
+      "badge": "Endurance Badge"
+    },
+    "type": "streak",
+    "category": "Cardio",
+    "image": "assets/slide1.jpg",
+    "longDescription": "Walk at least 10,000 steps every day for 14 days to improve cardiovascular health.",
+    "requirements": ["Comfortable walking shoes"],
+    "tips": ["Use a pedometer or smartphone app", "Take breaks if needed"]
+  },
+  {
+    "id": "plank_master",
+    "title": "Plank Master",
+    "description": "Hold a plank for 3 minutes every day for 10 days.",
+    "difficulty": "Hard",
+    "duration": 10,
+    "reward": {
+      "points": 90,
+      "badge": "Core Crusher Badge"
+    },
+    "type": "strength",
+    "category": "Core",
+    "image": "assets/plank.png",
+    "longDescription": "Hold a plank position for 3 minutes daily for 10 days to strengthen your core muscles.",
+    "requirements": ["No lower back pain", "Basic core strength"],
+    "tips": ["Keep your body straight", "Breathe steadily"]
+  },
+  {
+    "id": "yoga_streak",
+    "title": "Yoga Streak",
+    "description": "Do 20 minutes of yoga for 21 days straight.",
+    "difficulty": "Easy",
+    "duration": 21,
+    "reward": {
+      "points": 70,
+      "badge": "Zen Master Badge"
+    },
+    "type": "streak",
+    "category": "Flexibility",
+    "image": "assets/slide2.jpg",
+    "longDescription": "Practice yoga for 20 minutes daily for 21 days to improve flexibility and mindfulness.",
+    "requirements": ["Yoga mat", "Comfortable clothing"],
+    "tips": ["Focus on breathing", "Modify poses as needed"]
+  },
+  {
+    "id": "squat_power",
+    "title": "Squat Power",
+    "description": "Finish 200 squats daily for 30 days.",
+    "difficulty": "Hard",
+    "duration": 30,
+    "reward": {
+      "points": 120,
+      "badge": "Leg Warrior Badge"
+    },
+    "type": "strength",
+    "category": "Lower Body",
+    "image": "assets/slide3.jpg",
+    "longDescription": "Complete 200 squats every day for 30 days to build leg strength and endurance.",
+    "requirements": ["No knee injuries", "Basic leg strength"],
+    "tips": ["Keep your back straight", "Go as low as comfortable"]
+  },
+  {
+    "id": "jump_rope_challenge",
+    "title": "Jump Rope Challenge",
+    "description": "Jump rope for 15 minutes daily for 14 days.",
+    "difficulty": "Medium",
+    "duration": 14,
+    "reward": {
+      "points": 85,
+      "badge": "Cardio Champ Badge"
+    },
+    "type": "streak",
+    "category": "Cardio",
+    "image": "assets/jumprope.png",
+    "longDescription": "Jump rope for 15 minutes every day for 14 days to improve cardiovascular fitness and coordination.",
+    "requirements": ["Jump rope", "Clear space"],
+    "tips": ["Keep a steady pace", "Wear supportive shoes"]
+  },
+  {
+    "id": "plank_variations",
+    "title": "Plank Variations",
+    "description": "Perform 5 different plank variations daily for 10 days.",
+    "difficulty": "Hard",
+    "duration": 10,
+    "reward": {
+      "points": 95,
+      "badge": "Core Strength Badge"
+    },
+    "type": "strength",
+    "category": "Core",
+    "image": "assets/plank_variation.png",
+    "longDescription": "Perform 5 different plank variations daily to strengthen your core and improve stability.",
+    "requirements": ["Basic plank ability"],
+    "tips": ["Focus on form", "Increase hold time gradually"]
+  },
+  {
+    "id": "morning_stretch",
+    "title": "Morning Stretch",
+    "description": "Stretch for 10 minutes every morning for 21 days.",
+    "difficulty": "Easy",
+    "duration": 21,
+    "reward": {
+      "points": 60,
+      "badge": "Flexibility Badge"
+    },
+    "type": "streak",
+    "category": "Flexibility",
+    "image": "assets/morning_stretch.png",
+    "longDescription": "Perform a 10-minute stretching routine every morning to improve flexibility and reduce stiffness.",
+    "requirements": ["Comfortable clothing"],
+    "tips": ["Breathe deeply", "Hold stretches gently"]
+  }
+]
