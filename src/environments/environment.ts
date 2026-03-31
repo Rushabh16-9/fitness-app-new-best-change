@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  API_ENDPOINT: "http://localhost:8080/",
+  API_ENDPOINT: "",
   DOMAIN_NAME: "",
   WEBSITE_NAME: "",
   PANEL_NAME: ""
