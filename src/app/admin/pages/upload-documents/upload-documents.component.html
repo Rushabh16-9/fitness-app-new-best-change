@@ -12,7 +12,7 @@
     
     <mat-card-content style="margin-top: 10px;">
 
-      <form [formGroup]="documentsForm" autocomplete="off">
+      <form [formGroup]="documentsForm" (ngSubmit)="onDocumentsFormSubmit(documentsForm.value)" autocomplete="off">
         <table class="p-0 custom-table education-info">
           <thead>
             <tr>
@@ -47,7 +47,7 @@
           <mat-divider></mat-divider>
         </div>
         <div class="py-1">
-          <button mat-raised-button color="primary" type="button" (click)="onDocumentsFormSubmit(documentsForm.value)">Submit</button>
+          <button mat-raised-button color="primary" type="submit">Submit</button>
         </div>
       </form>
     </mat-card-content>

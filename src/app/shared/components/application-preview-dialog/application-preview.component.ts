@@ -132,8 +132,6 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
   monthsList = [];
   otherActivities = [];
-  sportsQualificationEntries: any[] = [];
-  sportsQualificationConfig: any = { display: false, maxEntries: 3, fields: [], entries: [] };
   streams = ['Arts', 'Science', 'Commerce'];
   nationality = ['Indian', '*Foreigner', '*N.R.I'];
   semesterArray = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -739,7 +737,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       districtOfBirth: [null],
       religionId: [null],
       domicile: [null],
-      casteName: [null],
+      casteId: [null],
       subCaste: [null],
       weight: [null],
       height: [null],
@@ -2448,7 +2446,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         age: [formData.personalInfo.age],
         aadharAge: [formData.personalInfo.aadharAge],
         religionId: [formData.personalInfo.religionId, religionReq],
-        casteName: [formData.personalInfo.casteName, casteReq],
+        casteId: [formData.personalInfo.casteId, casteReq],
         subCaste: [formData.personalInfo.subCaste, subCasteReq],
         weight: [formData.personalInfo.weight, weightReq],
         height: [formData.personalInfo.height, heightReq],
@@ -5727,9 +5725,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
             if ((conf.ssc.checkCondition && conf.ssc.display) && itemRow.confNameSelected == conf.confName) {
 
-              this.showSscBlk = true;
+              this.showSscBlk = false;
 
-              if (this.formData.educationInfo.enggInfo.ssc.subjectInfoReq) {
+              if (this.formData.educationInfo.enggInfo.ssc.subjectInfoReq && this.showSscBlk) {
 
                 const maths = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].ssc.controls.subjectInfo.controls.maths;
 
@@ -6273,31 +6271,6 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       if (formData.extraCurriculumActivities.onlineLearningPreparedness.display && !globalFunctions.isEmpty(formData.extraCurriculumActivities.onlineLearningPreparedness.questionsList)) {
         this.setOnlineLearningPreparednessRows(formData.extraCurriculumActivities.onlineLearningPreparedness.questionsList);
-      }
-
-      // Initialize Sports Qualification for preview
-      if (formData.extraCurriculumActivities.sportsQualification) {
-        let sqData = formData.extraCurriculumActivities.sportsQualification;
-        if (Array.isArray(sqData)) {
-          let autoFields = [];
-          if (sqData.length > 0) {
-            Object.keys(sqData[0]).forEach(key => {
-              if (key === 'certificateUpload' || key === 'documentUrl') {
-                autoFields.push({ name: key, label: 'Upload Certificate', type: 'file' });
-              } else {
-                let label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                autoFields.push({ name: key, label: label, type: 'text' });
-              }
-            });
-          }
-          this.sportsQualificationConfig = { display: true, maxEntries: 10, fields: autoFields, entries: sqData };
-          this.sportsQualificationEntries = sqData;
-        } else {
-          this.sportsQualificationConfig = sqData;
-          if (this.sportsQualificationConfig.display && this.sportsQualificationConfig.entries && this.sportsQualificationConfig.entries.length > 0) {
-            this.sportsQualificationEntries = this.sportsQualificationConfig.entries;
-          }
-        }
       }
     }
 
@@ -7439,7 +7412,6 @@ export class ApplicationPreviewDialogComponent implements OnInit {
   onDeclarationFormSubmit(values: any, stepper: MatStepper): void {
     this.declarationFormValues = this.declarationForm.getRawValue();
     this.saveForm('finalSave', { stepName: 'declaration' });
-    this.dialogRef.close();
     // this.openConfirmDialog();
   }
 
@@ -8963,9 +8935,6 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       }
     });
     this.extraCurriculumFormValues['otherActivities'] = this.otherActivities;
-    this.extraCurriculumFormValues['sportsQualification'] = this.sportsQualificationEntries.map(entry => {
-      return { ...entry, documentLink: entry.certificateUpload || '' };
-    });
 
     this.questionnaireFormValues = this.questionnaireForm.get('questionnaire').value;
 
@@ -8990,17 +8959,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       this.allEventEmitters.showLoader.emit(true);
     }
 
-    const personalInfoValues: any = Array.isArray(this.personalInfoFormValues) ? {} : (this.personalInfoFormValues || {});
-    const isNameChangeFromAi = Number(
-      personalInfoValues.is_name_change_from_ai ?? personalInfoValues.isNameChangeFromAi ?? 0
-    ) || 0;
-    personalInfoValues['isNameChangeFromAi'] = isNameChangeFromAi;
-    personalInfoValues['is_name_change_from_ai'] = isNameChangeFromAi;
-
     let postParam: any = {
       'coursesList': this.coursesListValues,
       'categories': this.categoryFormValues,
-      'personalInfo': personalInfoValues,
+      'personalInfo': this.personalInfoFormValues,
       'addressInfo': this.addressInfoFormValues,
       'guardianInfo': this.guardianInfoFormValues,
       'educationInfo': this.educationInfoFormValues,
@@ -9019,8 +8981,6 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       'finalSave': finalSave,
       'stepName': tab.stepName,
       'page': this.panelMode,
-      'isNameChangeFromAi': isNameChangeFromAi,
-      'is_name_change_from_ai': isNameChangeFromAi,
     };
 
     this._admissionService.saveForm(postParam, this.fatherPassportSizePhotoToUpload, this.motherPassportSizePhotoToUpload, this.sisterPassportSizePhotoToUpload, this.brotherPassportSizePhotoToUpload, this.guardianPassportSizePhotoToUpload, this.passportSizePhotoToUpload, this.signatureImageToUpload, this.parentSignatureImageToUpload, this.fatherSignaturePhotoToUpload, this.motherSignaturePhotoToUpload, this.sisterSignaturePhotoToUpload, this.brotherSignaturePhotoToUpload, this.guardianSignaturePhotoToUpload).subscribe(data => {
@@ -9127,17 +9087,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       this.allEventEmitters.showLoader.emit(true);
     }
 
-    const personalInfoValues: any = Array.isArray(this.personalInfoFormValues) ? {} : (this.personalInfoFormValues || {});
-    const isNameChangeFromAi = Number(
-      personalInfoValues.is_name_change_from_ai ?? personalInfoValues.isNameChangeFromAi ?? 0
-    ) || 0;
-    personalInfoValues['isNameChangeFromAi'] = isNameChangeFromAi;
-    personalInfoValues['is_name_change_from_ai'] = isNameChangeFromAi;
-
     let postParam: any = {
       'coursesList': this.coursesListValues,
       'categories': this.categoryFormValues,
-      'personalInfo': personalInfoValues,
+      'personalInfo': this.personalInfoFormValues,
       'addressInfo': this.addressInfoFormValues,
       'guardianInfo': this.guardianInfoFormValues,
       'educationInfo': this.educationInfoFormValues,
@@ -9156,8 +9109,6 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       'finalSave': finalSave,
       'stepName': tab.stepName,
       'page': this.panelMode,
-      'isNameChangeFromAi': isNameChangeFromAi,
-      'is_name_change_from_ai': isNameChangeFromAi,
       'formId': this.formDetails.formId,
       'universityApplicationFormNo': this.universityApplicationFormNo.value,
     };
