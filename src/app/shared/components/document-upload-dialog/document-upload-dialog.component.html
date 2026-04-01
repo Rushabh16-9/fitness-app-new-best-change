@@ -40,7 +40,7 @@
       <div *ngIf="doc.extractionError" style="margin-top: 15px; padding: 10px; background-color: #ffebee; border-left: 3px solid #f44336; color: #c62828; font-size: 13px;">
         {{doc.extractionError}} 
         <div style="margin-top: 8px;">
-          <button mat-button color="warn" (click)="retryExtraction(i)" style="line-height: 24px;">Retry</button>
+          <button mat-button type="button" color="warn" (click)="retryExtraction(i)" style="line-height: 24px;">Retry</button>
         </div>
       </div>
       

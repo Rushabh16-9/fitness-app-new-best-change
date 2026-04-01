@@ -269,7 +269,7 @@ export class AdmissionService {
 
     fd.append('page', page);
     fd.append('docId', values.docId);
-    let file: File = values.docValue[0];
+    let file: File = (values.docValue instanceof File) ? values.docValue : values.docValue[0];
     fd.append('document', file, file.name);
 
     return this.http.post<any>(url, fd).pipe(timeout(globalFunctions.timeoutSeconds()));

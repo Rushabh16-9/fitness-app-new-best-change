@@ -284,10 +284,8 @@ export class UploadDocumentsComponent implements OnInit {
             dialogRef.afterClosed().subscribe(result => {
               if (result?.success) {
                 const verifiedFile = result.documents?.[0]?.file || file;
-                const resolvedExt = (verifiedFile?.name || '').toUpperCase().split('.').pop() || ext;
-                resolvedExt === 'PDF'
-                  ? this.browsedDocData(verifiedFile, docIndex, bunchIndex, 'PDF')
-                  : this.openImageCropperDialog(event, 'documents', docIndex, bunchIndex);
+                const resolvedExt = (verifiedFile?.name || '').toUpperCase().split('.').pop() || '';
+                this.browsedDocData(verifiedFile, docIndex, bunchIndex, resolvedExt === 'PDF' ? 'PDF' : '');
               } else {
                 documents['controls'].isBrowsed.setValue(false);
                 event.target.value = '';
