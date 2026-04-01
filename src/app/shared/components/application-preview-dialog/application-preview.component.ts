@@ -739,7 +739,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       districtOfBirth: [null],
       religionId: [null],
       domicile: [null],
-      casteId: [null],
+      casteName: [null],
       subCaste: [null],
       weight: [null],
       height: [null],
@@ -2448,7 +2448,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
         age: [formData.personalInfo.age],
         aadharAge: [formData.personalInfo.aadharAge],
         religionId: [formData.personalInfo.religionId, religionReq],
-        casteId: [formData.personalInfo.casteId, casteReq],
+        casteName: [formData.personalInfo.casteName, casteReq],
         subCaste: [formData.personalInfo.subCaste, subCasteReq],
         weight: [formData.personalInfo.weight, weightReq],
         height: [formData.personalInfo.height, heightReq],
@@ -5727,9 +5727,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
             if ((conf.ssc.checkCondition && conf.ssc.display) && itemRow.confNameSelected == conf.confName) {
 
-              this.showSscBlk = false;
+              this.showSscBlk = true;
 
-              if (this.formData.educationInfo.enggInfo.ssc.subjectInfoReq && this.showSscBlk) {
+              if (this.formData.educationInfo.enggInfo.ssc.subjectInfoReq) {
 
                 const maths = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].ssc.controls.subjectInfo.controls.maths;
 
@@ -6273,6 +6273,31 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       if (formData.extraCurriculumActivities.onlineLearningPreparedness.display && !globalFunctions.isEmpty(formData.extraCurriculumActivities.onlineLearningPreparedness.questionsList)) {
         this.setOnlineLearningPreparednessRows(formData.extraCurriculumActivities.onlineLearningPreparedness.questionsList);
+      }
+
+      // Initialize Sports Qualification for preview
+      if (formData.extraCurriculumActivities.sportsQualification) {
+        let sqData = formData.extraCurriculumActivities.sportsQualification;
+        if (Array.isArray(sqData)) {
+          let autoFields = [];
+          if (sqData.length > 0) {
+            Object.keys(sqData[0]).forEach(key => {
+              if (key === 'certificateUpload' || key === 'documentUrl') {
+                autoFields.push({ name: key, label: 'Upload Certificate', type: 'file' });
+              } else {
+                let label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                autoFields.push({ name: key, label: label, type: 'text' });
+              }
+            });
+          }
+          this.sportsQualificationConfig = { display: true, maxEntries: 10, fields: autoFields, entries: sqData };
+          this.sportsQualificationEntries = sqData;
+        } else {
+          this.sportsQualificationConfig = sqData;
+          if (this.sportsQualificationConfig.display && this.sportsQualificationConfig.entries && this.sportsQualificationConfig.entries.length > 0) {
+            this.sportsQualificationEntries = this.sportsQualificationConfig.entries;
+          }
+        }
       }
     }
 
@@ -7413,7 +7438,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
   onDeclarationFormSubmit(values: any, stepper: MatStepper): void {
     this.declarationFormValues = this.declarationForm.getRawValue();
-    this.saveForm('finalSave', { stepName: 'declaration' });
+    this.saveForm('finalSave');
+    this.dialogRef.close();
     // this.openConfirmDialog();
   }
 
@@ -8937,6 +8963,9 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       }
     });
     this.extraCurriculumFormValues['otherActivities'] = this.otherActivities;
+    this.extraCurriculumFormValues['sportsQualification'] = this.sportsQualificationEntries.map(entry => {
+      return { ...entry, documentLink: entry.certificateUpload || '' };
+    });
 
     this.questionnaireFormValues = this.questionnaireForm.get('questionnaire').value;
 

@@ -6498,6 +6498,33 @@
           </form>
         </ng-template>
 
+        <ng-template #sportsQualification>
+          <div class="bord-page">
+            <div *ngIf="sportsQualificationConfig.display">
+              <div *ngFor="let entry of sportsQualificationEntries; let i = index"
+                style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 4px; background: #fafafa;">
+                <div style="margin-bottom: 10px;">
+                  <b>Sport Qualification {{i + 1}}</b>
+                </div>
+                <div *ngFor="let field of sportsQualificationConfig.fields">
+                  <div *ngIf="field.type == 'text' || field.type == 'select' || field.type == 'number'" flex fxLayout="row" fxLayout.lt-sm="column"
+                    fxLayoutGap="5px" class="marg-top-5">
+                    <mat-form-field fxFlex>
+                      <input matInput [placeholder]="field.label" [value]="entry[field.name]" readonly>
+                    </mat-form-field>
+                  </div>
+                  <div *ngIf="field.type == 'file' && entry[field.name]" class="marg-top-5" style="margin-bottom: 10px;">
+                    <a class="dwn-link file-name" (click)="viewDoc(entry[field.name])">View Certificate</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex-p">
+            <mat-divider></mat-divider>
+          </div>
+        </ng-template>
+
         <ng-template #additionalCertification>
           <form [formGroup]="additionalCertificationForm" autocomplete="false">
             <div formArrayName="additionalCertificationFields">
@@ -7130,6 +7157,14 @@
 
                 </span>
 
+                <span *ngIf="tab.stepName == 'sportQualification'">
+
+                  <ng-template matStepLabel>{{tab.stepTitle}}</ng-template>
+
+                  <ng-container *ngTemplateOutlet="sportsQualification"></ng-container>
+
+                </span>
+
                 <span *ngIf="tab.stepName == 'extraCertificate'">
 
                   <ng-template matStepLabel>{{tab.stepTitle}}</ng-template>
@@ -7308,6 +7343,14 @@
 
                   <ng-container *ngTemplateOutlet="extraCurriculum"></ng-container>
 
+
+                </span>
+
+                <span *ngIf="tab.stepName == 'sportQualification'">
+
+                  <ng-template matStepLabel>{{tab.stepTitle}}</ng-template>
+
+                  <ng-container *ngTemplateOutlet="sportsQualification"></ng-container>
 
                 </span>
 

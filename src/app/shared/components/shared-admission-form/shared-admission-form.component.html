@@ -6424,6 +6424,103 @@
       </form>
     </ng-template>
 
+    <ng-template #sportsQualification>
+
+      <div class="bord-page">
+
+        <div *ngIf="sportsQualificationConfig.display">
+
+          <div *ngFor="let entry of sportsQualificationEntries; let i = index"
+            style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 4px; background: #fafafa;">
+
+            <div flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between center"
+              style="margin-bottom: 10px;">
+              <b>Sport Qualification {{i + 1}}</b>
+              <button type="button" mat-icon-button color="warn" (click)="removeSportsQualificationEntry(i)"
+                matTooltip="Remove Entry">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+
+            <div *ngFor="let field of sportsQualificationConfig.fields">
+
+              <div *ngIf="field.type == 'select'" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px"
+                class="marg-top-5">
+                <mat-form-field fxFlex>
+                  <mat-select [placeholder]="field.label" [value]="entry[field.name]"
+                    (selectionChange)="onSportsQualificationFieldChange(i, field.name, $event.value)">
+                    <mat-option *ngFor="let opt of field.options" [value]="opt.value">
+                      {{opt.label}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div *ngIf="field.type == 'text'" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px"
+                class="marg-top-5">
+                <mat-form-field fxFlex>
+                  <input matInput [placeholder]="field.label" [value]="entry[field.name]"
+                    (input)="onSportsQualificationFieldChange(i, field.name, $event.target.value)" maxlength="255">
+                </mat-form-field>
+              </div>
+
+              <div *ngIf="field.type == 'number'" flex fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="5px"
+                class="marg-top-5">
+                <mat-form-field fxFlex>
+                  <input matInput type="number" [placeholder]="field.label" [value]="entry[field.name]"
+                    (input)="onSportsQualificationFieldChange(i, field.name, $event.target.value)">
+                </mat-form-field>
+              </div>
+
+              <div *ngIf="field.type == 'file'" class="marg-top-5" style="margin-bottom: 10px;">
+                <div *ngIf="!entry[field.name] && !sportsQualificationCertUploading[i]">
+                  <button type="button" (click)="sportsCertFileInput.click()" class="mat-small-button"
+                    mat-raised-button>
+                    {{field.label}}
+                  </button>
+                  <input type="file" [hidden]="true" (change)="onSportsQualificationCertUpload($event, i)"
+                    #sportsCertFileInput accept=".jpg,.png,.pdf,.jpeg">
+                  <div class="custom-hint" style="margin-top: 5px; margin-left: 5px;">Allowed: JPG, PNG, PDF (Max 5MB)
+                  </div>
+                </div>
+                <div *ngIf="sportsQualificationCertUploading[i]" flex fxLayout="row" fxLayout.lt-sm="column"
+                  fxLayoutGap="5px" class="marg-top-10 marg-btm-10">
+                  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                </div>
+                <div *ngIf="entry[field.name] && !sportsQualificationCertUploading[i]" class="marg-btm-10">
+                  <a class="dwn-link file-name"
+                    (click)="viewSportsQualificationCert(entry[field.name])">View Certificate</a>
+                  <span (click)="removeSportsQualificationCert(i)" class="actn-icons material-icons"
+                    style="cursor: pointer; vertical-align: middle; color: #f44336;"> highlight_off
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div style="margin-top: 10px;">
+            <button type="button"
+              *ngIf="sportsQualificationEntries.length < sportsQualificationConfig.maxEntries"
+              (click)="addSportsQualificationEntry()" mat-raised-button color="primary" class="mat-small-button">
+              <mat-icon>add</mat-icon> Add Sport Qualification
+            </button>
+            <div *ngIf="sportsQualificationEntries.length >= sportsQualificationConfig.maxEntries" class="custom-hint"
+              style="margin-top: 5px;">
+              Maximum {{sportsQualificationConfig.maxEntries}} entries allowed
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="flex-p">
+        <mat-divider></mat-divider>
+      </div>
+    </ng-template>
+
     <ng-template #additionalCertification>
       <form [formGroup]="additionalCertificationForm" autocomplete="false">
         <div formArrayName="additionalCertificationFields">
@@ -7141,6 +7238,19 @@
               </div>
             </span>
 
+            <span *ngIf="tab.stepName == 'sportQualification'">
+
+              <ng-template matStepLabel>{{tab.stepTitle}}</ng-template>
+
+              <ng-container *ngTemplateOutlet="sportsQualification"></ng-container>
+
+              <div style="margin-top: 10px;">
+                <button *ngIf="tab.stepperIndex > 0" mat-raised-button color="primary" matStepperPrevious>Back</button>
+                <button (click)="onSportsQualificationFormSubmit(stepper, tab)" mat-raised-button
+                  color="primary">Next</button>
+              </div>
+            </span>
+
             <span *ngIf="tab.stepName == 'extraCertificate'">
 
               <ng-template matStepLabel>{{tab.stepTitle}}</ng-template>
@@ -7385,6 +7495,19 @@
                 <button *ngIf="tab.stepperIndex > 0" mat-raised-button color="primary" matStepperPrevious>Back</button>
                 <button (click)="onExtraCurriculumFormSubmit(extraCurriculumForm.getRawValue(), stepper, tab)"
                   mat-raised-button color="primary">Next</button>
+              </div>
+            </span>
+
+            <span *ngIf="tab.stepName == 'sportQualification'">
+
+              <ng-template matStepLabel>{{tab.stepTitle}}</ng-template>
+
+              <ng-container *ngTemplateOutlet="sportsQualification"></ng-container>
+
+              <div style="margin-top: 10px;">
+                <button *ngIf="tab.stepperIndex > 0" mat-raised-button color="primary" matStepperPrevious>Back</button>
+                <button (click)="onSportsQualificationFormSubmit(stepper, tab)" mat-raised-button
+                  color="primary">Next</button>
               </div>
             </span>
 
