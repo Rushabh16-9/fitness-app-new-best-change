@@ -20,7 +20,37 @@ export class DocumentExtractionService {
         const normalize = (value: string) => (value || '').replace(/\/+$/, '');
 
         const apiEndpoint = normalize(environment.API_ENDPOINT || '');
-        return apiEndpoint ? `${apiEndpoint}/api` : '/api';
+        return apiEndpoint ? `${apiEndpoint}/AI` : '/AI';
+    }
+
+    private getCommonPostValues(): any {
+        try {
+            return globalFunctions.getCommonPostValues() || {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    private appendCommonFields(formData: FormData): any {
+        const commonPostValues = this.getCommonPostValues();
+        for (const key in commonPostValues) {
+            if (Object.prototype.hasOwnProperty.call(commonPostValues, key) && commonPostValues[key] !== undefined && commonPostValues[key] !== null) {
+                formData.append(key, String(commonPostValues[key]));
+            }
+        }
+        return commonPostValues;
+    }
+
+    private getSessionExpiredMessage(error: any, fallback: string): string {
+        const commonPostValues = this.getCommonPostValues();
+        const userId = commonPostValues && commonPostValues.userId ? commonPostValues.userId : 'unknown';
+        const status = error?.status || error?.error?.status;
+
+        if (status === 419 || error?.error?.status === 419) {
+            return `Session Expired (userId: ${userId})`;
+        }
+
+        return fallback;
     }
 
     /**
@@ -28,16 +58,21 @@ export class DocumentExtractionService {
      */
     extractMarksheetData(file: File, documentType?: string): Observable<ExtractionResponse> {
         const formData = new FormData();
+        this.appendCommonFields(formData);
         formData.append('document', file);
         if (documentType) {
             formData.append('document_name', documentType);
+            formData.append('expectedDocType', documentType);
         }
 
-        return this.http.post<ExtractionResponse>(`${this.API_URL}/extract-marksheet`, formData)
+        return this.http.post<ExtractionResponse>(`${this.API_URL}/extractMarksheet`, formData)
             .pipe(
                 timeout(30000),
                 catchError(error => {
                     console.error('Extraction error:', error);
+                    if (error?.status === 419 || error?.error?.status === 419) {
+                        return throwError(() => new Error(this.getSessionExpiredMessage(error, 'Session Expired')));
+                    }
                     const message = error.error?.error
                         || error.message
                         || 'Extraction service unavailable. Please ensure the backend is running.';
@@ -51,14 +86,18 @@ export class DocumentExtractionService {
      */
     verifyDocument(file: File, expectedType: string = 'HSC Marksheet'): Observable<VerificationResponse> {
         const formData = new FormData();
+        this.appendCommonFields(formData);
         formData.append('document', file);
         formData.append('expectedType', expectedType);
 
-        return this.http.post<VerificationResponse>(`${this.API_URL}/verify-document`, formData)
+        return this.http.post<VerificationResponse>(`${this.API_URL}/verifyDocument`, formData)
             .pipe(
                 timeout(30000),
                 catchError(error => {
                     console.error('Verification error:', error);
+                    if (error?.status === 419 || error?.error?.status === 419) {
+                        return throwError(() => new Error(this.getSessionExpiredMessage(error, 'Session Expired')));
+                    }
                     return throwError(() => new Error(error.error?.error || 'Failed to verify document'));
                 })
             );

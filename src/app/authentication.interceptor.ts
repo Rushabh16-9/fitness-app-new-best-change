@@ -84,6 +84,6 @@ export class AuthenticationInterceptor implements HttpInterceptor {
       return false;
     }
 
-    return /\/api\/(extract-marksheet|verify-document|health|validate-photo|validate-signature)(\?|$)/i.test(url);
+    return /\/(api\/(extract-marksheet|verify-document|health|validate-photo|validate-signature)|AI\/(extractMarksheet|verifyDocument|health|validatePhoto|validateSignature))(\?|$)/i.test(url);
   }
 }
