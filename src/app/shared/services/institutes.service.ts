@@ -568,7 +568,6 @@ export class InstitutesService {
     postData['stepName'] = values.stepName;
     postData['page'] = values.page;
     postData['isNameChangeFromAi'] = isNameChangeFromAi;
-    postData['is_name_change_from_ai'] = isNameChangeFromAi;
     postData['passportSizePhoto'] = passportSizePhoto;
     postData['signatureImage'] = signatureImage;
     postData['formId'] = values.formId;

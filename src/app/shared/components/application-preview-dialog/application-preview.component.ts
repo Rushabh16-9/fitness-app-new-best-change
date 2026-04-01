@@ -8651,7 +8651,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
       const maths = <UntypedFormGroup>this.educationInfoForm.controls.eduInfo['controls'].enggInfo['controls'].ssc.controls.subjectInfo.controls.maths;
 
-      this.showSscBlk = false; // conf.ssc.display;
+      this.showSscBlk = conf.ssc.display;
 
       if (this.showSscBlk) {
 
@@ -8963,9 +8963,7 @@ export class ApplicationPreviewDialogComponent implements OnInit {
       }
     });
     this.extraCurriculumFormValues['otherActivities'] = this.otherActivities;
-    this.extraCurriculumFormValues['sportsQualification'] = this.sportsQualificationEntries.map(entry => {
-      return { ...entry, documentLink: entry.certificateUpload || '' };
-    });
+    this.extraCurriculumFormValues['sportsQualification'] = this.sportsQualificationEntries;
 
     this.questionnaireFormValues = this.questionnaireForm.get('questionnaire').value;
 

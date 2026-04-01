@@ -153,7 +153,6 @@ export class AdmissionService {
     postData['stepName'] = values.stepName;
     postData['page'] = values.page;
     postData['isNameChangeFromAi'] = isNameChangeFromAi;
-    postData['is_name_change_from_ai'] = isNameChangeFromAi;
     postData['fatherPhoto'] = fatherPassportSizePhotoToUpload;
     postData['motherPhoto'] = motherPassportSizePhotoToUpload;
     postData['sisterPhoto'] = sisterPassportSizePhotoToUpload;
