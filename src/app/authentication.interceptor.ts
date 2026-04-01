@@ -39,12 +39,10 @@ export class AuthenticationInterceptor implements HttpInterceptor {
     req = req.clone({ headers: req.headers.set('Accept', 'application/json') });
 
 
-    const requestUrl = req.url || '';
-
     return next.handle(req).pipe(map((event: HttpEvent<any>) => {
 
       if (event instanceof HttpResponse) {
-        if (event.body && event.body.status == 419 && !this.isAiDocumentEndpoint(requestUrl)) {
+        if (event.body.status == 419) {
           authService.sessionExpired();
         } else if (event.body.status == 500) {
           this.router.navigate(['/under-maintenance']);
@@ -53,37 +51,24 @@ export class AuthenticationInterceptor implements HttpInterceptor {
       return event;
     })).pipe(catchError((event) => {
       if (event instanceof HttpErrorResponse) {
-        return this.catch401(event, requestUrl);
+        return this.catch401(event);
       }
       return throwError(event);
     }));
   }
 
   // Response Interceptor
-  private catch401(error: HttpErrorResponse, requestUrl: string): Observable<any> {
+  private catch401(error: HttpErrorResponse): Observable<any> {
     const authService = this.injector.get(AuthService);        
-    const aiEndpointCall = this.isAiDocumentEndpoint(requestUrl);
 
     // Check if we had 401 response
     if (error.status === 0) {
       // authService.internetConnectionError();
-      if (!aiEndpointCall) {
-        return empty();
-      }
+      return empty();
     } else if (error.status === 401) {
       // redirect to Login page for example
-      if (!aiEndpointCall) {
-        return empty();
-      }
+      return empty();
     }
     return throwError(error);
-  }
-
-  private isAiDocumentEndpoint(url: string): boolean {
-    if (!url) {
-      return false;
-    }
-
-    return /\/(api\/(extract-marksheet|verify-document|health|validate-photo|validate-signature)|AI\/(extractMarksheet|verifyDocument|health|validatePhoto|validateSignature))(\?|$)/i.test(url);
   }
 }
