@@ -5,6 +5,7 @@ import { timeout, map, catchError } from 'rxjs/operators';
 
 import { admissionApiUrls } from 'app/resta-api-urls';
 import * as globalFunctions from 'app/global/globalFunctions';
+import { environment } from 'environments/environment';
 
 @Injectable()
 export class AdmissionService {
@@ -453,7 +454,38 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
+  validatePassportPhoto(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('document', file);
+    return this.http.post<any>(environment.API_ENDPOINT + 'api/validate-photo', formData)
+      .pipe(
+        timeout(globalFunctions.timeoutSeconds()),
+        map(response => response),
+        catchError(error => { throw error; })
+      );
+  }
 
+  validateSignature(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('document', file);
+    return this.http.post<any>(environment.API_ENDPOINT + 'api/validate-signature', formData)
+      .pipe(
+        timeout(globalFunctions.timeoutSeconds()),
+        map(response => response),
+        catchError(error => { throw error; })
+      );
+  }
+
+  verifyDocument(file: File, expectedType: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('document', file);
+    formData.append('expectedType', expectedType);
+    return this.http.post<any>(environment.API_ENDPOINT + 'api/verify-document', formData)
+      .pipe(
+        map(response => response),
+        catchError(error => { throw error; })
+      );
+  }
 
   getRequiredDocuments(): Observable<any> {
     return this.http.get<any>('assets/data/required-documents.json?t=' + new Date().getTime());
