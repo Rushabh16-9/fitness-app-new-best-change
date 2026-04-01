@@ -7516,35 +7516,10 @@ export class ApplicationPreviewDialogComponent implements OnInit {
           this.isSisterBrowsedSignaturePhoto = false;
         }
       } else {
-        if (mode === 'passportSizePhoto') {
-          this.allEventEmitters.showLoader.emit(true);
-          this._admissionService.validatePassportPhoto(file).subscribe((response) => {
-            this.allEventEmitters.showLoader.emit(false);
-
-            if (response.success && response.validation && response.validation.isValid) {
-              let postParam = {
-                'mode': mode,
-              }
-              this.openImageCropperDialog(event, postParam);
-            } else {
-              const errors = response.validation?.errors?.join(', ') || 'Invalid passport photo. Please upload a proper passport-size human photo.';
-              this._snackBarMsgComponent.openSnackBar(errors, 'x', 'error-snackbar', 6000);
-              this.isBrowsedPassportSizePhoto = false;
-              if (this.passportSizePhotoFileInput) this.passportSizePhotoFileInput.nativeElement.value = '';
-            }
-          }, (error) => {
-            this.allEventEmitters.showLoader.emit(false);
-            console.error(error);
-            this._snackBarMsgComponent.openSnackBar('Failed to validate photo. Please try again.', 'x', 'error-snackbar', 5000);
-            this.isBrowsedPassportSizePhoto = false;
-            if (this.passportSizePhotoFileInput) this.passportSizePhotoFileInput.nativeElement.value = '';
-          });
-        } else {
-          let postParam = {
-            'mode': mode,
-          }
-          this.openImageCropperDialog(event, postParam);
+        let postParam = {
+          'mode': mode,
         }
+        this.openImageCropperDialog(event, postParam);
       }
     }
   }
