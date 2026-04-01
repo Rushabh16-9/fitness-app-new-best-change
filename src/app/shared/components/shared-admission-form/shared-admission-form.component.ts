@@ -511,27 +511,20 @@ export class SharedAdmissionFormComponent implements OnInit {
     this._admissionService.getRequiredDocuments().subscribe({
       next: (documents: any[]) => {
         this.requiredDocuments = documents || [];
-        // Extract Semester 1 and 2 IDs
-        const sem1Doc = documents?.find((d: any) => 
-          d.document_name && d.document_name.toLowerCase().includes('sem 1')
+        // Extract Semester 1 and 2 doc IDs using labels from the backend config
+        const sem1Doc = documents?.find((d: any) =>
+          d.document_name && /(sem|semester)\s*[-_]?\s*(1|i)\b|\bsem\s*1\b|\bsem1\b/i.test(d.document_name)
         );
-        const sem2Doc = documents?.find((d: any) => 
-          d.document_name && d.document_name.toLowerCase().includes('sem 2')
+        const sem2Doc = documents?.find((d: any) =>
+          d.document_name && /(sem|semester)\s*[-_]?\s*(2|ii)\b|\bsem\s*2\b|\bsem2\b/i.test(d.document_name)
         );
-        
-        this.semesterOneDocId = sem1Doc?.document_id;
-        this.semesterTwoDocId = sem2Doc?.document_id;
-        
-        if (!this.semesterOneDocId || !this.semesterTwoDocId) {
-          // Only use fallback if backend data is incomplete
-          if (!this.semesterOneDocId) this.semesterOneDocId = 390;
-          if (!this.semesterTwoDocId) this.semesterTwoDocId = 389;
-        }
+
+        this.semesterOneDocId = sem1Doc?.document_id || null;
+        this.semesterTwoDocId = sem2Doc?.document_id || null;
       },
-      error: (error) => {
-        // Fallback to default IDs if backend call fails
-        this.semesterOneDocId = 390;
-        this.semesterTwoDocId = 389;
+      error: () => {
+        this.semesterOneDocId = null;
+        this.semesterTwoDocId = null;
       }
     });
   }
@@ -6869,33 +6862,38 @@ export class SharedAdmissionFormComponent implements OnInit {
   }
 
   loadDocumentsList() {
-    console.log('[DOCUMENTS] Calling getUploadedDocuments API');
 
     this._admissionService.getUploadedDocuments().subscribe(
       response => {
-        console.log('[DOCUMENTS] getUploadedDocuments response:', response);
 
-        // API returns status as string '1', and dataJson is the array itself
         if ((response.status == 1 || response.status == '1') && response.dataJson && Array.isArray(response.dataJson)) {
-          console.log('[DOCUMENTS] Setting documents from API response, count:', response.dataJson.length);
 
-          // Manually inject Sem 2 Marksheet for the demo if it's missing
-          const hasSem1 = response.dataJson.find(col => col.docTitle?.toLowerCase().includes('sem 1 marksheet'));
-          const hasSem2 = response.dataJson.find(col => col.docTitle?.toLowerCase().includes('sem 2 marksheet'));
-          
+          // If Sem 1 is present but Sem 2 is missing, inject Sem 2 using its label/id from requiredDocuments
+          const isSemTitle = (title: string, semNo: number) => {
+            const t = (title || '').toLowerCase();
+            if (semNo === 1) return /(sem|semester)\s*[-_]?\s*(1|i)\b|\bsem\s*1\b|\bsem1\b/.test(t);
+            return /(sem|semester)\s*[-_]?\s*(2|ii)\b|\bsem\s*2\b|\bsem2\b/.test(t);
+          };
+
+          const hasSem1 = response.dataJson.find(col => isSemTitle(col.docTitle, 1));
+          const hasSem2 = response.dataJson.find(col => isSemTitle(col.docTitle, 2));
+
           if (hasSem1 && !hasSem2) {
-             response.dataJson.push({
-               docId: 389,
-               docTitle: 'Sem 2 Marksheet',
-               required: false, // Make it optional or required based on business logic
-               uploadedFile: null
-             });
+            // Look up Sem 2 from the backend-provided requiredDocuments list
+            const sem2Required = (this.requiredDocuments || []).find((d: any) =>
+              d.document_name && isSemTitle(d.document_name, 2)
+            );
+            if (sem2Required) {
+              response.dataJson.push({
+                docId: sem2Required.document_id,
+                docTitle: sem2Required.document_name,
+                required: false,
+                uploadedFile: null
+              });
+            }
           }
 
-          // dataJson IS the documents array
           this.setDocumentsValues({ documents: response.dataJson });
-        } else {
-          console.log('[DOCUMENTS] No documents in API response or error status. Status:', response.status, 'dataJson type:', typeof response.dataJson);
         }
       },
       error => {
