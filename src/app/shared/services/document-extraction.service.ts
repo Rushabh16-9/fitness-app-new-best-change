@@ -17,12 +17,7 @@ export class DocumentExtractionService {
     constructor(private http: HttpClient) { }
 
     private getAiApiUrl(): string {
-        const explicitAiEndpoint = (environment as any).AI_API_ENDPOINT;
         const normalize = (value: string) => (value || '').replace(/\/+$/, '');
-
-        if (explicitAiEndpoint) {
-            return `${normalize(explicitAiEndpoint)}/api`;
-        }
 
         const apiEndpoint = normalize(environment.API_ENDPOINT || '');
         return apiEndpoint ? `${apiEndpoint}/api` : '/api';
