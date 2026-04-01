@@ -38,7 +38,6 @@ export class AuthenticationInterceptor implements HttpInterceptor {
 
     req = req.clone({ headers: req.headers.set('Accept', 'application/json') });
 
-
     return next.handle(req).pipe(map((event: HttpEvent<any>) => {
 
       if (event instanceof HttpResponse) {
@@ -53,18 +52,16 @@ export class AuthenticationInterceptor implements HttpInterceptor {
       if (event instanceof HttpErrorResponse) {
         return this.catch401(event);
       }
-      return throwError(event);
     }));
   }
 
   // Response Interceptor
   private catch401(error: HttpErrorResponse): Observable<any> {
     const authService = this.injector.get(AuthService);        
-
     // Check if we had 401 response
     if (error.status === 0) {
       // authService.internetConnectionError();
-      return empty();
+      // return empty();
     } else if (error.status === 401) {
       // redirect to Login page for example
       return empty();
