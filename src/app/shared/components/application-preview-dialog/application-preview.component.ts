@@ -132,6 +132,8 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
   monthsList = [];
   otherActivities = [];
+  sportsQualificationEntries: any[] = [];
+  sportsQualificationConfig: any = { display: false, maxEntries: 3, fields: [], entries: [] };
   streams = ['Arts', 'Science', 'Commerce'];
   nationality = ['Indian', '*Foreigner', '*N.R.I'];
   semesterArray = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -9665,7 +9667,12 @@ export class ApplicationPreviewDialogComponent implements OnInit {
 
   viewDoc(docUrl) {
     if (!globalFunctions.isEmpty(docUrl)) {
-      var win = window.open(docUrl, '_blank');
+      let resolvedUrl = docUrl;
+      // Resolve relative file names to full URLs
+      if (docUrl && !/^https?:\/\//i.test(docUrl) && docUrl.indexOf('/') === -1 && docUrl.indexOf('\\') === -1) {
+        resolvedUrl = `http://localhost:3000/uploads/${docUrl}`;
+      }
+      var win = window.open(resolvedUrl, '_blank');
       if (win) {
         win.focus();
       } else {

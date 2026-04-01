@@ -39,7 +39,12 @@ export class ReceiptsDialogComponent implements OnInit {
   }
 
   downloadForm(formUrl) {
-    var win = window.open(formUrl, '_blank');
+    let resolvedUrl = formUrl;
+    // Resolve relative file names to full URLs
+    if (formUrl && !/^https?:\/\//i.test(formUrl) && formUrl.indexOf('/') === -1 && formUrl.indexOf('\\') === -1) {
+      resolvedUrl = `http://localhost:3000/uploads/${formUrl}`;
+    }
+    var win = window.open(resolvedUrl, '_blank');
     if (win) {
       win.focus();
     } else {
@@ -48,7 +53,12 @@ export class ReceiptsDialogComponent implements OnInit {
   }
   
   downloadReceipt(receiptUrl) {
-    var win = window.open(receiptUrl, '_blank');
+    let resolvedUrl = receiptUrl;
+    // Resolve relative file names to full URLs
+    if (receiptUrl && !/^https?:\/\//i.test(receiptUrl) && receiptUrl.indexOf('/') === -1 && receiptUrl.indexOf('\\') === -1) {
+      resolvedUrl = `http://localhost:3000/uploads/${receiptUrl}`;
+    }
+    var win = window.open(resolvedUrl, '_blank');
     if (win) {
       win.focus();
     } else {
@@ -65,7 +75,12 @@ export class ReceiptsDialogComponent implements OnInit {
     
       if (data.status != undefined) {
         if (data.status == 1) {
-          var win = window.open(data.dataJson.receiptUrl, '_blank');
+          let resolvedUrl = data.dataJson.receiptUrl;
+          // Resolve relative file names to full URLs
+          if (data.dataJson.receiptUrl && !/^https?:\/\//i.test(data.dataJson.receiptUrl) && data.dataJson.receiptUrl.indexOf('/') === -1 && data.dataJson.receiptUrl.indexOf('\\') === -1) {
+            resolvedUrl = `http://localhost:3000/uploads/${data.dataJson.receiptUrl}`;
+          }
+          var win = window.open(resolvedUrl, '_blank');
           if (win) {
             win.focus();
           } else {
