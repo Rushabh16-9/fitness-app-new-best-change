@@ -183,26 +183,55 @@ export class DocumentUploadDialogComponent implements OnInit {
             return;
         }
 
-        this.extractionService.extractMarksheetData(state.file, state.document_name).subscribe({
-            next: (response) => {
-                state.isExtracting = false;
-                state.isVerifying = false;
-                if (response.success && response.data) {
-                    state.verificationMessage = `✓ Verified as ${state.document_name}`;
-                    state.extractedData = response.data;
-                } else {
+        this.extractionService.verifyDocument(state.file, state.document_name).subscribe({
+            next: (verifyResponse) => {
+                const verification = verifyResponse?.verification;
+                const isValidDocType = !!(verifyResponse?.success && verification?.isValid);
+                const verifyReason = verification?.reason || verifyResponse?.error || 'Document type verification failed.';
+
+                if (!isValidDocType) {
+                    state.isExtracting = false;
+                    state.isVerifying = false;
                     state.verificationFailed = true;
                     state.verificationMessage = `✗ Invalid ${state.document_name}`;
-                    state.extractionError = this.buildInvalidDocumentMessage(response.error || 'Failed to extract data.', state.document_name, true);
+                    state.extractionError = this.buildInvalidDocumentMessage(verifyReason, state.document_name, true);
+                    return;
                 }
+
+                state.isVerifying = false;
+                state.isExtracting = true;
+                state.verificationMessage = 'Document verified. Extracting data...';
+
+                this.extractionService.extractMarksheetData(state.file, state.document_name).subscribe({
+                    next: (response) => {
+                        state.isExtracting = false;
+                        const hasMinimumSignals = this.hasMinimumMarksheetSignals(response?.data);
+                        if (response.success && response.data && hasMinimumSignals) {
+                            state.verificationFailed = false;
+                            state.verificationMessage = `✓ Verified as ${state.document_name}`;
+                            state.extractedData = response.data;
+                        } else {
+                            state.verificationFailed = true;
+                            state.verificationMessage = `✗ Invalid ${state.document_name}`;
+                            state.extractionError = this.buildInvalidDocumentMessage(response?.error || 'Could not confirm required marksheet details from this file.', state.document_name, true);
+                        }
+                    },
+                    error: (error) => {
+                        state.isExtracting = false;
+                        state.verificationFailed = true;
+                        state.verificationMessage = `✗ Invalid ${state.document_name}`;
+
+                        const backendError = error?.error?.error || error?.message || 'Failed to extract data.';
+                        state.extractionError = this.buildInvalidDocumentMessage(backendError, state.document_name, true);
+                    }
+                });
             },
             error: (error) => {
                 state.isExtracting = false;
                 state.isVerifying = false;
                 state.verificationFailed = true;
                 state.verificationMessage = `✗ Invalid ${state.document_name}`;
-                
-                const backendError = error?.error?.error || error?.message || 'Failed to extract data.';
+                const backendError = error?.error?.error || error?.message || 'Failed to verify document type.';
                 state.extractionError = this.buildInvalidDocumentMessage(backendError, state.document_name, true);
             }
         });
@@ -217,14 +246,51 @@ export class DocumentUploadDialogComponent implements OnInit {
         if (state.file) this.extractData(index);
     }
 
+    private isDocumentApproved(state: UploadDocumentState): boolean {
+        if (!state || !state.file || state.isVerifying || state.isExtracting) {
+            return false;
+        }
+
+        if (state.verificationFailed || !!state.extractionError) {
+            return false;
+        }
+
+        if (state.isVerificationOnlyDoc) {
+            return !!state.verificationMessage && state.verificationMessage.indexOf('✓') === 0;
+        }
+
+        return !!state.extractedData;
+    }
+
+    private hasMinimumMarksheetSignals(extracted: any): boolean {
+        if (!extracted || typeof extracted !== 'object') {
+            return false;
+        }
+
+        const personal = extracted.personalInfo || {};
+        const academic = extracted.academicInfo || {};
+        const hasNameOrSeat = !!(personal.candidateName || personal.firstName || personal.lastName || personal.seatNo);
+        const hasAcademicAnchor = !!(
+            academic.examination ||
+            academic.semester ||
+            academic.board ||
+            academic.passingYear ||
+            (Array.isArray(academic.subjects) && academic.subjects.length > 0)
+        );
+
+        return hasNameOrSeat && hasAcademicAnchor;
+    }
+
     get isSubmitDisabled(): boolean {
         if (this.isSubmitting || this.documentsState.length === 0) return true;
-        // Block only if any document is missing a file or still processing
-        return this.documentsState.some(s => !s.file || s.isVerifying || s.isExtracting);
+        return this.documentsState.some(s => !this.isDocumentApproved(s));
     }
 
     submit(): void {
-        if (this.isSubmitDisabled) return;
+        if (this.isSubmitDisabled) {
+            this.submitError = 'Please upload valid documents. One or more files failed verification.';
+            return;
+        }
 
         this.isSubmitting = true;
         this.submitError = '';
@@ -261,10 +327,10 @@ export class DocumentUploadDialogComponent implements OnInit {
             return;
         }
 
-        // Generic bulk submit - return all documents to the parent to handle uploading
+        // Generic bulk submit - return only approved documents to the parent.
         this.dialogRef.close({
             success: true,
-            documents: this.documentsState.map(state => ({
+            documents: this.documentsState.filter(state => this.isDocumentApproved(state)).map(state => ({
                 document_id: state.document_id,
                 document_name: state.document_name,
                 file: state.file,

@@ -11,7 +11,11 @@ const { GoogleGenAI } = require('@google/genai');
 require('dotenv').config();
 
 // Initialize Gemini
-const ai = new GoogleGenAI({ apiKey: 'AIzaSyBgYUk7T_8ys-13KbS0bzAk_orI6TEEbs8' });
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+if (!GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY is not configured. Please set it in backend/.env');
+}
+const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 const GEMINI_VISION_MODEL = 'gemini-2.5-flash-lite';
 
 const app = express();
@@ -605,5 +609,15 @@ app.post('/api/Admission/uploadDocImage', uploadMiddleware, async (req, res) => 
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
+    console.log(`Backend server running on http://localhost:${PORT}`);
+    console.log('Gemini document services are ready.');
+});
+
+server.on('error', (err) => {
+    if (err && err.code === 'EADDRINUSE') {
+        console.error(`Port ${PORT} is already in use. Stop the other process or set a different PORT.`);
+        return;
+    }
+    console.error('Server failed to start:', err);
 });

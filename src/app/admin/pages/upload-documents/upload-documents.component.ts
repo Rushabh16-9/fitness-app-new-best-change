@@ -52,7 +52,8 @@ export class UploadDocumentsComponent implements OnInit {
   documentsUpload: any = true;
   courseSelection: any = true;
   optPayment: boolean = true;
-  aiDocumentVerificationEnabled: any = false;
+  aiDocumentVerificationEnabled: boolean = false;
+  aiVerificationDocTitles: string[] = [];
 
   constructor(
     public dialog: MatDialog,
@@ -103,7 +104,7 @@ export class UploadDocumentsComponent implements OnInit {
 
       if (data.status != undefined) {
         if (data.status == 1) {
-          this.aiDocumentVerificationEnabled = data?.aiDocumentVerification ?? data?.dataJson?.aiDocumentVerification ?? data?.personalInfo?.aiDocumentVerification ?? false;
+          this.setAiVerificationConfig(data);
           this.setDocumentsValues(data.dataJson);
         } else if (data.status == 102) {
           this.router.navigate(['/cart']);
@@ -129,7 +130,7 @@ export class UploadDocumentsComponent implements OnInit {
 
       if (data.status != undefined) {
         if (data.status == 1) {
-          this.aiDocumentVerificationEnabled = data?.aiDocumentVerification ?? data?.dataJson?.aiDocumentVerification ?? data?.personalInfo?.aiDocumentVerification ?? false;
+          this.setAiVerificationConfig(data);
           this.setDocumentsValues(data.dataJson);
         } else if (data.status == 102) {
           this.router.navigate(['/cart']);
@@ -268,31 +269,26 @@ export class UploadDocumentsComponent implements OnInit {
 
         const docTitle = this.allDocuments[docIndex]?.controls?.docTitle?.value || '';
         const docId = this.allDocuments[docIndex]?.controls?.docId?.value;
-        const normalizedDocTitle = (docTitle || '').toLowerCase().replace(/\s+/g, ' ').trim();
+        const docAiEnabled = this.isAiVerificationRequiredForDoc(docTitle);
 
-        if (this.aiDocumentVerificationEnabled) {
-          const aiArr = this.aiDocumentVerificationEnabled;
-          const docAiEnabled = Array.isArray(aiArr) ? aiArr.length > 0 : !!aiArr;
+        if (docAiEnabled) {
+          const dialogRef = this.dialog.open(DocumentUploadDialogComponent, {
+            width: '600px',
+            disableClose: true,
+            data: { document_name: docTitle, document_id: docId, file }
+          });
 
-          if (docAiEnabled) {
-            const dialogRef = this.dialog.open(DocumentUploadDialogComponent, {
-              width: '600px',
-              disableClose: true,
-              data: { document_name: docTitle, document_id: docId, file }
-            });
-
-            dialogRef.afterClosed().subscribe(result => {
-              if (result?.success) {
-                const verifiedFile = result.documents?.[0]?.file || file;
-                const resolvedExt = (verifiedFile?.name || '').toUpperCase().split('.').pop() || '';
-                this.browsedDocData(verifiedFile, docIndex, bunchIndex, resolvedExt === 'PDF' ? 'PDF' : '');
-              } else {
-                documents['controls'].isBrowsed.setValue(false);
-                event.target.value = '';
-              }
-            });
-            return;
-          }
+          dialogRef.afterClosed().subscribe(result => {
+            if (result?.success) {
+              const verifiedFile = result.documents?.[0]?.file || file;
+              const resolvedExt = (verifiedFile?.name || '').toUpperCase().split('.').pop() || '';
+              this.browsedDocData(verifiedFile, docIndex, bunchIndex, resolvedExt === 'PDF' ? 'PDF' : '');
+            } else {
+              documents['controls'].isBrowsed.setValue(false);
+              event.target.value = '';
+            }
+          });
+          return;
         }
 
         // No AI dialog — direct upload
@@ -301,6 +297,132 @@ export class UploadDocumentsComponent implements OnInit {
           : this.openImageCropperDialog(event, 'documents', docIndex, bunchIndex);
       }
     }
+  }
+
+  private setAiVerificationConfig(payload: any): void {
+    const rawAiFlag = this.extractAiVerificationRaw(payload);
+    const parsedAiFlag = this.parseAiVerificationRaw(rawAiFlag);
+
+    this.aiDocumentVerificationEnabled = parsedAiFlag.enabled;
+    this.aiVerificationDocTitles = parsedAiFlag.docTitles;
+  }
+
+  private extractAiVerificationRaw(payload: any): any {
+    if (!payload) return false;
+
+    const direct = payload?.aiDocumentVerification
+      ?? payload?.dataJson?.aiDocumentVerification
+      ?? payload?.personalInfo?.aiDocumentVerification
+      ?? payload?.dataJson?.personalInfo?.aiDocumentVerification
+      ?? payload?.personal_info_config?.aiDocumentVerification
+      ?? payload?.dataJson?.personal_info_config?.aiDocumentVerification;
+
+    if (direct !== undefined && direct !== null) {
+      return direct;
+    }
+
+    const rawConfig = payload?.personal_info_config ?? payload?.dataJson?.personal_info_config;
+    if (typeof rawConfig === 'string') {
+      try {
+        return JSON.parse(rawConfig)?.aiDocumentVerification ?? false;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    return false;
+  }
+
+  private parseAiVerificationRaw(rawAiFlag: any): { enabled: boolean, docTitles: string[] } {
+    if (typeof rawAiFlag === 'string') {
+      const trimmed = rawAiFlag.trim();
+      if (!trimmed) {
+        return { enabled: false, docTitles: [] };
+      }
+
+      try {
+        return this.parseAiVerificationRaw(JSON.parse(trimmed));
+      } catch (e) {
+        const lowered = trimmed.toLowerCase();
+        if (lowered === 'true') {
+          return { enabled: true, docTitles: [] };
+        }
+        if (lowered === 'false') {
+          return { enabled: false, docTitles: [] };
+        }
+        return { enabled: true, docTitles: [this.normalizeDocTitle(trimmed)] };
+      }
+    }
+
+    if (typeof rawAiFlag === 'boolean') {
+      return { enabled: rawAiFlag, docTitles: [] };
+    }
+
+    if (Array.isArray(rawAiFlag)) {
+      if (rawAiFlag.length === 0) {
+        return { enabled: false, docTitles: [] };
+      }
+
+      const titles = rawAiFlag
+        .map(item => {
+          if (typeof item === 'string') {
+            return this.normalizeDocTitle(item);
+          }
+          return this.normalizeDocTitle(item?.document_name || item?.docTitle || item?.title || item?.name || '');
+        })
+        .filter(Boolean);
+
+      return { enabled: true, docTitles: Array.from(new Set(titles)) };
+    }
+
+    if (rawAiFlag && typeof rawAiFlag === 'object') {
+      if (Array.isArray(rawAiFlag.documents)) {
+        return this.parseAiVerificationRaw(rawAiFlag.documents);
+      }
+      if (Array.isArray(rawAiFlag.docTitles)) {
+        return this.parseAiVerificationRaw(rawAiFlag.docTitles);
+      }
+      if (Array.isArray(rawAiFlag.list)) {
+        return this.parseAiVerificationRaw(rawAiFlag.list);
+      }
+      if (typeof rawAiFlag.enabled === 'boolean') {
+        return { enabled: rawAiFlag.enabled, docTitles: [] };
+      }
+    }
+
+    return { enabled: !!rawAiFlag, docTitles: [] };
+  }
+
+  private normalizeDocTitle(value: any): string {
+    return (value || '').toString().toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+
+  private isAiVerificationRequiredForDoc(docTitle: string): boolean {
+    const normalizedDocTitle = this.normalizeDocTitle(docTitle);
+    const isMarksheetLikeDoc = /\b(marksheet|mark\s*sheet|ssc|hsc|10th|12th|semester|sem|diploma|degree)\b/i.test(normalizedDocTitle);
+    const isIdentityOrCertificateDoc = /\b(aadhaar|aadhar|abc|apaar|pan|leaving\s*certificate|\blc\b|transfer\s*certificate|\btc\b|caste|income\s*certificate|domicile|migration\s*certificate|birth\s*certificate)\b/i.test(normalizedDocTitle);
+
+    // Always enforce AI verification for marksheet and common identity/certificate documents.
+    if (isMarksheetLikeDoc || isIdentityOrCertificateDoc) {
+      return true;
+    }
+
+    if (!this.aiDocumentVerificationEnabled) {
+      return false;
+    }
+
+    if (!this.aiVerificationDocTitles || this.aiVerificationDocTitles.length === 0) {
+      return true;
+    }
+
+    return this.aiVerificationDocTitles.some(cfgTitle => {
+      if (!cfgTitle) {
+        return false;
+      }
+      return normalizedDocTitle === cfgTitle
+        || normalizedDocTitle.includes(cfgTitle)
+        || cfgTitle.includes(normalizedDocTitle);
+    });
   }
 
   browsedDocData(data, docIndex, bunchIndex, ext = '') {

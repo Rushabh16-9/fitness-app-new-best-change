@@ -523,7 +523,7 @@ export class SharedAdmissionFormComponent implements OnInit {
 
           globalFunctions.setUserProf('applicantId', data.dataJson.newApplicantId);
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
-          location.reload();
+          setTimeout(() => this.getAdmissionFormDetails(), 100);
 
         } else if (data.status == 102) {
 
@@ -559,7 +559,7 @@ export class SharedAdmissionFormComponent implements OnInit {
 
           globalFunctions.setUserProf('applicantId', data.dataJson.newApplicantId);
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
-          location.reload();
+          setTimeout(() => this.getAdmissionFormBDetails(), 100);
 
         } else if (data.status == 102) {
 
@@ -8032,21 +8032,7 @@ export class SharedAdmissionFormComponent implements OnInit {
         documents['controls'].isBrowsed.setValue(false);
 
       } else {
-        let aiDocumentVerificationEnabled = false;
-        try {
-            const rawAiFlag =
-                this.formData?.personalInfo?.aiDocumentVerification ??
-                this.formData?.aiDocumentVerification ??
-                this.formData?.personal_info_config?.aiDocumentVerification ??
-                (typeof this.formData?.personal_info_config === 'string'
-                    ? JSON.parse(this.formData.personal_info_config)?.aiDocumentVerification
-                    : undefined) ??
-                (typeof this.formData?.personalInfo?.personal_info_config === 'string'
-                    ? JSON.parse(this.formData.personalInfo.personal_info_config)?.aiDocumentVerification
-                    : undefined);
-
-            aiDocumentVerificationEnabled = Array.isArray(rawAiFlag) ? rawAiFlag.length > 0 : !!rawAiFlag;
-        } catch (e) { /* ignore parse errors */ }
+        const aiDocumentVerificationEnabled = this.isAiVerificationRequiredForFormDoc(documents['controls'].docTitle.value);
 
         if (aiDocumentVerificationEnabled) {
         // Open Document Upload Dialog for AI Verification and Extraction (for both PDF and images)
@@ -8236,6 +8222,125 @@ export class SharedAdmissionFormComponent implements OnInit {
         }
       }
     }
+  }
+
+  private getAiVerificationRawFromFormData(): any {
+    const rawAiFlag =
+      this.formData?.personalInfo?.aiDocumentVerification ??
+      this.formData?.aiDocumentVerification ??
+      this.formData?.personal_info_config?.aiDocumentVerification;
+
+    if (rawAiFlag !== undefined && rawAiFlag !== null) {
+      return rawAiFlag;
+    }
+
+    if (typeof this.formData?.personal_info_config === 'string') {
+      try {
+        return JSON.parse(this.formData.personal_info_config)?.aiDocumentVerification;
+      } catch (e) {
+      }
+    }
+
+    if (typeof this.formData?.personalInfo?.personal_info_config === 'string') {
+      try {
+        return JSON.parse(this.formData.personalInfo.personal_info_config)?.aiDocumentVerification;
+      } catch (e) {
+      }
+    }
+
+    return false;
+  }
+
+  private parseAiVerificationSetting(rawAiFlag: any): { enabled: boolean, docTitles: string[] } {
+    if (typeof rawAiFlag === 'string') {
+      const trimmed = rawAiFlag.trim();
+      if (!trimmed) {
+        return { enabled: false, docTitles: [] };
+      }
+      try {
+        return this.parseAiVerificationSetting(JSON.parse(trimmed));
+      } catch (e) {
+        const lowered = trimmed.toLowerCase();
+        if (lowered === 'true') {
+          return { enabled: true, docTitles: [] };
+        }
+        if (lowered === 'false') {
+          return { enabled: false, docTitles: [] };
+        }
+        return { enabled: true, docTitles: [this.normalizeDocumentTitle(trimmed)] };
+      }
+    }
+
+    if (typeof rawAiFlag === 'boolean') {
+      return { enabled: rawAiFlag, docTitles: [] };
+    }
+
+    if (Array.isArray(rawAiFlag)) {
+      if (rawAiFlag.length === 0) {
+        return { enabled: false, docTitles: [] };
+      }
+
+      const titles = rawAiFlag
+        .map(item => {
+          if (typeof item === 'string') {
+            return this.normalizeDocumentTitle(item);
+          }
+          return this.normalizeDocumentTitle(item?.document_name || item?.docTitle || item?.title || item?.name || '');
+        })
+        .filter(Boolean);
+
+      return { enabled: true, docTitles: Array.from(new Set(titles)) };
+    }
+
+    if (rawAiFlag && typeof rawAiFlag === 'object') {
+      if (Array.isArray(rawAiFlag.documents)) {
+        return this.parseAiVerificationSetting(rawAiFlag.documents);
+      }
+      if (Array.isArray(rawAiFlag.docTitles)) {
+        return this.parseAiVerificationSetting(rawAiFlag.docTitles);
+      }
+      if (Array.isArray(rawAiFlag.list)) {
+        return this.parseAiVerificationSetting(rawAiFlag.list);
+      }
+      if (typeof rawAiFlag.enabled === 'boolean') {
+        return { enabled: rawAiFlag.enabled, docTitles: [] };
+      }
+    }
+
+    return { enabled: !!rawAiFlag, docTitles: [] };
+  }
+
+  private normalizeDocumentTitle(value: any): string {
+    return (value || '').toString().toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+
+  private isAiVerificationRequiredForFormDoc(docTitle: any): boolean {
+    const normalizedDocTitle = this.normalizeDocumentTitle(docTitle);
+    const isMarksheetLikeDoc = /\b(marksheet|mark\s*sheet|ssc|hsc|10th|12th|semester|sem|diploma|degree)\b/i.test(normalizedDocTitle);
+    const isIdentityOrCertificateDoc = /\b(aadhaar|aadhar|abc|apaar|pan|leaving\s*certificate|\blc\b|transfer\s*certificate|\btc\b|caste|income\s*certificate|domicile|migration\s*certificate|birth\s*certificate)\b/i.test(normalizedDocTitle);
+
+    // Fallback: verify core academic + identity/certificate docs through AI even when backend flag is missing.
+    if (isMarksheetLikeDoc || isIdentityOrCertificateDoc) {
+      return true;
+    }
+
+    const parsed = this.parseAiVerificationSetting(this.getAiVerificationRawFromFormData());
+    if (!parsed.enabled) {
+      return false;
+    }
+
+    if (!parsed.docTitles || parsed.docTitles.length === 0) {
+      return true;
+    }
+
+    return parsed.docTitles.some(cfgTitle => {
+      if (!cfgTitle) {
+        return false;
+      }
+      return normalizedDocTitle === cfgTitle
+        || normalizedDocTitle.includes(cfgTitle)
+        || cfgTitle.includes(normalizedDocTitle);
+    });
   }
 
   browsedDocData(data, docIndex, bunchIndex, ext = '') {

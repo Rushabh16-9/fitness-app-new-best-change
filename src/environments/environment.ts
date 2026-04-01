@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   API_ENDPOINT: "",
+  AI_API_ENDPOINT: "",
   DOMAIN_NAME: "",
   WEBSITE_NAME: "",
   PANEL_NAME: ""
