@@ -71,24 +71,26 @@ export class DocumentUploadDialogComponent implements OnInit {
         // Use backend document list for IDs
         if (docs.length === 1) {
             const docNameLower = (docs[0].document_name || '').toLowerCase();
-            const isSem1Title = /(sem|semester|semister)\s*[-_]?\s*(1|i)\b/.test(docNameLower) && /mark\s*sheet|marksheet/.test(docNameLower);
+            const isSem1Title = /(sem|semester|semister)\s*[-_]?\s*(1|i)\b/.test(docNameLower);
             const docIdProvided = docs[0].document_id;
-            
-            // Check if this matches Sem1 pattern (either by ID or name)
-            const sem1Doc = this.requiredDocuments.find((d: any) => 
-                d.document_name && d.document_name.toLowerCase().includes('sem 1')
-            );
-            const sem2Doc = this.requiredDocuments.find((d: any) => 
-                d.document_name && d.document_name.toLowerCase().includes('sem 2')
-            );
-            
-            if ((sem1Doc && (docIdProvided === sem1Doc.document_id || isSem1Title))) {
-                docs = [sem1Doc, sem2Doc].filter(d => d);
+
+            // Look up Sem 1 and Sem 2 from backend labels using a flexible regex
+            const isSemName = (name: string, semNo: number) => {
+                const t = (name || '').toLowerCase();
+                if (semNo === 1) return /(sem|semester)\s*[-_]?\s*(1|i)\b|\bsem\s*1\b|\bsem1\b/.test(t);
+                return /(sem|semester)\s*[-_]?\s*(2|ii)\b|\bsem\s*2\b|\bsem2\b/.test(t);
+            };
+            const sem1Doc = this.requiredDocuments.find((d: any) => d.document_name && isSemName(d.document_name, 1));
+            const sem2Doc = this.requiredDocuments.find((d: any) => d.document_name && isSemName(d.document_name, 2));
+
+            if (sem1Doc && sem2Doc && (docIdProvided === sem1Doc.document_id || isSem1Title)) {
+                docs = [sem1Doc, sem2Doc];
             }
         }
 
         this.documentsState = docs.map(doc => {
             const docNameLower = (doc.document_name || '').toLowerCase();
+            // A document is verification-only if it is NOT a marksheet/academic-record type
             const isMarksheet = /\b(marksheet|mark\s*sheet|ssc|hsc|semester|sem|diploma|degree|10th|12th)\b/.test(docNameLower);
             const isVerifOnly = !isMarksheet;
             
@@ -323,9 +325,9 @@ export class DocumentUploadDialogComponent implements OnInit {
         this.submitError = '';
 
         // If it's a dual semester upload (Sem1/Sem2)
-        const isSemDual = this.documentsState.length === 2 && 
-                          this.documentsState[0].document_name?.toLowerCase().includes('sem 1') &&
-                          this.documentsState[1].document_name?.toLowerCase().includes('sem 2');
+        const isSemDual = this.documentsState.length === 2 &&
+                          /(sem|semester)\s*[-_]?\s*(1|i)\b|\bsem\s*1\b/i.test(this.documentsState[0].document_name || '') &&
+                          /(sem|semester)\s*[-_]?\s*(2|ii)\b|\bsem\s*2\b/i.test(this.documentsState[1].document_name || '');
 
         if (isSemDual) {
             const sem1DocId = this.documentsState[0].document_id;

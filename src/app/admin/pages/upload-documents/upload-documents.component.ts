@@ -282,7 +282,9 @@ export class UploadDocumentsComponent implements OnInit {
             const verifiedFile = result.file || file;
             const resolvedExt = (verifiedFile?.name || '').toUpperCase().split('.').pop() || ext;
             const normalizedDocTitle = (docTitle || '').toLowerCase().replace(/\s+/g, ' ').trim();
-            const isVerificationOnlyDoc = /\b(aadhaar|aadhar|adhar|uidai|aadhaarcard|aadharcard|adharcard|address\s*proof|physically\s*handicapped|visually\s*impaired|learning\s*disability|disability|abc\s*id|academic\s*bank\s*of\s*credits)\b/.test(normalizedDocTitle);
+            const isMarksheetDoc = /\b(marksheet|mark\s*sheet|ssc|hsc|semester|sem|diploma|degree|10th|12th)\b/.test(normalizedDocTitle);
+            // Any document that is not a marksheet type is verification-only
+            const isVerificationOnlyDoc = !isMarksheetDoc;
 
             if (resolvedExt.toUpperCase() === 'PDF' || isVerificationOnlyDoc) {
               this.browsedDocData(verifiedFile, docIndex, bunchIndex, resolvedExt);
@@ -567,11 +569,7 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   viewDoc(docUrl) {
-    let resolvedUrl = docUrl;
-    if (docUrl && !/^https?:\/\//i.test(docUrl) && docUrl.indexOf('/') === -1 && docUrl.indexOf('\\') === -1) {
-      resolvedUrl = `http://localhost:3000/uploads/${docUrl}`;
-    }
-    var win = window.open(resolvedUrl, '_blank');
+    var win = window.open(docUrl, '_blank');
     if (win) {
       win.focus();
     } else {

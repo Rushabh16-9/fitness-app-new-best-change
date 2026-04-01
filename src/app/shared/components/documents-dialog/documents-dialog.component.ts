@@ -34,12 +34,7 @@ export class DocumentsDialogComponent implements OnInit {
 
   getDocumentUrl(documentUrl) {
     if (!globalFunctions.isEmpty(documentUrl)) {
-      let resolvedUrl = documentUrl;
-      // Resolve relative file names to full URLs
-      if (documentUrl && !/^https?:\/\//i.test(documentUrl) && documentUrl.indexOf('/') === -1 && documentUrl.indexOf('\\') === -1) {
-        resolvedUrl = `http://localhost:3000/uploads/${documentUrl}`;
-      }
-      var win = window.open(resolvedUrl, '_blank');
+      var win = window.open(documentUrl, '_blank');
       if (win) {
         win.focus();
       } else {

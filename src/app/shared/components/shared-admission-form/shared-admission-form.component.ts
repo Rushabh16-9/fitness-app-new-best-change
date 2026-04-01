@@ -8114,14 +8114,12 @@ export class SharedAdmissionFormComponent implements OnInit {
       } else {
 
         // Only use AI extraction dialog for marksheet-type documents.
-        // Other documents (caste cert, birth cert, leaving cert, etc.) go straight to upload.
+        // Other documents (Aadhaar, caste cert, disability cert, etc.) go straight to upload.
         const docTitle = (documents['controls'].docTitle.value || '').toLowerCase();
         const normalizedDocTitle = docTitle.replace(/\s+/g, ' ').trim();
-        const isVerificationOnlyDoc = /\b(aadhaar|aadhar|adhar|uidai|aadhaarcard|aadharcard|adharcard|address\s*proof|physically\s*handicapped|visually\s*impaired|learning\s*disability|disability|abc\s*id|academic\s*bank\s*of\s*credits)\b/.test(normalizedDocTitle);
-        const isAadhaarDoc = /\b(aadhaar|aadhar|adhar|uidai|aadhaarcard|aadharcard|adharcard)\b/.test(normalizedDocTitle);
-        // Aadhaar must never be routed through marksheet extraction even if title has mixed terms.
-        const isMarksheetDoc = !isVerificationOnlyDoc &&
-          /\b(marksheet|mark\s*sheet|ssc|hsc|semester|sem|diploma|degree|10th|12th)\b/.test(normalizedDocTitle);
+        const isMarksheetDoc = /\b(marksheet|mark\s*sheet|ssc|hsc|semester|sem|diploma|degree|10th|12th)\b/.test(normalizedDocTitle);
+        // Any document that is not a marksheet is treated as verification-only (no AI extraction)
+        const isVerificationOnlyDoc = !isMarksheetDoc;
 
         if (isMarksheetDoc) {
         // Open Document Upload Dialog for AI Verification and Extraction (for both PDF and images)
@@ -10726,12 +10724,7 @@ export class SharedAdmissionFormComponent implements OnInit {
 
   viewDoc(docUrl) {
     if (!globalFunctions.isEmpty(docUrl)) {
-      let resolvedUrl = docUrl;
-      // Resolve relative file names to full URLs
-      if (docUrl && !/^https?:\/\//i.test(docUrl) && docUrl.indexOf('/') === -1 && docUrl.indexOf('\\') === -1) {
-        resolvedUrl = `http://localhost:3000/uploads/${docUrl}`;
-      }
-      var win = window.open(resolvedUrl, '_blank');
+      var win = window.open(docUrl, '_blank');
       if (win) {
         win.focus();
       } else {
