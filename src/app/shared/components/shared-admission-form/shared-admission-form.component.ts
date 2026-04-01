@@ -8113,16 +8113,11 @@ export class SharedAdmissionFormComponent implements OnInit {
 
       } else {
 
-        // Only use AI extraction dialog for marksheet-type documents.
-        // Other documents (Aadhaar, caste cert, disability cert, etc.) go straight to upload.
+        // Open Document Upload Dialog for AI Verification/Extraction for ALL document types
         const docTitle = (documents['controls'].docTitle.value || '').toLowerCase();
         const normalizedDocTitle = docTitle.replace(/\s+/g, ' ').trim();
         const isMarksheetDoc = /\b(marksheet|mark\s*sheet|ssc|hsc|semester|sem|diploma|degree|10th|12th)\b/.test(normalizedDocTitle);
-        // Any document that is not a marksheet is treated as verification-only (no AI extraction)
-        const isVerificationOnlyDoc = !isMarksheetDoc;
 
-        if (isMarksheetDoc) {
-        // Open Document Upload Dialog for AI Verification and Extraction (for both PDF and images)
         const dialogRef = this.dialog.open(DocumentUploadDialogComponent, {
           width: '800px',
           disableClose: true,
@@ -8253,52 +8248,10 @@ export class SharedAdmissionFormComponent implements OnInit {
             }
           } else {
             // User cancelled or verification failed
-            console.log('Dialog cancelled or failed');
             documents['controls'].isBrowsed.setValue(false);
             event.target.value = ''; // Reset file input
           }
         });
-
-        } else {
-          // Non-marksheet document: skip AI dialog, go straight to upload
-          const proceedWithUpload = () => {
-            if (ext.toUpperCase() == 'PDF' || isVerificationOnlyDoc) {
-              this.browsedDocData(file, docIndex, bunchIndex, ext.toUpperCase() == 'PDF' ? 'PDF' : ext);
-            } else {
-              let postParam = {
-                mode: 'documents',
-                docIndex: docIndex,
-                bunchIndex: bunchIndex,
-              };
-              this.openImageCropperDialog(event, postParam);
-            }
-          };
-
-          if (isVerificationOnlyDoc) {
-            this.allEventEmitters.showLoader.emit(true);
-            this.documentExtractionService.verifyDocument(file, documents['controls'].docTitle.value || 'Document').subscribe({
-              next: (verifyRes) => {
-                this.allEventEmitters.showLoader.emit(false);
-                if (verifyRes?.success && verifyRes?.verification?.isValid) {
-                  proceedWithUpload();
-                } else {
-                  const reason = verifyRes?.verification?.reason || verifyRes?.error || 'Uploaded file is not a valid document.';
-                  documents['controls'].isBrowsed.setValue(false);
-                  event.target.value = '';
-                  this._snackBarMsgComponent.openSnackBar(`Document validation failed: ${reason}`, 'x', 'error-snackbar', 6000);
-                }
-              },
-              error: (verifyErr) => {
-                this.allEventEmitters.showLoader.emit(false);
-                documents['controls'].isBrowsed.setValue(false);
-                event.target.value = '';
-                this._snackBarMsgComponent.openSnackBar(`Document validation failed: ${verifyErr?.message || 'Unable to validate document.'}`, 'x', 'error-snackbar', 6000);
-              }
-            });
-          } else {
-            proceedWithUpload();
-          }
-        }
       }
     }
   }

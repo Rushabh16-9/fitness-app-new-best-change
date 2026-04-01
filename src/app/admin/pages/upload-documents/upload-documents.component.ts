@@ -279,11 +279,12 @@ export class UploadDocumentsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
           if (result && result.success) {
-            const verifiedFile = result.file || file;
+            // result.documents[0].file is set for generic (non-dual) uploads; result.file for dual-sem uploads
+            const verifiedFile = result.file || (result.documents && result.documents[0] && result.documents[0].file) || file;
             const resolvedExt = (verifiedFile?.name || '').toUpperCase().split('.').pop() || ext;
             const normalizedDocTitle = (docTitle || '').toLowerCase().replace(/\s+/g, ' ').trim();
             const isMarksheetDoc = /\b(marksheet|mark\s*sheet|ssc|hsc|semester|sem|diploma|degree|10th|12th)\b/.test(normalizedDocTitle);
-            // Any document that is not a marksheet type is verification-only
+            // Any document that is not a marksheet type is verification-only (no cropper needed)
             const isVerificationOnlyDoc = !isMarksheetDoc;
 
             if (resolvedExt.toUpperCase() === 'PDF' || isVerificationOnlyDoc) {
