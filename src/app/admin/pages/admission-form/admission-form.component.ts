@@ -127,8 +127,14 @@ export class AdmissionFormComponent implements OnInit {
 
       // Dual upload flow returns already-uploaded filenames and both extracted payloads.
       if (result.sem1Data || result.fileName) {
-        const sem1DocId = result?.sem1Data?.document_id || 390;
-        const sem2DocId = result?.sem2_document_id || result?.document_id || 389;
+        const sem1DocId = result?.sem1Data?.document_id;
+        const sem2DocId = result?.sem2_document_id || result?.document_id;
+
+        if (!sem1DocId || !sem2DocId) {
+          console.error('Document IDs not returned from dialog');
+          this.sharedAdmissionForm?._snackBarMsgComponent?.openSnackBar('Error: Missing document IDs', 'x', 'error-snackbar', 5000);
+          return;
+        }
 
         if (this.sharedAdmissionForm) {
           const sem1FileName = result?.sem1Data?.fileName;

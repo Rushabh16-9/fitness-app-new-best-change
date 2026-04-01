@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { DocumentExtractionService } from 'app/shared/services/document-extraction.service';
+import { AdmissionService } from 'app/shared/services/admission.service';
 import { ExtractedMarksheetData } from 'app/shared/models/document-extraction.model';
 import { forkJoin } from 'rxjs';
 
@@ -28,6 +29,7 @@ export class DocumentUploadDialogComponent implements OnInit {
     documentsState: UploadDocumentState[] = [];
     isSubmitting: boolean = false;
     submitError: string = '';
+    private requiredDocuments: any[] = [];
     
     private readonly maxFileSizeMbMarksheet: number = 20;
     private readonly maxFileSizeMbVerificationOnly: number = 2;
@@ -35,12 +37,29 @@ export class DocumentUploadDialogComponent implements OnInit {
     constructor(
         public dialogRef: MatDialogRef<DocumentUploadDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private extractionService: DocumentExtractionService
+        private extractionService: DocumentExtractionService,
+        private admissionService: AdmissionService
     ) {
         this.dialogRef.disableClose = true;
     }
 
     ngOnInit(): void {
+        // Fetch required documents from backend
+        this.admissionService.getRequiredDocuments().subscribe({
+            next: (documents: any[]) => {
+                this.requiredDocuments = documents || [];
+                this.initializeDocumentUpload();
+            },
+            error: (error) => {
+                console.error('Error loading required documents:', error);
+                // Fallback to default structure if backend fails
+                this.requiredDocuments = [];
+                this.initializeDocumentUpload();
+            }
+        });
+    }
+
+    private initializeDocumentUpload(): void {
         let docs: any[] = [];
         if (this.data && Array.isArray(this.data.documents)) {
             docs = this.data.documents;
@@ -48,15 +67,23 @@ export class DocumentUploadDialogComponent implements OnInit {
             docs = [this.data];
         }
 
-        // Expand "Sem 1" into dual upload for backward compatibility if it's the only one and matches Sem 1
+        // Expand "Sem 1" into dual upload if it's the only one and matches pattern
+        // Use backend document list for IDs
         if (docs.length === 1) {
             const docNameLower = (docs[0].document_name || '').toLowerCase();
             const isSem1Title = /(sem|semester|semister)\s*[-_]?\s*(1|i)\b/.test(docNameLower) && /mark\s*sheet|marksheet/.test(docNameLower);
-            if (docs[0].document_id === 390 || isSem1Title) {
-                docs = [
-                    { document_id: 390, document_name: 'Sem 1 Marksheet' },
-                    { document_id: 389, document_name: 'Sem 2 Marksheet' }
-                ];
+            const docIdProvided = docs[0].document_id;
+            
+            // Check if this matches Sem1 pattern (either by ID or name)
+            const sem1Doc = this.requiredDocuments.find((d: any) => 
+                d.document_name && d.document_name.toLowerCase().includes('sem 1')
+            );
+            const sem2Doc = this.requiredDocuments.find((d: any) => 
+                d.document_name && d.document_name.toLowerCase().includes('sem 2')
+            );
+            
+            if ((sem1Doc && (docIdProvided === sem1Doc.document_id || isSem1Title))) {
+                docs = [sem1Doc, sem2Doc].filter(d => d);
             }
         }
 
@@ -295,25 +322,27 @@ export class DocumentUploadDialogComponent implements OnInit {
         this.isSubmitting = true;
         this.submitError = '';
 
-        // If it's the exact magic dual upload scenario Sem1/Sem2
-        const isMagicDual = this.documentsState.length === 2 && 
-                            this.documentsState[0].document_id === 390 && 
-                            this.documentsState[1].document_id === 389;
+        // If it's a dual semester upload (Sem1/Sem2)
+        const isSemDual = this.documentsState.length === 2 && 
+                          this.documentsState[0].document_name?.toLowerCase().includes('sem 1') &&
+                          this.documentsState[1].document_name?.toLowerCase().includes('sem 2');
 
-        if (isMagicDual) {
-            const sem1Upload$ = this.extractionService.uploadDocImage(this.documentsState[0].file!, 390);
-            const sem2Upload$ = this.extractionService.uploadDocImage(this.documentsState[1].file!, 389);
+        if (isSemDual) {
+            const sem1DocId = this.documentsState[0].document_id;
+            const sem2DocId = this.documentsState[1].document_id;
+            const sem1Upload$ = this.extractionService.uploadDocImage(this.documentsState[0].file!, sem1DocId);
+            const sem2Upload$ = this.extractionService.uploadDocImage(this.documentsState[1].file!, sem2DocId);
             forkJoin({ sem1: sem1Upload$, sem2: sem2Upload$ }).subscribe({
                 next: (results: any) => {
                     this.isSubmitting = false;
                     this.dialogRef.close({
                         success: true,
-                        document_id: 390,
-                        sem2_document_id: 389,
+                        document_id: sem1DocId,
+                        sem2_document_id: sem2DocId,
                         fileName: results.sem2?.dataJson?.fileName || '',
                         extractedData: this.documentsState[1].extractedData,
                         sem1Data: {
-                            document_id: 390,
+                            document_id: sem1DocId,
                             fileName: results.sem1?.dataJson?.fileName || '',
                             extractedData: this.documentsState[0].extractedData
                         }

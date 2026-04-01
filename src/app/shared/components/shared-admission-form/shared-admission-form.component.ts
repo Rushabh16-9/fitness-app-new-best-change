@@ -225,6 +225,11 @@ export class SharedAdmissionFormComponent implements OnInit {
   documentsFormValues = [];
   defaultPdfImage = '../assets/images/users/default-pdf.png';
   defaultDocImage = '../assets/images/users/default-doc.jpg';
+  
+  // Document IDs from backend (not hardcoded)
+  semesterOneDocId: number;
+  semesterTwoDocId: number;
+  requiredDocuments: any[] = [];
 
   declarationForm: UntypedFormGroup;
   declarationFormValues = [];
@@ -470,6 +475,9 @@ export class SharedAdmissionFormComponent implements OnInit {
     this.declarationFormControls();
     this.documentsFormControls();
 
+    // Fetch required document IDs from backend
+    this.loadRequiredDocuments();
+
     this.fetchMotherTongue();
     this.fetchyearAppeared();
     this.fetchReligions();
@@ -499,6 +507,37 @@ export class SharedAdmissionFormComponent implements OnInit {
     this.nationalityList = ['Indian', '*Foreigner', '*N.R.I'];
 
     globalFunctions.setLocalStorage('panelMode', this.panelMode);
+  }
+
+  private loadRequiredDocuments(): void {
+    this._admissionService.getRequiredDocuments().subscribe({
+      next: (documents: any[]) => {
+        this.requiredDocuments = documents || [];
+        // Extract Semester 1 and 2 IDs
+        const sem1Doc = documents?.find((d: any) => 
+          d.document_name && d.document_name.toLowerCase().includes('sem 1')
+        );
+        const sem2Doc = documents?.find((d: any) => 
+          d.document_name && d.document_name.toLowerCase().includes('sem 2')
+        );
+        
+        this.semesterOneDocId = sem1Doc?.document_id;
+        this.semesterTwoDocId = sem2Doc?.document_id;
+        
+        if (!this.semesterOneDocId || !this.semesterTwoDocId) {
+          console.warn('Could not load semester document IDs from backend. Using fallback values.');
+          // Only use fallback if backend data is incomplete
+          if (!this.semesterOneDocId) this.semesterOneDocId = 390;
+          if (!this.semesterTwoDocId) this.semesterTwoDocId = 389;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading required documents:', error);
+        // Fallback to default IDs if backend call fails
+        this.semesterOneDocId = 390;
+        this.semesterTwoDocId = 389;
+      }
+    });
   }
 
   getAdmissionFormDetails() {
@@ -6863,7 +6902,7 @@ export class SharedAdmissionFormComponent implements OnInit {
           
           if (hasSem1 && !hasSem2) {
              response.dataJson.push({
-               docId: 389,
+               docId: this.semesterTwoDocId || 389,
                docTitle: 'Sem 2 Marksheet',
                required: false, // Make it optional or required based on business logic
                uploadedFile: null
@@ -8072,9 +8111,6 @@ export class SharedAdmissionFormComponent implements OnInit {
             }
             // ---- END GENERIC path ----
 
-            const SEM1_DOC_ID = 390;
-            const SEM2_DOC_ID = 389;
-
             const resolveDocumentPosition = (preferredDocId: any, semesterNo: number, fallbackDocIndex: number, fallbackBunchIndex: number) => {
               let resolvedDocIndex = fallbackDocIndex;
               let resolvedBunchIndex = fallbackBunchIndex;
@@ -8131,7 +8167,7 @@ export class SharedAdmissionFormComponent implements OnInit {
             // If we have Sem 1 data from dual upload (file was already uploaded inside the dialog)
             if (result.sem1Data) {
               const sem1Resolved = resolveDocumentPosition(
-                result.sem1Data.document_id || SEM1_DOC_ID || documents['controls'].docId.value,
+                result.sem1Data.document_id || this.semesterOneDocId,
                 1,
                 docIndex,
                 bunchIndex
@@ -8159,7 +8195,7 @@ export class SharedAdmissionFormComponent implements OnInit {
             
             // Find Sem 2's grid coordinates if this was a sequence upload or single marksheet upload
             const sem2Resolved = resolveDocumentPosition(
-              result.sem2_document_id || result.document_id || SEM2_DOC_ID,
+              result.sem2_document_id || result.document_id || this.semesterTwoDocId,
               2,
               docIndex,
               bunchIndex
@@ -11310,9 +11346,8 @@ export class SharedAdmissionFormComponent implements OnInit {
               const graduateList = this.educationInfoForm.get('eduInfo.graduate.list') as FormArray;
               if (graduateList && graduateList.length > 0) {
                 let fallbackIndex = 0;
-                if (docId === 389 && graduateList.length > 1) {
+                if (docId === this.semesterTwoDocId && graduateList.length > 1) {
                   fallbackIndex = 1;
-                } else {
                 }
                 graduateList.at(fallbackIndex).patchValue(academicValues);
                 if (ai.percentage) graduateList.at(fallbackIndex).patchValue({ percentageOrCgpa: ai.percentage });
@@ -11341,9 +11376,8 @@ export class SharedAdmissionFormComponent implements OnInit {
                 if (!patchedSpecificRow) {
                   let fallbackIndex = 0;
                   // If this is Sem 2, prefer patching the second row if the form has one configured
-                  if (docId === 389 && underGraduateList.length > 1) {
+                  if (docId === this.semesterTwoDocId && underGraduateList.length > 1) {
                     fallbackIndex = 1;
-                  } else {
                   }
                   
                   underGraduateList.at(fallbackIndex).patchValue(academicValues);

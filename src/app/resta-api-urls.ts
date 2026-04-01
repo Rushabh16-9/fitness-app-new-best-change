@@ -44,6 +44,7 @@ export class admissionApiUrls {
   static getPaymentStatus:string = environment.API_ENDPOINT + 'Admission/getPaymentStatus';  
   static identifierConfirmation:string = environment.API_ENDPOINT + 'Admission/identifierConfirmation';  
   static syncNameOnConfirmation:string = environment.API_ENDPOINT + 'Admission/syncNameOnConfirmation';  
+  static getRequiredDocuments:string = environment.API_ENDPOINT + 'Admission/getRequiredDocuments';
   static directFormGenerate:string = environment.API_ENDPOINT + 'Admission/directFormGenerate';  
   static allowLogin:string = environment.API_ENDPOINT + 'Admission/allowLogin';  
   static uploadDocImage:string = environment.API_ENDPOINT + 'Admission/uploadDocImage';  
