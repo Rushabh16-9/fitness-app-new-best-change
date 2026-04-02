@@ -486,36 +486,4 @@ export class AdmissionService {
       );
   }
 
-  getRequiredDocuments(): Observable<any> {
-    const url = admissionApiUrls.getRequiredDocuments;
-    let commonPostValues = globalFunctions.getCommonPostValues();
-    return this.http.post<any>(url, commonPostValues).pipe(
-      timeout(30000),
-      catchError(error => {
-        console.error('Error fetching required documents:', error);
-        throw error;
-      })
-    );
-  }
-
-  getDocumentIdByName(documentName: string): Observable<number> {
-    return this.getRequiredDocuments().pipe(
-      map(documents => {
-        if (!Array.isArray(documents)) {
-          throw new Error('Invalid documents format');
-        }
-        const doc = documents.find((d: any) => 
-          (d.document_name || '').toLowerCase().includes(documentName.toLowerCase())
-        );
-        if (!doc || typeof doc.document_id !== 'number') {
-          throw new Error(`Document ID not found for: ${documentName}`);
-        }
-        return doc.document_id;
-      }),
-      catchError(error => {
-        console.error('Error getting document ID:', error);
-        throw error;
-      })
-    );
-  }
 }

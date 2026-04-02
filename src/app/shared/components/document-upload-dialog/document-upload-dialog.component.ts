@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { DocumentExtractionService } from 'app/shared/services/document-extraction.service';
-import { AdmissionService } from 'app/shared/services/admission.service';
 import { ExtractedMarksheetData } from 'app/shared/models/document-extraction.model';
 import { forkJoin } from 'rxjs';
+
 
 export interface UploadDocumentState {
     document_id: number;
@@ -29,7 +29,6 @@ export class DocumentUploadDialogComponent implements OnInit {
     documentsState: UploadDocumentState[] = [];
     isSubmitting: boolean = false;
     submitError: string = '';
-    private requiredDocuments: any[] = [];
     
     private readonly maxFileSizeMbMarksheet: number = 20;
     private readonly maxFileSizeMbVerificationOnly: number = 2;
@@ -37,26 +36,13 @@ export class DocumentUploadDialogComponent implements OnInit {
     constructor(
         public dialogRef: MatDialogRef<DocumentUploadDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private extractionService: DocumentExtractionService,
-        private admissionService: AdmissionService
+        private extractionService: DocumentExtractionService
     ) {
         this.dialogRef.disableClose = true;
     }
 
     ngOnInit(): void {
-        // Fetch required documents from backend
-        this.admissionService.getRequiredDocuments().subscribe({
-            next: (documents: any[]) => {
-                this.requiredDocuments = documents || [];
-                this.initializeDocumentUpload();
-            },
-            error: (error) => {
-                console.error('Error loading required documents:', error);
-                // Fallback to default structure if backend fails
-                this.requiredDocuments = [];
-                this.initializeDocumentUpload();
-            }
-        });
+        this.initializeDocumentUpload();
     }
 
     private initializeDocumentUpload(): void {
@@ -65,27 +51,6 @@ export class DocumentUploadDialogComponent implements OnInit {
             docs = this.data.documents;
         } else if (this.data) {
             docs = [this.data];
-        }
-
-        // Expand "Sem 1" into dual upload if it's the only one and matches pattern
-        // Use backend document list for IDs
-        if (docs.length === 1) {
-            const docNameLower = (docs[0].document_name || '').toLowerCase();
-            const isSem1Title = /(sem|semester|semister)\s*[-_]?\s*(1|i)\b/.test(docNameLower);
-            const docIdProvided = docs[0].document_id;
-
-            // Look up Sem 1 and Sem 2 from backend labels using a flexible regex
-            const isSemName = (name: string, semNo: number) => {
-                const t = (name || '').toLowerCase();
-                if (semNo === 1) return /(sem|semester)\s*[-_]?\s*(1|i)\b|\bsem\s*1\b|\bsem1\b/.test(t);
-                return /(sem|semester)\s*[-_]?\s*(2|ii)\b|\bsem\s*2\b|\bsem2\b/.test(t);
-            };
-            const sem1Doc = this.requiredDocuments.find((d: any) => d.document_name && isSemName(d.document_name, 1));
-            const sem2Doc = this.requiredDocuments.find((d: any) => d.document_name && isSemName(d.document_name, 2));
-
-            if (sem1Doc && sem2Doc && (docIdProvided === sem1Doc.document_id || isSem1Title)) {
-                docs = [sem1Doc, sem2Doc];
-            }
         }
 
         this.documentsState = docs.map(doc => {

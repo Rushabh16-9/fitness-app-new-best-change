@@ -73,9 +73,9 @@ export class SharedAdmissionFormComponent implements OnInit {
   @Input('formDetails') formDetails;
   @Input('sharedDialogRef') sharedDialogRef;
 
-  @Output() triggerUploadPopup = new EventEmitter<void>();
 
   allMsgs: any = allMsgs;
+
   globalFunctions: any = globalFunctions;
 
   @ViewChild('stepper') stepper: MatStepper;
@@ -225,10 +225,7 @@ export class SharedAdmissionFormComponent implements OnInit {
   defaultPdfImage = '../assets/images/users/default-pdf.png';
   defaultDocImage = '../assets/images/users/default-doc.jpg';
   
-  // Document IDs from backend (not hardcoded)
-  semesterOneDocId: number;
-  semesterTwoDocId: number;
-  requiredDocuments: any[] = [];
+
 
   declarationForm: UntypedFormGroup;
   declarationFormValues = [];
@@ -473,8 +470,6 @@ export class SharedAdmissionFormComponent implements OnInit {
     this.declarationFormControls();
     this.documentsFormControls();
 
-    // Fetch required document IDs from backend
-    this.loadRequiredDocuments();
 
     this.fetchMotherTongue();
     this.fetchyearAppeared();
@@ -507,27 +502,7 @@ export class SharedAdmissionFormComponent implements OnInit {
     globalFunctions.setLocalStorage('panelMode', this.panelMode);
   }
 
-  private loadRequiredDocuments(): void {
-    this._admissionService.getRequiredDocuments().subscribe({
-      next: (documents: any[]) => {
-        this.requiredDocuments = documents || [];
-        // Extract Semester 1 and 2 doc IDs using labels from the backend config
-        const sem1Doc = documents?.find((d: any) =>
-          d.document_name && /(sem|semester)\s*[-_]?\s*(1|i)\b|\bsem\s*1\b|\bsem1\b/i.test(d.document_name)
-        );
-        const sem2Doc = documents?.find((d: any) =>
-          d.document_name && /(sem|semester)\s*[-_]?\s*(2|ii)\b|\bsem\s*2\b|\bsem2\b/i.test(d.document_name)
-        );
 
-        this.semesterOneDocId = sem1Doc?.document_id || null;
-        this.semesterTwoDocId = sem2Doc?.document_id || null;
-      },
-      error: () => {
-        this.semesterOneDocId = null;
-        this.semesterTwoDocId = null;
-      }
-    });
-  }
 
   getAdmissionFormDetails() {
 
@@ -675,13 +650,35 @@ export class SharedAdmissionFormComponent implements OnInit {
 
   setFormValues(formData) {
 
+    // Capture AI docs upfront
+    const aiDocs = formData?.personalInfo?.aiDocumentVerification;
+    const docsToShow = Array.isArray(aiDocs)
+      ? aiDocs.filter((d: any) => d.show === true)
+      : [];
+
+    const openAiPopup = () => {
+      if (docsToShow.length > 0) {
+        this.dialog.open(DocumentUploadDialogComponent, {
+          width: '800px',
+          disableClose: true,
+          data: { documents: docsToShow }
+        });
+      }
+    };
+
     if (formData.formFillingInstructions.display) {
-      // Trigger upload popup first (it will appear behind)
-      this.triggerUploadPopup.emit();
-      // Delay instructions popup to ensure upload popup renders first
+      // Show policy/instructions dialog first, then AI popup after it's closed
       setTimeout(() => {
-        this.openInfoDialog(formData.formFillingInstructions);
+        const infoDialogRef = this.openInfoDialog(formData.formFillingInstructions);
+        infoDialogRef.afterClosed().subscribe(() => {
+          openAiPopup();
+        });
       }, 100);
+    } else {
+      // No policy dialog — open AI popup directly
+      setTimeout(() => {
+        openAiPopup();
+      }, 300);
     }
 
     if (formData.showHorizontalStepper) {
@@ -1779,11 +1776,7 @@ export class SharedAdmissionFormComponent implements OnInit {
     dialogRef.componentInstance.yesText = yesText;
     dialogRef.componentInstance.dialogRef = dialogRef;
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == 'ok') {
-
-      }
-    });
+    return dialogRef;
   }
 
   openPreviewDialog() {
@@ -6879,18 +6872,8 @@ export class SharedAdmissionFormComponent implements OnInit {
           const hasSem2 = response.dataJson.find(col => isSemTitle(col.docTitle, 2));
 
           if (hasSem1 && !hasSem2) {
-            // Look up Sem 2 from the backend-provided requiredDocuments list
-            const sem2Required = (this.requiredDocuments || []).find((d: any) =>
-              d.document_name && isSemTitle(d.document_name, 2)
-            );
-            if (sem2Required) {
-              response.dataJson.push({
-                docId: sem2Required.document_id,
-                docTitle: sem2Required.document_name,
-                required: false,
-                uploadedFile: null
-              });
-            }
+            // Sem 2 doc must be provided by the backend via aiDocumentVerification
+            // No action needed here - documents are pre-populated from personalInfo
           }
 
           this.setDocumentsValues({ documents: response.dataJson });
