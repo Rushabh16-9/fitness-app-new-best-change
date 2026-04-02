@@ -95,6 +95,79 @@ export class DocumentUploadDialogComponent implements OnInit {
         return `Reason: ${this.getBriefInvalidReason(reason)}. ${this.getUploadGuidance(expectedDoc, isMarksheetFlow)}`;
     }
 
+    private extractExpectedExamType(docName: string): string | null {
+        const nameLower = (docName || '').toLowerCase();
+        if (/\bssc\b/.test(nameLower) || /\b10th\b/.test(nameLower)) return 'SSC';
+        if (/\bhsc\b/.test(nameLower) || /\b12th\b/.test(nameLower)) return 'HSC';
+        if (/\bsemester|sem\b/.test(nameLower)) return 'SEMESTER';
+        if (/\bdiploma\b/.test(nameLower)) return 'DIPLOMA';
+        if (/\bdegree\b/.test(nameLower)) return 'DEGREE';
+        return null;
+    }
+
+    private extractExpectedSemesterNumber(docName: string): number | null {
+        const nameLower = (docName || '').toLowerCase();
+        const semesterMatch = nameLower.match(/semester\s*(\d+)|sem\s*(\d+)|sem-(\d+)/i);
+        if (semesterMatch) {
+            const semNumber = semesterMatch[1] || semesterMatch[2] || semesterMatch[3];
+            return parseInt(semNumber, 10) || null;
+        }
+        return null;
+    }
+
+    private extractDetectedSemesterNumber(extractedData: ExtractedMarksheetData): number | null {
+        if (!extractedData?.academicInfo) return null;
+        const semester = extractedData.academicInfo.semester;
+        if (!semester) return null;
+        const semMatch = (semester + '').match(/(\d+)/);
+        return semMatch ? parseInt(semMatch[1], 10) : null;
+    }
+
+    private validateExamTypeMatch(extractedData: ExtractedMarksheetData, expectedExamType: string | null, expectedDocName: string): { isValid: boolean; mismatchReason?: string } {
+        if (!expectedExamType || !extractedData?.academicInfo) {
+            return { isValid: true }; // Skip validation if we can't determine expected type
+        }
+
+        const detectedExamination = (extractedData.academicInfo.examination || '').toUpperCase().trim();
+        const detectedBoard = (extractedData.academicInfo.board || '').toUpperCase().trim();
+        
+        // Map various exam types to standardized form
+        const normalizeExamType = (exam: string): string => {
+            if (/^(SSC|10TH|10|SECONDARY)/.test(exam)) return 'SSC';
+            if (/^(HSC|12TH|12|HIGHER\s*SECONDARY|INTERMEDIATE)/.test(exam)) return 'HSC';
+            if (/^SEMESTER|SEM|UG|BACHELOR/.test(exam)) return 'SEMESTER';
+            if (/^DIPLOMA/.test(exam)) return 'DIPLOMA';
+            if (/^DEGREE|MASTER|PG/.test(exam)) return 'DEGREE';
+            return exam;
+        };
+
+        const normalizedDetected = normalizeExamType(detectedExamination);
+        const normalizedExpected = normalizeExamType(expectedExamType);
+
+        // Check main exam type match
+        if (normalizedDetected !== normalizedExpected) {
+            return {
+                isValid: false,
+                mismatchReason: `Document is identified as ${normalizedDetected} (from extracted data: "${detectedExamination}"), but you selected "${expectedExamType}" section. Please upload the correct marksheet type.`
+            };
+        }
+
+        // For semester marksheets, also validate semester number
+        if (normalizedExpected === 'SEMESTER') {
+            const expectedSemNumber = this.extractExpectedSemesterNumber(expectedDocName);
+            const detectedSemNumber = this.extractDetectedSemesterNumber(extractedData);
+            
+            if (expectedSemNumber !== null && detectedSemNumber !== null && expectedSemNumber !== detectedSemNumber) {
+                return {
+                    isValid: false,
+                    mismatchReason: `Document is identified as Semester ${detectedSemNumber}, but you selected Semester ${expectedSemNumber} section. Please upload the correct semester marksheet.`
+                };
+            }
+        }
+
+        return { isValid: true };
+    }
+
     onFileSelected(event: any, index: number): void {
         if (event.target.files && event.target.files.length > 0) {
             this.handleFileForIndex(event.target.files[0], index);
@@ -200,10 +273,20 @@ export class DocumentUploadDialogComponent implements OnInit {
                     next: (response) => {
                         state.isExtracting = false;
                         const hasMinimumSignals = this.hasMinimumMarksheetSignals(response?.data);
-                        if (response.success && response.data && hasMinimumSignals) {
+                        
+                        // Strict validation: Verify exam type matches document section (including semester number for semester marksheets)
+                        const expectedExamType = this.extractExpectedExamType(state.document_name);
+                        const examTypeValidation = this.validateExamTypeMatch(response?.data, expectedExamType, state.document_name);
+                        
+                        if (response.success && response.data && hasMinimumSignals && examTypeValidation.isValid) {
                             state.verificationFailed = false;
                             state.verificationMessage = `✓ Verified as ${state.document_name}`;
                             state.extractedData = response.data;
+                        } else if (!examTypeValidation.isValid) {
+                            // Exam type mismatch - strict rejection
+                            state.verificationFailed = true;
+                            state.verificationMessage = `✗ Invalid ${state.document_name}`;
+                            state.extractionError = examTypeValidation.mismatchReason || `Document type does not match "${state.document_name}" section.`;
                         } else {
                             state.verificationFailed = true;
                             state.verificationMessage = `✗ Invalid ${state.document_name}`;
