@@ -24,6 +24,7 @@
         "app/shared/components/*"
       ]
     },
+    
     "useDefineForClassFields": false
   }
 }
