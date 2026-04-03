@@ -7,7 +7,6 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "postinstall": "node scripts/fix-amazing-time-picker-rxjs-dts.js",
     "bundle-report": "ng build --configuration production --stats-json && webpack-bundle-analyzer dist/stats.json",
     "start": "ng serve --configuration=beta",
     "build": "ng build --configuration production",
