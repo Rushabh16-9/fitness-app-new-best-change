@@ -657,10 +657,73 @@ export class SharedAdmissionFormComponent implements OnInit {
 
     const openAiPopup = () => {
       if (docsToShow.length > 0) {
-        this.dialog.open(DocumentUploadDialogComponent, {
+        const dialogRef = this.dialog.open(DocumentUploadDialogComponent, {
           width: '800px',
           disableClose: true,
           data: { documents: docsToShow }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          if (result && result.success) {
+            if (result.documents) {
+              result.documents.forEach((doc: any) => {
+                if (doc.extractedData) {
+                  this.patchExtractedData(doc.extractedData, doc.document_id);
+                }
+                if (doc.file) {
+                  let foundDocIndex = -1;
+                  let foundBunchIndex = -1;
+                  for (let d = 0; d < this.documentsBunch.length; d++) {
+                    for (let b = 0; b < this.documentsBunch[d].length; b++) {
+                      if (this.documentsBunch[d][b].value.docId == doc.document_id) {
+                        foundDocIndex = d;
+                        foundBunchIndex = b;
+                        break;
+                      }
+                    }
+                    if (foundDocIndex !== -1) break;
+                  }
+                  if (foundDocIndex !== -1 && foundBunchIndex !== -1) {
+                    const ext = doc.file.name ? (doc.file.name.toUpperCase().split('.').pop() || '') : '';
+                    this.browsedDocData(doc.file, foundDocIndex, foundBunchIndex, ext);
+                  }
+                }
+              });
+            } else if (result.sem2_document_id) {
+              if (result.sem1Data && result.sem1Data.extractedData) {
+                this.patchExtractedData(result.sem1Data.extractedData, result.sem1Data.document_id);
+              }
+              if (result.extractedData) {
+                this.patchExtractedData(result.extractedData, result.sem2_document_id);
+              }
+
+              const updateResultFileStatus = (docId: any, fileName: any) => {
+                for (let d = 0; d < this.documentsBunch.length; d++) {
+                  for (let b = 0; b < this.documentsBunch[d].length; b++) {
+                    if (this.documentsBunch[d][b].value.docId == docId) {
+                      const docControl = this.documentsBunch[d][b];
+                      const fnLC = (fileName || '').toLowerCase();
+                      docControl['controls'].isBrowsed.setValue(true);
+                      docControl['controls'].isUploaded.setValue(true);
+                      docControl['controls'].docError.setValue(false);
+                      docControl['controls'].uploadedFile.setValue(fileName);
+                      docControl['controls'].docToUpload.setValue(fileName);
+                      docControl['controls'].hasPhoto.setValue(fnLC.endsWith('.pdf') ? this.defaultPdfImage : fileName);
+                      this.updateDocumentStatus(docId);
+                      return;
+                    }
+                  }
+                }
+              };
+
+              if (result.sem1Data && result.sem1Data.fileName) {
+                updateResultFileStatus(result.sem1Data.document_id, result.sem1Data.fileName);
+              }
+              if (result.fileName) {
+                updateResultFileStatus(result.sem2_document_id, result.fileName);
+              }
+            }
+          }
         });
       }
     };
@@ -10815,7 +10878,9 @@ export class SharedAdmissionFormComponent implements OnInit {
       if (ai.percentage) academicValues.percentage = ai.percentage;
       if (ai.cgpa) academicValues.cgpa = ai.cgpa;
       if (ai.grade) academicValues.grade = ai.grade;
-      if (ai.seatNo) academicValues.seatNo = ai.seatNo;
+      if (ai.seatNo || (data.personalInfo && data.personalInfo.seatNo)) {
+        academicValues.seatNo = ai.seatNo || (data.personalInfo ? data.personalInfo.seatNo : null);
+      }
       if (isSSC) {
         // --- SSC PATCHING ---
         if (!this.showSscBlk) {

@@ -268,8 +268,19 @@ export class AdmissionService {
 
     fd.append('page', page);
     fd.append('docId', values.docId);
-    let file: File = (values.docValue instanceof File) ? values.docValue : values.docValue[0];
-    fd.append('document', file, file.name);
+    if (typeof values.docValue === 'string') {
+      fd.append('document', values.docValue);
+    } else {
+      let file: File;
+      if (values.docValue instanceof Blob || values.docValue instanceof File) {
+        file = values.docValue;
+      } else if (values.docValue && values.docValue.length > 0) {
+        file = values.docValue[0];
+      } else {
+        file = values.docValue;
+      }
+      fd.append('document', file, file.name || 'document.png');
+    }
 
     return this.http.post<any>(url, fd).pipe(timeout(globalFunctions.timeoutSeconds()));
   }

@@ -63,7 +63,7 @@
       [disabled]="isSubmitDisabled" 
       (click)="submit()"
       style="padding: 0 30px; height: 44px; font-size: 15px;">
-      {{ isSubmitting ? 'Uploading...' : 'Submit & Auto-fill Form' }}
+      {{ isSubmitting ? 'Uploading...' : 'Submit' }}
     </button>
     <div *ngIf="submitError" style="color: #f44336; margin-top: 12px; font-size: 14px; font-weight: 500;">
       {{ submitError }}

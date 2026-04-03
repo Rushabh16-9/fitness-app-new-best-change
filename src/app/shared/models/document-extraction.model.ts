@@ -49,4 +49,5 @@ export interface VerificationResponse {
     success: boolean;
     verification?: DocumentVerification;
     error?: string;
+    message?: string;
 }
