@@ -86,6 +86,11 @@ export class DocumentUploadDialogComponent implements OnInit {
         return text.replace(/^invalid document\s*:?\s*/i, '').replace(/^error\s*:?\s*/i, '').trim();
     }
 
+    private isDocumentMismatchMessage(rawReason: any): boolean {
+        const text = (rawReason || '').toString().trim();
+        return /^invalid document\b/i.test(text) || /document type does not match/i.test(text);
+    }
+
     private getUploadGuidance(expectedDoc: string, isMarksheetFlow: boolean): string {
         if (isMarksheetFlow) return `Please upload a clear, single-page ${expectedDoc} image or PDF.`;
         return `Please upload a clear image/PDF of ${expectedDoc}.`;
@@ -93,6 +98,11 @@ export class DocumentUploadDialogComponent implements OnInit {
 
     private buildInvalidDocumentMessage(reason: any, expectedDoc: string, isMarksheetFlow: boolean): string {
         return `Reason: ${this.getBriefInvalidReason(reason)}. ${this.getUploadGuidance(expectedDoc, isMarksheetFlow)}`;
+    }
+
+    private buildBackendFailureMessage(reason: any, expectedDoc: string): string {
+        const text = (reason || '').toString().replace(/\s+/g, ' ').trim();
+        return text || `Failed to process ${expectedDoc}. Please try again.`;
     }
 
     private extractExpectedExamType(docName: string): string | null {
@@ -130,7 +140,6 @@ export class DocumentUploadDialogComponent implements OnInit {
 
         const detectedExamination = (extractedData.academicInfo.examination || '').toUpperCase().trim();
         const detectedBoard = (extractedData.academicInfo.board || '').toUpperCase().trim();
-        const detectedSemester = this.extractDetectedSemesterNumber(extractedData);
         
         // Map various exam types to standardized form
         const normalizeExamType = (exam: string): string => {
@@ -145,33 +154,18 @@ export class DocumentUploadDialogComponent implements OnInit {
         const normalizedDetected = normalizeExamType(detectedExamination);
         const normalizedExpected = normalizeExamType(expectedExamType);
 
-        // Only reject clear opposite-type mismatches.
-        if (normalizedExpected === 'SSC' && normalizedDetected === 'HSC') {
+        // Check main exam type match
+        if (normalizedDetected !== normalizedExpected) {
             return {
                 isValid: false,
-                mismatchReason: `Document is identified as HSC/12th (from extracted data: "${detectedExamination}"), but you selected "${expectedExamType}" section. Please upload the correct marksheet type.`
+                mismatchReason: `Document is identified as ${normalizedDetected} (from extracted data: "${detectedExamination}"), but you selected "${expectedExamType}" section. Please upload the correct marksheet type.`
             };
         }
 
-        if (normalizedExpected === 'HSC' && normalizedDetected === 'SSC') {
-            return {
-                isValid: false,
-                mismatchReason: `Document is identified as SSC/10th (from extracted data: "${detectedExamination}"), but you selected "${expectedExamType}" section. Please upload the correct marksheet type.`
-            };
-        }
-
-        // For semester marksheets, also validate semester number when both are clearly known.
+        // For semester marksheets, also validate semester number
         if (normalizedExpected === 'SEMESTER') {
             const expectedSemNumber = this.extractExpectedSemesterNumber(expectedDocName);
-            const detectedSemNumber = detectedSemester;
-
-            // Reject obvious school-level marksheets for semester uploads.
-            if (normalizedDetected === 'SSC' || normalizedDetected === 'HSC') {
-                return {
-                    isValid: false,
-                    mismatchReason: `Document is identified as ${normalizedDetected}, but a semester marksheet is required.`
-                };
-            }
+            const detectedSemNumber = this.extractDetectedSemesterNumber(extractedData);
             
             if (expectedSemNumber !== null && detectedSemNumber !== null && expectedSemNumber !== detectedSemNumber) {
                 return {
@@ -250,17 +244,25 @@ export class DocumentUploadDialogComponent implements OnInit {
                         state.extractedData = null;
                     } else {
                         state.verificationFailed = true;
-                        state.verificationMessage = `✗ Invalid ${state.document_name}`;
-                        state.extractionError = this.buildInvalidDocumentMessage(reason, state.document_name, false);
+                        state.verificationMessage = this.isDocumentMismatchMessage(reason)
+                            ? `✗ Invalid ${state.document_name}`
+                            : `✗ Failed ${state.document_name}`;
+                        state.extractionError = this.isDocumentMismatchMessage(reason)
+                            ? this.buildInvalidDocumentMessage(reason, state.document_name, false)
+                            : this.buildBackendFailureMessage(reason, state.document_name);
                     }
                 },
                 error: (error) => {
                     state.isExtracting = false;
                     state.isVerifying = false;
-                    state.verificationFailed = true;
-                    state.verificationMessage = `✗ Invalid ${state.document_name}`;
                     const backendError = error?.error?.error || error?.message || 'Failed to verify document.';
-                    state.extractionError = this.buildInvalidDocumentMessage(backendError, state.document_name, false);
+                    state.verificationFailed = true;
+                    state.verificationMessage = this.isDocumentMismatchMessage(backendError)
+                        ? `✗ Invalid ${state.document_name}`
+                        : `✗ Failed ${state.document_name}`;
+                    state.extractionError = this.isDocumentMismatchMessage(backendError)
+                        ? this.buildInvalidDocumentMessage(backendError, state.document_name, false)
+                        : this.buildBackendFailureMessage(backendError, state.document_name);
                 }
             });
             return;
@@ -270,14 +272,18 @@ export class DocumentUploadDialogComponent implements OnInit {
             next: (verifyResponse) => {
                 const verification = verifyResponse?.verification;
                 const isValidDocType = !!(verifyResponse?.success && verification?.isValid);
-                const verifyReason = verification?.reason || verifyResponse?.error || 'Document type verification failed.';
+                const verifyReason = verification?.reason || verifyResponse?.error || verifyResponse?.message || 'Document type verification failed.';
 
                 if (!isValidDocType) {
                     state.isExtracting = false;
                     state.isVerifying = false;
                     state.verificationFailed = true;
-                    state.verificationMessage = `✗ Invalid ${state.document_name}`;
-                    state.extractionError = this.buildInvalidDocumentMessage(verifyReason, state.document_name, true);
+                    state.verificationMessage = this.isDocumentMismatchMessage(verifyReason)
+                        ? `✗ Invalid ${state.document_name}`
+                        : `✗ Failed ${state.document_name}`;
+                    state.extractionError = this.isDocumentMismatchMessage(verifyReason)
+                        ? this.buildInvalidDocumentMessage(verifyReason, state.document_name, true)
+                        : this.buildBackendFailureMessage(verifyReason, state.document_name);
                     return;
                 }
 
@@ -311,21 +317,28 @@ export class DocumentUploadDialogComponent implements OnInit {
                     },
                     error: (error) => {
                         state.isExtracting = false;
+                        const backendError = error?.error?.error || error?.error?.message || error?.message || 'Failed to extract data.';
                         state.verificationFailed = true;
-                        state.verificationMessage = `✗ Invalid ${state.document_name}`;
-
-                        const backendError = error?.error?.error || error?.message || 'Failed to extract data.';
-                        state.extractionError = this.buildInvalidDocumentMessage(backendError, state.document_name, true);
+                        state.verificationMessage = this.isDocumentMismatchMessage(backendError)
+                            ? `✗ Invalid ${state.document_name}`
+                            : `✗ Failed ${state.document_name}`;
+                        state.extractionError = this.isDocumentMismatchMessage(backendError)
+                            ? this.buildInvalidDocumentMessage(backendError, state.document_name, true)
+                            : this.buildBackendFailureMessage(backendError, state.document_name);
                     }
                 });
             },
             error: (error) => {
                 state.isExtracting = false;
                 state.isVerifying = false;
+                const backendError = error?.error?.error || error?.error?.message || error?.message || 'Failed to verify document type.';
                 state.verificationFailed = true;
-                state.verificationMessage = `✗ Invalid ${state.document_name}`;
-                const backendError = error?.error?.error || error?.message || 'Failed to verify document type.';
-                state.extractionError = this.buildInvalidDocumentMessage(backendError, state.document_name, true);
+                state.verificationMessage = this.isDocumentMismatchMessage(backendError)
+                    ? `✗ Invalid ${state.document_name}`
+                    : `✗ Failed ${state.document_name}`;
+                state.extractionError = this.isDocumentMismatchMessage(backendError)
+                    ? this.buildInvalidDocumentMessage(backendError, state.document_name, true)
+                    : this.buildBackendFailureMessage(backendError, state.document_name);
             }
         });
     }
@@ -362,22 +375,16 @@ export class DocumentUploadDialogComponent implements OnInit {
 
         const personal = extracted.personalInfo || {};
         const academic = extracted.academicInfo || {};
-        const hasAnyAcademicSignal = !!(
+        const hasNameOrSeat = !!(personal.candidateName || personal.firstName || personal.lastName || personal.seatNo);
+        const hasAcademicAnchor = !!(
             academic.examination ||
-            academic.board ||
             academic.semester ||
+            academic.board ||
             academic.passingYear ||
-            academic.percentage ||
-            academic.cgpa ||
-            academic.sgpa ||
-            academic.marksObtained ||
-            academic.marksOutof ||
             (Array.isArray(academic.subjects) && academic.subjects.length > 0)
         );
 
-        const hasAnyPersonalSignal = !!(personal.candidateName || personal.firstName || personal.lastName || personal.seatNo || personal.dob || personal.abcId);
-
-        return hasAnyAcademicSignal || hasAnyPersonalSignal;
+        return hasNameOrSeat && hasAcademicAnchor;
     }
 
     get isSubmitDisabled(): boolean {

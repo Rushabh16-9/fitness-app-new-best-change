@@ -60,8 +60,8 @@ export class AuthenticationInterceptor implements HttpInterceptor {
     const authService = this.injector.get(AuthService);        
     // Check if we had 401 response
     if (error.status === 0) {
-      // authService.internetConnectionError();
-      // return empty();
+      // Surface network/backend failures to the caller instead of swallowing them.
+      return throwError(() => error);
     } else if (error.status === 401) {
       // redirect to Login page for example
       return empty();
