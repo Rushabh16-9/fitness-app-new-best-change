@@ -115,6 +115,16 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
+  getRequiredDocuments(): Observable<any[]> {
+    return this.getAdmissionFormDetails().pipe(
+      map(response => {
+        const documents = response?.dataJson?.documents;
+        return Array.isArray(documents) ? documents : [];
+      }),
+      catchError(error => { throw error; })
+    );
+  }
+
   saveForm(values: any, fatherPassportSizePhotoToUpload, motherPassportSizePhotoToUpload, sisterPassportSizePhotoToUpload, brotherPassportSizePhotoToUpload, guardianPassportSizePhotoToUpload, passportSizePhoto, signatureImage, parentSignatureImage, fatherSignaturePhoto, motherSignaturePhoto, sisterSignaturePhoto, brotherSignaturePhoto, guardianSignaturePhoto): Observable<any> {
 
     const url = admissionApiUrls.saveForm;

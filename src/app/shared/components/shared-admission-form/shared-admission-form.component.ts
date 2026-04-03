@@ -359,7 +359,7 @@ export class SharedAdmissionFormComponent implements OnInit {
   appearedForArray = [];
 
   formSetup = [];
-  uploadedFileNames = [];
+  uploadedFileNames: string[] = [];
   documentsBunch = [];
   coursesList = [];
   coursesListValues = [];
