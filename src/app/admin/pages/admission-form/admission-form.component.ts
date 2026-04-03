@@ -18,6 +18,7 @@ export class AdmissionFormComponent implements OnInit {
 
   panelMode = 'admission';
   formDetails: any = {};
+  dialogRef: any = null;
 
   headerImage: any = '';
   formPolicyId: any = 0;
