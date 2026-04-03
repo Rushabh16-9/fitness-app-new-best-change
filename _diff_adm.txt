@@ -1,0 +1,181 @@
+﻿diff --git a/src/app/admin/pages/admission-form/admission-form.component.ts b/src/app/admin/pages/admission-form/admission-form.component.ts
+index e041c64..c378bae 100644
+--- a/src/app/admin/pages/admission-form/admission-form.component.ts
++++ b/src/app/admin/pages/admission-form/admission-form.component.ts
+@@ -3,10 +3,7 @@ import { Component, OnInit, ViewEncapsulation, Inject, ViewChild } from '@angula
+ import * as globalFunctions from 'app/global/globalFunctions';
+ import { environment } from 'environments/environment';
+ import { AllEventEmitters } from 'app/global/all-event-emitters';
+-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+-import { DocumentUploadDialogComponent } from 'app/shared/components/document-upload-dialog/document-upload-dialog.component';
+ import { SharedAdmissionFormComponent } from 'app/shared/components/shared-admission-form/shared-admission-form.component';
+-import { AdmissionService } from 'app/shared/services/admission.service';
+ 
+ @Component({
+   selector: 'admission-form',
+@@ -21,7 +18,7 @@ export class AdmissionFormComponent implements OnInit {
+ 
+   panelMode = 'admission';
+   formDetails: any = {};
+-  dialogRef: any;
++  dialogRef: any = null;
+ 
+   headerImage: any = '';
+   formPolicyId: any = 0;
+@@ -31,9 +28,7 @@ export class AdmissionFormComponent implements OnInit {
+   showHeaderImage: boolean = false;
+ 
+   constructor(
+-    private allEventEmitters: AllEventEmitters,
+-    private dialog: MatDialog,
+-    private _admissionService: AdmissionService
++    private allEventEmitters: AllEventEmitters
+   ) {
+ 
+     this.allEventEmitters.setTitle.emit(
+@@ -71,144 +66,7 @@ export class AdmissionFormComponent implements OnInit {
+   }
+ 
+   ngOnInit(): void {
+-    // Upload popup is now triggered from SharedAdmissionFormComponent.setFormValues()
+-    // only when instructions popup is configured to display
+-    // this.checkRequiredDocuments();
++    // Upload popup is now triggered from SharedAdmissionFormComponent
+   }
+ 
+-  checkRequiredDocuments() {
+-    console.log('AdmissionForm: checkRequiredDocuments called');
+-
+-    // Check if we already showed the dialog in this session
+-    // if (sessionStorage.getItem('documentUploadDialogShown')) {
+-    //   return;
+-    // }
+-
+-    // Fetch required documents from JSON
+-    this._admissionService.getRequiredDocuments().subscribe(
+-      (requiredDocuments: any[]) => {
+-        console.log('Fetched required documents:', requiredDocuments);
+-        const docToUpload = requiredDocuments.find(doc => doc.show);
+-
+-        if (docToUpload) {
+-          this.openUploadDialog(docToUpload);
+-          sessionStorage.setItem('documentUploadDialogShown', 'true');
+-        }
+-      },
+-      (error) => {
+-        console.error('Failed to fetch required documents:', error);
+-        // Fallback or handle error - for now, maybe just do nothing or show error
+-      }
+-    );
+-  }
+-
+-  openUploadDialog(document: any) {
+-    console.log('AdmissionForm: openUploadDialog called with:', document);
+-    const dialogRef = this.dialog.open(DocumentUploadDialogComponent, {
+-      width: '600px',
+-      data: document,
+-      disableClose: true
+-    });
+-
+-    dialogRef.afterOpened().subscribe(() => {
+-      console.log('AdmissionForm: Dialog opened successfully');
+-    });
+-
+-    dialogRef.afterClosed().subscribe(result => {
+-      console.log('AdmissionForm: Dialog closed with result:', result);
+-      if (result && result.success && result.file) {
+-        console.log('Document upload verified, proceeding to upload file:', result.file?.name);
+-
+-        const docId = this.resolveDocumentId(result, document);
+-        const file = result.file;
+-        const ext = file.name.toLowerCase().split('.').pop();
+-
+-        this.allEventEmitters.showLoader.emit(true);
+-        console.log('[DIALOG UPLOAD] Uploading file to server, docId:', docId, 'fileType:', ext);
+-
+-        const uploadObservable = ext === 'pdf'
+-          ? this._admissionService.uploadPdf(file, docId)
+-          : this._admissionService.uploadDocImage({ docId: docId, docValue: file });
+-
+-        uploadObservable.subscribe(
+-          response => {
+-            this.allEventEmitters.showLoader.emit(false);
+-            console.log('[DIALOG UPLOAD] Server upload response:', response);
+-
+-            if (response.status == 1 || response.status == '1') {
+-              const fileName = response.dataJson?.fileName;
+-              console.log('[DIALOG UPLOAD] Upload successful, fileName:', fileName);
+-
+-              if (this.sharedAdmissionForm) {
+-                this.sharedAdmissionForm.updateDocumentStatus(docId, fileName);
+-                if (fileName) {
+-                  this.sharedAdmissionForm.uploadedFileNames.push(fileName);
+-                }
+-              }
+-
+-              if (result.extractedData) {
+-                this.autoFillFormWithExtractedData(result.extractedData, docId, fileName);
+-              }
+-
+-              const successMsg = response.message || 'Document uploaded successfully';
+-              this.sharedAdmissionForm?._snackBarMsgComponent?.openSnackBar(successMsg, 'x', 'success-snackbar', 5000);
+-            } else {
+-              const failMsg = response.message || 'Upload failed';
+-              this.sharedAdmissionForm?._snackBarMsgComponent?.openSnackBar(failMsg, 'x', 'error-snackbar', 5000);
+-            }
+-          },
+-          error => {
+-            this.allEventEmitters.showLoader.emit(false);
+-            console.error('[DIALOG UPLOAD] Upload error:', error);
+-            this.sharedAdmissionForm?._snackBarMsgComponent?.openSnackBar('Upload failed. Please try again.', 'x', 'error-snackbar', 5000);
+-          }
+-        );
+-      }
+-    });
+-  }
+-
+-  private resolveDocumentId(result: any, document: any): any {
+-    const fallbackId = result.document_id || document.document_id || document.id;
+-
+-    if (!this.sharedAdmissionForm) {
+-      return fallbackId;
+-    }
+-
+-    const docName = (document?.document_name || '').toString().toLowerCase();
+-    const examName = (result?.extractedData?.academicInfo?.examination || '').toString().toLowerCase();
+-
+-    const keywords: string[] = [];
+-    if (docName.includes('hsc') || docName.includes('12')) {
+-      keywords.push('hsc', '12th', 'twelfth');
+-    }
+-    if (docName.includes('ssc') || docName.includes('10')) {
+-      keywords.push('ssc', '10th', 'tenth');
+-    }
+-    if (keywords.length === 0) {
+-      if (examName.includes('hsc') || examName.includes('12')) {
+-        keywords.push('hsc', '12th', 'twelfth');
+-      } else if (examName.includes('ssc') || examName.includes('10')) {
+-        keywords.push('ssc', '10th', 'tenth');
+-      }
+-    }
+-
+-    const resolvedId = keywords.length > 0
+-      ? this.sharedAdmissionForm.findDocumentIdByTitle(keywords)
+-      : null;
+-
+-    return resolvedId || fallbackId;
+-  }
+-
+-  autoFillFormWithExtractedData(extractedData: any, documentId: any, fileName?: string): void {
+-    console.log('Auto-filling form with extracted data:', extractedData);
+-
+-    if (this.sharedAdmissionForm) {
+-      this.sharedAdmissionForm.patchExtractedData(extractedData, documentId, fileName);
+-    } else {
+-      console.error('SharedAdmissionFormComponent not found via ViewChild');
+-      alert('Could not auto-fill form. Please try again.');
+-    }
+-  }
+-
+-
+ }

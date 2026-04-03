@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { timeout, map, catchError } from 'rxjs/operators';
+import { Observable, from } from 'rxjs';
+import { timeout, map, catchError, switchMap } from 'rxjs/operators';
 
 import { admissionApiUrls } from 'app/resta-api-urls';
 import * as globalFunctions from 'app/global/globalFunctions';
@@ -13,6 +13,15 @@ export class AdmissionService {
   constructor(
     private http: HttpClient
   ) { }
+
+  private appendCommonFieldsToFormData(formData: FormData): void {
+    const commonPostValues = globalFunctions.getCommonPostValues() || {};
+    for (const key in commonPostValues) {
+      if (Object.prototype.hasOwnProperty.call(commonPostValues, key) && commonPostValues[key] !== undefined && commonPostValues[key] !== null) {
+        formData.append(key, String(commonPostValues[key]));
+      }
+    }
+  }
 
   getListOfInstitutes(): Observable<any> {
 
@@ -264,35 +273,97 @@ export class AdmissionService {
     return this.http.post<any>(url, postData);
   }
 
+  private dataUrlToBlob(dataUrl: string): Blob | null {
+    if (!dataUrl || typeof dataUrl !== 'string') return null;
+    const match = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+    if (!match || !match[1] || !match[2]) return null;
+
+    const mimeType = match[1];
+    const base64Data = match[2];
+    const binary = atob(base64Data);
+    const len = binary.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return new Blob([bytes], { type: mimeType });
+  }
+
+  private mimeTypeToExtension(mimeType: string): string {
+    if (!mimeType) return 'png';
+    if (mimeType.indexOf('jpeg') !== -1 || mimeType.indexOf('jpg') !== -1) return 'jpg';
+    if (mimeType.indexOf('pdf') !== -1) return 'pdf';
+    if (mimeType.indexOf('png') !== -1) return 'png';
+    return 'png';
+  }
+
+  private fileToDataUrl(file: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve((reader.result || '').toString());
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
+
   uploadDocImage(values: any, page = ''): Observable<any> {
 
     const url = admissionApiUrls.uploadDocImage;
     let commonPostValues = globalFunctions.getCommonPostValues();
 
-    const fd = new FormData();
-    for (var key in commonPostValues) {
-      if (commonPostValues.hasOwnProperty(key)) {
-        fd.append(key, commonPostValues[key]);
+    const resolvedDocId = values?.docId || values?.documentId || values?.document_id || values?.id || '';
+
+    const buildFormData = (docValueForBackend: string, fileForMultipart?: Blob | File | null): FormData => {
+      const fd = new FormData();
+      for (var key in commonPostValues) {
+        if (commonPostValues.hasOwnProperty(key)) {
+          fd.append(key, commonPostValues[key]);
+        }
       }
+
+      fd.append('page', page);
+      fd.append('docId', resolvedDocId);
+      fd.append('documentId', resolvedDocId);
+      fd.append('document_id', resolvedDocId);
+      fd.append('docValue', docValueForBackend || '');
+
+      if (fileForMultipart) {
+        const ext = this.mimeTypeToExtension((fileForMultipart as Blob).type || '');
+        const fileName = (fileForMultipart as File).name || `document.${ext}`;
+        fd.append('document', fileForMultipart, fileName);
+      }
+
+      return fd;
+    };
+
+    const rawDocValue = values?.docValue;
+
+    if (typeof rawDocValue === 'string') {
+      const blobFromDataUrl = this.dataUrlToBlob(rawDocValue);
+      const fd = buildFormData(rawDocValue, blobFromDataUrl);
+      return this.http.post<any>(url, fd).pipe(timeout(globalFunctions.timeoutSeconds()));
     }
 
-    fd.append('page', page);
-    fd.append('docId', values.docId);
-    if (typeof values.docValue === 'string') {
-      fd.append('document', values.docValue);
-    } else {
-      let file: File;
-      if (values.docValue instanceof Blob || values.docValue instanceof File) {
-        file = values.docValue;
-      } else if (values.docValue && values.docValue.length > 0) {
-        file = values.docValue[0];
-      } else {
-        file = values.docValue;
-      }
-      fd.append('document', file, file.name || 'document.png');
+    let fileBlob: Blob | File | null = null;
+    if (rawDocValue instanceof Blob || rawDocValue instanceof File) {
+      fileBlob = rawDocValue;
+    } else if (rawDocValue && rawDocValue.length > 0 && (rawDocValue[0] instanceof Blob || rawDocValue[0] instanceof File)) {
+      fileBlob = rawDocValue[0];
     }
 
-    return this.http.post<any>(url, fd).pipe(timeout(globalFunctions.timeoutSeconds()));
+    if (fileBlob) {
+      return from(this.fileToDataUrl(fileBlob)).pipe(
+        switchMap((dataUrl: string) => {
+          const fd = buildFormData(dataUrl, fileBlob);
+          return this.http.post<any>(url, fd);
+        }),
+        timeout(globalFunctions.timeoutSeconds())
+      );
+    }
+
+    const fallbackDocValue = (rawDocValue || '').toString();
+    const fallbackFd = buildFormData(fallbackDocValue, null);
+    return this.http.post<any>(url, fallbackFd).pipe(timeout(globalFunctions.timeoutSeconds()));
   }
 
   uploadPdf(file: any, docId = '', page = ''): Observable<any> {
@@ -476,6 +547,7 @@ export class AdmissionService {
 
   validatePassportPhoto(file: File): Observable<any> {
     const formData = new FormData();
+    this.appendCommonFieldsToFormData(formData);
     formData.append('document', file);
     return this.http.post<any>(environment.API_ENDPOINT + 'api/validate-photo', formData)
       .pipe(
@@ -487,6 +559,7 @@ export class AdmissionService {
 
   validateSignature(file: File): Observable<any> {
     const formData = new FormData();
+    this.appendCommonFieldsToFormData(formData);
     formData.append('document', file);
     return this.http.post<any>(environment.API_ENDPOINT + 'api/validate-signature', formData)
       .pipe(
@@ -498,6 +571,7 @@ export class AdmissionService {
 
   verifyDocument(file: File, expectedType: string): Observable<any> {
     const formData = new FormData();
+    this.appendCommonFieldsToFormData(formData);
     formData.append('document', file);
     formData.append('expectedType', expectedType);
     return this.http.post<any>(environment.API_ENDPOINT + 'api/verify-document', formData)

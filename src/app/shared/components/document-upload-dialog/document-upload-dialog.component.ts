@@ -32,6 +32,7 @@ export class DocumentUploadDialogComponent implements OnInit {
     
     private readonly maxFileSizeMbMarksheet: number = 20;
     private readonly maxFileSizeMbVerificationOnly: number = 2;
+    private readonly queuedExtractionDelayMs: number = 1200;
 
     constructor(
         public dialogRef: MatDialogRef<DocumentUploadDialogComponent>,
@@ -224,6 +225,20 @@ export class DocumentUploadDialogComponent implements OnInit {
         const state = this.documentsState[index];
         if (!state || !state.file) return;
 
+        const isAnotherRequestRunning = this.documentsState.some(
+            (doc, docIndex) => docIndex !== index && (doc.isVerifying || doc.isExtracting)
+        );
+
+        if (isAnotherRequestRunning) {
+            state.verificationMessage = 'Waiting for previous document verification...';
+            state.isVerifying = false;
+            state.isExtracting = false;
+            setTimeout(() => this.extractData(index), this.queuedExtractionDelayMs);
+            return;
+        }
+
+        // Reset any previous extraction result before validating a new upload.
+        state.extractedData = null;
         state.isExtracting = true;
         state.isVerifying = true;
         state.verificationMessage = 'Verifying document...';
@@ -255,7 +270,15 @@ export class DocumentUploadDialogComponent implements OnInit {
                 error: (error) => {
                     state.isExtracting = false;
                     state.isVerifying = false;
+                    const httpStatus = error?.status || error?.error?.status;
                     const backendError = error?.error?.error || error?.message || 'Failed to verify document.';
+                    // If it's a server/network error (503, 502, 500, 0) and NOT a document mismatch, skip and allow upload
+                    if (!this.isDocumentMismatchMessage(backendError) && (httpStatus === 503 || httpStatus === 502 || httpStatus === 500 || httpStatus === 0 || !httpStatus)) {
+                        state.verificationFailed = false;
+                        state.verificationMessage = '';
+                        state.extractionError = '';
+                        return;
+                    }
                     state.verificationFailed = true;
                     state.verificationMessage = this.isDocumentMismatchMessage(backendError)
                         ? `✗ Invalid ${state.document_name}`
@@ -331,7 +354,44 @@ export class DocumentUploadDialogComponent implements OnInit {
             error: (error) => {
                 state.isExtracting = false;
                 state.isVerifying = false;
+                const httpStatus = error?.status || error?.error?.status;
                 const backendError = error?.error?.error || error?.error?.message || error?.message || 'Failed to verify document type.';
+                // If it's a server/network error (503, 502, 500, 0) and NOT a document mismatch,
+                // skip verification and proceed directly to extraction.
+                if (!this.isDocumentMismatchMessage(backendError) && (httpStatus === 503 || httpStatus === 502 || httpStatus === 500 || httpStatus === 0 || !httpStatus)) {
+                    state.verificationMessage = 'Verification unavailable. Extracting data...';
+                    state.isExtracting = true;
+                    this.extractionService.extractMarksheetData(state.file!, state.document_name).subscribe({
+                        next: (response) => {
+                            state.isExtracting = false;
+                            const hasMinimumSignals = this.hasMinimumMarksheetSignals(response?.data);
+                            const expectedExamType = this.extractExpectedExamType(state.document_name);
+                            const examTypeValidation = this.validateExamTypeMatch(response?.data, expectedExamType, state.document_name);
+
+                            if (response.success && response.data && hasMinimumSignals && examTypeValidation.isValid) {
+                                state.verificationFailed = false;
+                                state.verificationMessage = `✓ Verified as ${state.document_name}`;
+                                state.extractedData = response.data;
+                            } else if (!examTypeValidation.isValid) {
+                                state.verificationFailed = true;
+                                state.verificationMessage = `✗ Invalid ${state.document_name}`;
+                                state.extractionError = examTypeValidation.mismatchReason || `Document type does not match "${state.document_name}" section.`;
+                            } else {
+                                state.verificationFailed = true;
+                                state.verificationMessage = `✗ Invalid ${state.document_name}`;
+                                state.extractionError = this.buildInvalidDocumentMessage(response?.error || 'Could not confirm required marksheet details from this file.', state.document_name, true);
+                            }
+                        },
+                        error: (extractErr) => {
+                            state.isExtracting = false;
+                            const extractBackendError = extractErr?.error?.error || extractErr?.error?.message || extractErr?.message || 'Failed to extract data.';
+                            state.verificationFailed = true;
+                            state.verificationMessage = `✗ Failed ${state.document_name}`;
+                            state.extractionError = this.buildBackendFailureMessage(extractBackendError, state.document_name);
+                        }
+                    });
+                    return;
+                }
                 state.verificationFailed = true;
                 state.verificationMessage = this.isDocumentMismatchMessage(backendError)
                     ? `✗ Invalid ${state.document_name}`

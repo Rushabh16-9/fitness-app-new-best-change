@@ -53,6 +53,23 @@ export class UploadDocumentsComponent implements OnInit {
   courseSelection: any = true;
   optPayment: boolean = true;
 
+  private resolveUploadDocId(raw: any): any {
+    return raw?.docId || raw?.document_id || raw?.documentId || raw?.id || raw?.reqConfId || '';
+  }
+
+  private isUploadSuccessResponse(data: any): boolean {
+    return data && (
+      data.status == 1 ||
+      data.status == '1' ||
+      data.success === true ||
+      !!(data.dataJson && (data.dataJson.fileName || data.dataJson.uploadedFile || data.dataJson.fileUrl))
+    );
+  }
+
+  private getUploadedDocRef(data: any): string {
+    return data?.dataJson?.uploadedFile || data?.dataJson?.fileUrl || data?.dataJson?.fileName || '';
+  }
+
   constructor(
     public dialog: MatDialog,
     private _formBuilder: UntypedFormBuilder,
@@ -189,18 +206,22 @@ export class UploadDocumentsComponent implements OnInit {
 
         const documents = <UntypedFormArray>this.documentsForm.controls.documents;
 
+        const resolvedDocId = itemRow.docId || itemRow.document_id || itemRow.id || itemRow.reqConfId || null;
+        const resolvedDocTitle = itemRow.docTitle || itemRow.document_name || itemRow.title || 'Document';
+        const resolvedUploadedFile = itemRow.uploadedFile || itemRow.fileName || itemRow.file_name || itemRow.fileUrl || itemRow.uploaded_file || null;
+
         let isRequired: any;
-        if (itemRow.required) {
+        if (itemRow.required || itemRow.isRequired) {
           isRequired = Validators.required;
         }
 
         let isUploaded = false;
         let hasPhoto = null;
-        if (itemRow.uploadedFile) {
+        if (resolvedUploadedFile) {
           isUploaded = true;
-          let extension = itemRow.uploadedFile.split('.').pop();
-          hasPhoto = itemRow.uploadedFile;
-          if (extension == 'pdf') {
+          let extension = resolvedUploadedFile.split('.').pop();
+          hasPhoto = resolvedUploadedFile;
+          if ((extension || '').toLowerCase() == 'pdf') {
             hasPhoto = this.defaultPdfImage;
           }
         }
@@ -218,11 +239,11 @@ export class UploadDocumentsComponent implements OnInit {
 
         let row = this._formBuilder.group({
           breakRow: [breakRow],
-          docId: [itemRow.docId],
-          docTitle: [itemRow.docTitle],
+          docId: [resolvedDocId],
+          docTitle: [resolvedDocTitle],
           note: [itemRow.note],
-          required: [itemRow.required],
-          uploadedFile: [itemRow.uploadedFile],
+          required: [itemRow.required || itemRow.isRequired || false],
+          uploadedFile: [resolvedUploadedFile],
           docError: [false],
           isBrowsed: [false],
           isUploaded: [isUploaded],
@@ -310,9 +331,18 @@ export class UploadDocumentsComponent implements OnInit {
     documents['controls'].isBrowsed.setValue(true);
     documents['controls'].docToUpload.setValue(fileObj);
 
+    const resolvedDocId = this.resolveUploadDocId({ docId: documents['controls'].docId.value });
     let postData = {
-      docId: documents['controls'].docId.value,
+      docId: resolvedDocId,
+      documentId: resolvedDocId,
+      document_id: resolvedDocId,
       docValue: fileObj
+    }
+
+    if (globalFunctions.isEmpty(resolvedDocId)) {
+      this._snackBarMsgComponent.openSnackBar('Document configuration is missing (docId). Please refresh and try again.', 'x', 'error-snackbar', 5000);
+      documents['controls'].isBrowsed.setValue(false);
+      return;
     }
 
     if (ext == 'PDF') {
@@ -354,16 +384,16 @@ export class UploadDocumentsComponent implements OnInit {
 
       this.allEventEmitters.showLoader.emit(false);
 
-      if (data.status != undefined) {
-        if (data.status == 1) {
-          const uploadedDocRef = data?.dataJson?.uploadedFile || data?.dataJson?.fileUrl || data?.dataJson?.fileName || '';
+      if (data.status != undefined || data.success !== undefined || data.dataJson) {
+        if (this.isUploadSuccessResponse(data)) {
+          const uploadedDocRef = this.getUploadedDocRef(data);
           this.allDocuments[docIndex].controls.uploadedFile.setValue(uploadedDocRef);
           this.allDocuments[docIndex].controls.docToUpload.setValue(uploadedDocRef);
           this.allDocuments[docIndex].controls.isUploaded.setValue(true);
           this.allDocuments[docIndex].controls.docError.setValue(false);
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
-        } else if (data.status == 0) {
-          this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
+        } else {
+          this._snackBarMsgComponent.openSnackBar(data.message || 'Document upload failed', 'x', 'error-snackbar', 5000);
         }
       } else {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
@@ -391,16 +421,16 @@ export class UploadDocumentsComponent implements OnInit {
 
       this.allEventEmitters.showLoader.emit(false);
 
-      if (data.status != undefined) {
-        if (data.status == 1) {
-          const uploadedDocRef = data?.dataJson?.uploadedFile || data?.dataJson?.fileUrl || data?.dataJson?.fileName || '';
+      if (data.status != undefined || data.success !== undefined || data.dataJson) {
+        if (this.isUploadSuccessResponse(data)) {
+          const uploadedDocRef = this.getUploadedDocRef(data);
           this.allDocuments[docIndex].controls.uploadedFile.setValue(uploadedDocRef);
           this.allDocuments[docIndex].controls.docToUpload.setValue(uploadedDocRef);
           this.allDocuments[docIndex].controls.isUploaded.setValue(true);
           this.allDocuments[docIndex].controls.docError.setValue(false);
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
-        } else if (data.status == 0) {
-          this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
+        } else {
+          this._snackBarMsgComponent.openSnackBar(data.message || 'Document upload failed', 'x', 'error-snackbar', 5000);
         }
       } else {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
@@ -418,16 +448,16 @@ export class UploadDocumentsComponent implements OnInit {
 
       this.allEventEmitters.showLoader.emit(false);
 
-      if (data.status != undefined) {
-        if (data.status == 1) {
-          const uploadedDocRef = data?.dataJson?.uploadedFile || data?.dataJson?.fileUrl || data?.dataJson?.fileName || '';
+      if (data.status != undefined || data.success !== undefined || data.dataJson) {
+        if (this.isUploadSuccessResponse(data)) {
+          const uploadedDocRef = this.getUploadedDocRef(data);
           this.allDocuments[docIndex].controls.uploadedFile.setValue(uploadedDocRef);
           this.allDocuments[docIndex].controls.docToUpload.setValue(uploadedDocRef);
           this.allDocuments[docIndex].controls.isUploaded.setValue(true);
           this.allDocuments[docIndex].controls.docError.setValue(false);
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
-        } else if (data.status == 0) {
-          this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
+        } else {
+          this._snackBarMsgComponent.openSnackBar(data.message || 'Document upload failed', 'x', 'error-snackbar', 5000);
         }
       } else {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
@@ -445,16 +475,16 @@ export class UploadDocumentsComponent implements OnInit {
 
       this.allEventEmitters.showLoader.emit(false);
 
-      if (data.status != undefined) {
-        if (data.status == 1) {
-          const uploadedDocRef = data?.dataJson?.uploadedFile || data?.dataJson?.fileUrl || data?.dataJson?.fileName || '';
+      if (data.status != undefined || data.success !== undefined || data.dataJson) {
+        if (this.isUploadSuccessResponse(data)) {
+          const uploadedDocRef = this.getUploadedDocRef(data);
           this.allDocuments[docIndex].controls.uploadedFile.setValue(uploadedDocRef);
           this.allDocuments[docIndex].controls.docToUpload.setValue(uploadedDocRef);
           this.allDocuments[docIndex].controls.isUploaded.setValue(true);
           this.allDocuments[docIndex].controls.docError.setValue(false);
           this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'success-snackbar', 5000);
-        } else if (data.status == 0) {
-          this._snackBarMsgComponent.openSnackBar(data.message, 'x', 'error-snackbar', 5000);
+        } else {
+          this._snackBarMsgComponent.openSnackBar(data.message || 'Document upload failed', 'x', 'error-snackbar', 5000);
         }
       } else {
         this._snackBarMsgComponent.openSnackBar(allMsgs.SOMETHING_WRONG, 'x', 'error-snackbar', 5000);
