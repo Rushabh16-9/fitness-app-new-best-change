@@ -130,6 +130,7 @@ export class DocumentUploadDialogComponent implements OnInit {
 
         const detectedExamination = (extractedData.academicInfo.examination || '').toUpperCase().trim();
         const detectedBoard = (extractedData.academicInfo.board || '').toUpperCase().trim();
+        const detectedSemester = this.extractDetectedSemesterNumber(extractedData);
         
         // Map various exam types to standardized form
         const normalizeExamType = (exam: string): string => {
@@ -144,18 +145,33 @@ export class DocumentUploadDialogComponent implements OnInit {
         const normalizedDetected = normalizeExamType(detectedExamination);
         const normalizedExpected = normalizeExamType(expectedExamType);
 
-        // Check main exam type match
-        if (normalizedDetected !== normalizedExpected) {
+        // Only reject clear opposite-type mismatches.
+        if (normalizedExpected === 'SSC' && normalizedDetected === 'HSC') {
             return {
                 isValid: false,
-                mismatchReason: `Document is identified as ${normalizedDetected} (from extracted data: "${detectedExamination}"), but you selected "${expectedExamType}" section. Please upload the correct marksheet type.`
+                mismatchReason: `Document is identified as HSC/12th (from extracted data: "${detectedExamination}"), but you selected "${expectedExamType}" section. Please upload the correct marksheet type.`
             };
         }
 
-        // For semester marksheets, also validate semester number
+        if (normalizedExpected === 'HSC' && normalizedDetected === 'SSC') {
+            return {
+                isValid: false,
+                mismatchReason: `Document is identified as SSC/10th (from extracted data: "${detectedExamination}"), but you selected "${expectedExamType}" section. Please upload the correct marksheet type.`
+            };
+        }
+
+        // For semester marksheets, also validate semester number when both are clearly known.
         if (normalizedExpected === 'SEMESTER') {
             const expectedSemNumber = this.extractExpectedSemesterNumber(expectedDocName);
-            const detectedSemNumber = this.extractDetectedSemesterNumber(extractedData);
+            const detectedSemNumber = detectedSemester;
+
+            // Reject obvious school-level marksheets for semester uploads.
+            if (normalizedDetected === 'SSC' || normalizedDetected === 'HSC') {
+                return {
+                    isValid: false,
+                    mismatchReason: `Document is identified as ${normalizedDetected}, but a semester marksheet is required.`
+                };
+            }
             
             if (expectedSemNumber !== null && detectedSemNumber !== null && expectedSemNumber !== detectedSemNumber) {
                 return {
@@ -346,16 +362,22 @@ export class DocumentUploadDialogComponent implements OnInit {
 
         const personal = extracted.personalInfo || {};
         const academic = extracted.academicInfo || {};
-        const hasNameOrSeat = !!(personal.candidateName || personal.firstName || personal.lastName || personal.seatNo);
-        const hasAcademicAnchor = !!(
+        const hasAnyAcademicSignal = !!(
             academic.examination ||
-            academic.semester ||
             academic.board ||
+            academic.semester ||
             academic.passingYear ||
+            academic.percentage ||
+            academic.cgpa ||
+            academic.sgpa ||
+            academic.marksObtained ||
+            academic.marksOutof ||
             (Array.isArray(academic.subjects) && academic.subjects.length > 0)
         );
 
-        return hasNameOrSeat && hasAcademicAnchor;
+        const hasAnyPersonalSignal = !!(personal.candidateName || personal.firstName || personal.lastName || personal.seatNo || personal.dob || personal.abcId);
+
+        return hasAnyAcademicSignal || hasAnyPersonalSignal;
     }
 
     get isSubmitDisabled(): boolean {
